@@ -98,7 +98,7 @@ $ less -e sample/a.txt.lazy.attrs.txt
 >0,1,12  
 
 $ ./greedy.out -i sample/a.txt -t text
->___________RESULT___________ 
+>___________RESULT___________  
 >File : sample/a.txt  
 >Output : sample/a.txt.greedy.attrs.txt  
 >The length of the input text : 21  
@@ -113,7 +113,7 @@ $ less -e sample/a.txt.greedy.attrs.txt
 
 $ ./lazy.out -i sample/a.txt -t binary  
 $ ./verify.out -i sample/a.txt -a sample/a.txt.lazy.attrs  
->___________RESULT___________ 
+>___________RESULT___________  
 >File : sample/a.txt  
 >Attractor File : sample/a.txt.lazy.attrs  
 >The length of the input text : 21  
@@ -124,7 +124,7 @@ $ ./verify.out -i sample/a.txt -a sample/a.txt.lazy.attrs
 >_________________________________  
 
 $ ./greedy.out -i sample/a.txt -t binary  
->___________RESULT___________ 
+>___________RESULT___________  
 >File : sample/a.txt  
 >Attractor File : sample/a.txt.greedy.attrs  
 >The length of the input text : 21  
@@ -136,7 +136,7 @@ $ ./greedy.out -i sample/a.txt -t binary
 
 $ echo -n 1, 6, 10, 18 > sample/a.attrs.txt  
 $ ./verify.out -i sample/a.txt -a sample/a.attrs.txt  
->___________RESULT___________ 
+>___________RESULT___________  
 >File : sample/a.txt  
 >Attractor File : sample/a.attrs.txt  
 >The length of the input text : 21  
