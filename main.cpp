@@ -122,6 +122,7 @@ void check(string &text, vector<LCPInterval> &intervals, vector<uint64_t> &paren
 }
 int main(int argc, char *argv[])
 {
+    
     cmdline::parser p;
     p.add<string>("input_file", 'i', "input file name", true);
     p.add<string>("output_file", 'o', "output file name (the default output name is 'input_file.ext')", false, "");
@@ -130,6 +131,41 @@ int main(int argc, char *argv[])
     string inputFile = p.get<string>("input_file");
     string outputFile = p.get<string>("output_file");
 
+    string text;
+    IO::load(inputFile, text);
+    vector<LCPInterval> intervals1, intervals2;
+    vector<uint64_t> parents1, parents2;
+
+    auto start1 = std::chrono::system_clock::now();
+    MinimalSubstringsConstruction::construct(text, intervals1, parents1);
+    auto end1 = std::chrono::system_clock::now();
+    double elapsed1 = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start1).count();
+
+    auto start2 = std::chrono::system_clock::now();
+    MinimalSubstringsTreeConstruction::construct(text, intervals2, parents2);
+    auto end2 = std::chrono::system_clock::now();
+    double elapsed2 = std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count();
+
+    std::cout << intervals1.size() << "/" << intervals2.size() << std::endl;
+    std::cout << elapsed1 << "/" << elapsed2 << std::endl;
+
+    for(uint64_t i=0;i<intervals1.size();i++){
+        if(intervals1[i].i != intervals2[i].i){
+            throw -1;
+        }
+        if(intervals1[i].j != intervals2[i].j){
+            throw -1;
+        }
+        if(intervals1[i].lcp != intervals2[i].lcp){
+            throw -1;
+        }
+        if(parents1[i] != parents2[i]){
+            throw -1;
+        }
+
+    }
+
+    /*
     // Loading Minimal Substrings
     vector<LCPInterval> intervals;
     std::ifstream m_ifs(inputFile);
@@ -150,58 +186,6 @@ int main(int argc, char *argv[])
     std::cout << "The number of minimal substrings : " << mSubstrCount << std::endl;
     std::cout << "==================================" << std::endl;
     std::cout << "\033[39m" << std::endl;
-
-    /*
-    // Loading Input Text
-    std::ifstream ifs(inputFile);
-    bool inputFileExist = ifs.is_open();
-    if (!inputFileExist)
-    {
-        std::cout << inputFile << " cannot open." << std::endl;
-        return -1;
-    }
-    string text;
-    IO::load(inputFile, text);
-    vector<LCPInterval> intervals, intervals2;
-    vector<uint64_t> sa, lcp, isa, parentVec, parentVec2;
-
-    auto start = std::chrono::system_clock::now();
-    //vector<LCPInterval> intervals;
-    //vector<uint64_t> parentVec;
-    //CSTHelper::constructMSTree(text, intervals, parentVec);
-
-    std::cout << "construct" << std::endl;
-    //MinimalSubstringsTreeConstruction::computeMinimalSubstringsTreeWithoutIndexLeave2(text, intervals, parentVec);
-    //MinimalSubstringsTreeConstruction::computeMinimalSubstringsTreeWithoutIndexLeave(text, intervals2, parentVec2);
-
-    OfflineSuffixTree st;
-    st.initialize(text);
-    
-        std::move(st.parents.begin(), st.parents.end(), back_inserter(parentVec));
-        std::move(st.intervals.begin(), st.intervals.end(), back_inserter(intervals));
-
-    //computeMinimalSubstrings(text,intervals);
-    auto end = std::chrono::system_clock::now();
-    double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-
-    for (uint64_t i = 0; i < intervals.size(); i++)
-    {
-        std::cout << i << intervals[i].toString() << "/" << parentVec[i] << std::endl;
-    }
-    std::cout << "//////////////" << std::endl;
-    for (uint64_t i = 0; i < intervals2.size(); i++)
-    {
-        std::cout << i << intervals2[i].toString() << "/" << parentVec2[i] << std::endl;
-    }
-
-    std::cout << "\033[36m";
-    std::cout << "=============RESULT===============" << std::endl;
-    std::cout << "File : " << inputFile << std::endl;
-    std::cout << "The length of the input text : " << text.size() << std::endl;
-    double charperms = (double)text.size() / elapsed;
-    std::cout << "Excecution time : " << elapsed << "ms";
-    std::cout << "[" << charperms << "chars/ms]" << std::endl;
-    std::cout << "==================================" << std::endl;
-    std::cout << "\033[39m" << std::endl;
     */
+
 }

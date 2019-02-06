@@ -4,6 +4,10 @@
 #include <memory>
 #include <map>
 #include <stack>
+#include <unordered_map>
+#include <unordered_set>
+
+#include "fmindex.hpp"
 
 #include <sdsl/suffix_arrays.hpp>
 #include <sdsl/suffix_trees.hpp>
@@ -121,7 +125,7 @@ class CSTHelper
         msVec.resize(size, false);
 
         vector<uint64_t> slvec;
-        slvec.resize(size);        
+        slvec.resize(size);
 
         uint64_t x3 = 0;
         for (auto &p : cst)
@@ -223,45 +227,13 @@ class CSTHelper
 
 class MinimalSubstringsConstruction
 {
+  private:
+    static void constructMSIntervals(string &text, vector<LCPInterval> &outputIntervals);
+    static void constructMSIntervalParents(vector<LCPInterval> &intervals, vector<uint64_t> &outputParents);
+
   public:
-    static void computeMinimalSubstrings(string &text, vector<LCPInterval> &intervals)
-    {
-
-        CST cst;
-        printf("  Done. Constructing CST... This may take 5 minutes or so...\n");
-        auto start = std::chrono::system_clock::now();
-        construct_im(cst, text, 1);
-        auto end = std::chrono::system_clock::now();
-        double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-        std::cout << "created cst[" << elapsed << "ms]" << std::endl;
-
-        uint64_t size = cst.nodes();
-        //for (int64_t x = size-1; x >= 0; x--)
-        for (uint64_t x = 0; x < size; x++)
-        {
-            if (x % 1000 == 0)
-                std::cout << "\r"
-                          << "computing LCP intervals... : [" << x << "/" << size << "]" << std::flush;
-            auto p = cst.inv_id(x);
-            auto p2 = cst.lb(p);
-            auto p3 = cst.rb(p);
-            uint64_t degree = cst.degree(p);
-
-            for (uint64_t i = 0; i < degree; i++)
-            {
-                bool b = CSTHelper::isMinimalSubstring(cst, text, cst.id(p), i);
-                if (b)
-                {
-                    auto child = cst.select_child(p, i + 1);
-                    LCPInterval interval = LCPInterval(cst.lb(child) - 1, cst.rb(child) - 1, cst.depth(p) + 1);
-                    intervals.push_back(interval);
-                }
-            }
-        }
-        std::cout << "done." << std::endl;
-
-        sort(intervals.begin(), intervals.end());
-    }
+    static void computeMinimalSubstrings(string &text, vector<LCPInterval> &intervals);
+    static void construct(string &text, vector<LCPInterval> &outputIntervals, vector<uint64_t> &outputParents);
 };
 
 } // namespace stool

@@ -5,8 +5,10 @@ hogehoge
     $ git clone https://github.com/TNishimoto/lazy_attractor
     $ cd lazy_attractor
     $ cmake -DCMAKE_BUILD_TYPE=Release .
+    $ make
 
-You need libdivsufsort(https://github.com/y-256/libdivsufsort) and sdsl-lite(https://github.com/simongog/sdsl-lite) to excecute this program.
+You need sdsl-lite(https://github.com/simongog/sdsl-lite) to excecute this program. 
+Please edit CMakeLists.txt to set SDSL library and include directory paths.
 
 # executions
 
@@ -50,6 +52,7 @@ options:
   -i, --input_file        Input text file name (string)  
   -a, --attractor_file    Attractors file name (string)  
   -m, --msubstr_file      (option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub') (string [=])  
+  -t, --attractor_file_type    (option) Input attractor file type(binary or text) (string [=binary])  
   -o, --output_file       (option) Error log file name (the default output name is 'input_file.verify.log') (string [=])  
   -?, --help              print this message  
 
@@ -124,6 +127,7 @@ $ ./verify.out -i sample/a.txt -a sample/a.txt.lazy.attrs
 >_________________________________  
 
 $ ./greedy.out -i sample/a.txt -t binary  
+$ ./verify.out -i sample/a.txt -a sample/a.txt.greedy.attrs  
 >___________RESULT___________  
 >File : sample/a.txt  
 >Attractor File : sample/a.txt.greedy.attrs  
@@ -135,7 +139,7 @@ $ ./greedy.out -i sample/a.txt -t binary
 >_________________________________ 
 
 $ echo -n 1, 6, 10, 18 > sample/a.attrs.txt  
-$ ./verify.out -i sample/a.txt -a sample/a.attrs.txt  
+$ ./verify.out -i sample/a.txt -a sample/a.attrs.txt -t text
 >___________RESULT___________  
 >File : sample/a.txt  
 >Attractor File : sample/a.attrs.txt  
