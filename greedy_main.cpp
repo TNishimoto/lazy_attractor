@@ -5,16 +5,9 @@
 #include <set>
 #include "cmdline.h"
 #include "io.h"
-//#include <sdsl/suffix_arrays.hpp>
-//#include <sdsl/suffix_trees.hpp>
-//#include <sdsl/bit_vectors.hpp>
-
-//#include "sa_lcp.hpp"
-//#include "lcp_interval.hpp"
 #include "sa_lcp.hpp"
-#include "minimal_substrings.hpp"
+#include "minimal_substring_tree.hpp"
 #include "greedy_attractor.hpp"
-#include "mstree.hpp"
 
 using namespace std;
 using namespace sdsl;
@@ -72,30 +65,15 @@ int main(int argc, char *argv[])
     {
         mSubstrFile = inputFile + ".msub";
     }
-    string mSubstrParentFile = mSubstrFile + ".parents";
-    vector<LCPInterval> intervals;
-    vector<uint64_t> parents;
-    std::ifstream m_ifs(mSubstrFile);
-    std::ifstream p_ifs(mSubstrParentFile);
-    bool mSubstrFileExist = m_ifs.is_open();
-    bool mSubstrParentFileExist = p_ifs.is_open();
-    if (!mSubstrFileExist || !mSubstrParentFileExist)
-    {
-        MinimalSubstringsTreeConstruction::construct(text, intervals, parents);
-        IO::write(mSubstrFile, intervals);
-        IO::write(mSubstrParentFile, parents);
-    }
-    else
-    {
-        IO::load<LCPInterval>(mSubstrFile, intervals);
-        IO::load<uint64_t>(mSubstrParentFile, parents);
-    }
-    uint64_t mSubstrCount = intervals.size();
+    MinimalSubstringTree mstree;    
+    mstree.loadOrConstruct(text, mSubstrFile);
+
+    uint64_t mSubstrCount = mstree.nodes.size();
 
     vector<uint64_t> sa, attrs;
     auto start = std::chrono::system_clock::now();
     constructSA(text, sa);
-    GreedyAttractorAlgorithm::compute(sa, intervals, blockSize, attrs);
+    GreedyAttractorAlgorithm::compute(sa, mstree.nodes, blockSize, attrs);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 

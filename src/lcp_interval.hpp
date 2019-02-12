@@ -12,8 +12,6 @@
 using namespace sdsl;
 using namespace std;
 
-
-
 namespace stool
 {
 
@@ -29,19 +27,27 @@ class LCPInterval
     bool check(int_vector<> &text, vector<uint64_t> &sa);
     static void print(int_vector<> &text, vector<uint64_t> &sa, vector<LCPInterval> &intervals);
 
-    bool operator<( const LCPInterval& right ) const {
-        if(this->i == right.i){
-            if(this->j == right.j){
+    bool operator<(const LCPInterval &right) const
+    {
+        if (this->i == right.i)
+        {
+            if (this->j == right.j)
+            {
                 return this->lcp < right.lcp;
-            }else{
+            }
+            else
+            {
                 return this->j < right.j;
             }
-        }else{
+        }
+        else
+        {
             return this->i < right.i;
         }
     }
-    bool operator==(const LCPInterval& rhs) const {
-        const LCPInterval& lhs = *this;
+    bool operator==(const LCPInterval &rhs) const
+    {
+        const LCPInterval &lhs = *this;
         bool b = lhs.i == rhs.i && lhs.j == rhs.j && lhs.lcp == rhs.lcp;
         //if(!b) std::cout << "b" << std::endl;
         return b;
@@ -51,9 +57,12 @@ class LCPInterval
     return !(this->operator==(rhs));
     }
     */
-    bool containsPosition(vector<uint64_t> &sa, uint64_t pos) const {
-        for(uint64_t x=this->i;x<=this->j;x++){
-            if(sa[x] <= pos && pos <= sa[x]+this->lcp-1){
+    bool containsPosition(vector<uint64_t> &sa, uint64_t pos) const
+    {
+        for (uint64_t x = this->i; x <= this->j; x++)
+        {
+            if (sa[x] <= pos && pos <= sa[x] + this->lcp - 1)
+            {
                 return true;
             }
         }
@@ -63,18 +72,20 @@ class LCPInterval
 void createLCPIntervals(vector<uint64_t> &sa, vector<uint64_t> &lcp, vector<LCPInterval> &intervals);
 void createLCPIntervals(vector<uint64_t> &sa, vector<uint64_t> &lcp, vector<LCPInterval> &outputIntervals, vector<uint64_t> &outputParentVec);
 
+void createLCPIntervals(string &text, vector<LCPInterval> &outputIntervals, vector<uint64_t> &outputParentVec);
+
 //void createSuffixLinks(string &text, vector<uint64_t> &sa, vector<uint64_t> &lcp, vector<LCPInterval> &intervals, vector<uint64_t> &parentVec, vector<uint64_t> &outputSuffixLinks);
 
-}
+} // namespace stool
 
 namespace std
 {
-	template <>
-	struct hash<stool::LCPInterval>
-	{
-		std::size_t operator () ( stool::LCPInterval const &key ) const
-		{
-			return ((1234567891234ull) * key.i) ^ ((789000001234ull) * key.j) ^ key.lcp;
-		}
-	};
-}
+template <>
+struct hash<stool::LCPInterval>
+{
+    std::size_t operator()(stool::LCPInterval const &key) const
+    {
+        return ((1234567891234ull) * key.i) ^ ((789000001234ull) * key.j) ^ key.lcp;
+    }
+};
+} // namespace std

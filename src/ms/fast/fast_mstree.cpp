@@ -1,61 +1,7 @@
 
-#include <sdsl/suffix_arrays.hpp>
-#include <sdsl/suffix_trees.hpp>
-#include <sdsl/bit_vectors.hpp>
-#include "mstree.hpp"
+#include "fast_mstree.hpp"
 namespace stool{
-    void MinimalSubstringsTreeConstruction::computeMinimalSubstringsTreeWithoutIndexLeave(string &text, vector<LCPInterval> &outputIntervals, vector<uint64_t> &outputParents)
-    {
-        CST cst;
-        printf("  Done. Constructing CST... This may take 5 minutes or so...\n");
-        auto start = std::chrono::system_clock::now();
-        construct_im(cst, text, 1);
-        auto end = std::chrono::system_clock::now();
-        double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-        std::cout << "created cst[" << elapsed << "ms]" << std::endl;
-
-        std::stack<MSTStackInfo> stack;
-
-        auto rootID = cst.id(cst.root());
-        uint64_t parentIntervalID = UINT64_MAX;
-
-        stack.push(MSTStackInfo(rootID, 0, UINT64_MAX));
-
-        uint64_t nodeNum = cst.nodes();
-        uint64_t removeCount = 0;
-        while (stack.size() > 0)
-        {
-            MSTStackInfo top = stack.top();
-            stack.pop();
-
-            auto v = cst.inv_id(top.parent);
-            if (top.child < cst.degree(v))
-            {
-                auto child = cst.select_child(v, top.child + 1);
-                stack.push(MSTStackInfo(top.parent, top.child + 1, top.parentIntervalID));
-
-                bool b = CSTHelper::isMinimalSubstring(cst, text, top.parent, top.child);
-                uint64_t parentIntervalID = top.parentIntervalID;
-                if (b)
-                {
-                    //auto child = cst.select_child(v, top.child + 1);
-                    LCPInterval interval = LCPInterval(cst.lb(child) - 1, cst.rb(child) - 1, cst.depth(v) + 1);
-                    outputIntervals.push_back(interval);
-                    outputParents.push_back(top.parentIntervalID);
-                    parentIntervalID = outputIntervals.size() - 1;
-                }
-                stack.push(MSTStackInfo(cst.id(child), 0, parentIntervalID));
-            }
-            else
-            {
-                removeCount++;
-
-                if (removeCount % 1000 == 0)
-                    std::cout << "\r"
-                              << "computing LCP intervals... : [" << removeCount << "/" << nodeNum << "]" << std::flush;
-            }
-        }
-    }
+    
     bool MinimalSubstringsTreeConstruction::isMinimalSubstring(OfflineSuffixTree &st, uint64_t id)
     {
         if (st.intervals[id].i == 0)

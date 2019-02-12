@@ -13,9 +13,9 @@ set(CMAKE_CXX_FLAGS_RELEASE  "-O3 -DNDEBUG")
 
 INCLUDE_DIRECTORIES(src)
 INCLUDE_DIRECTORIES(src/lazy)
-
-FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp)
-
+INCLUDE_DIRECTORIES(src/ms)
+INCLUDE_DIRECTORIES(src/ms/fast)
+FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp src/ms/*.cpp src/ms/fast/*.cpp)
 #set(EXECUTABLE_OUTPUT_PATH ./bin)
 
 #SDSL lib and include directory are here

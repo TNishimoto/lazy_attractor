@@ -6,11 +6,11 @@
 #include "cmdline.h"
 #include "io.h"
 #include "sa_lcp.hpp"
-//#include "minimal_substrings.hpp"
-#include "mstree.hpp"
-#include "greedy_attractor.hpp"
-#include "lazy_attractor.hpp"
+//#include "mstree.hpp"
+//#include "greedy_attractor.hpp"
+#include "lazy_uftree.hpp"
 #include "print.hpp"
+#include "minimal_substring_tree.hpp"
 
 using namespace std;
 using namespace sdsl;
@@ -58,39 +58,20 @@ int main(int argc, char *argv[])
     }
     string text;
     IO::load(inputFile, text);
-    //text.push_back(0);
 
     // Loading Minimal Substrings
     if (mSubstrFile.size() == 0)
     {
         mSubstrFile = inputFile + ".msub";
     }
-    string mSubstrParentFile = mSubstrFile + ".parents";
-    vector<LCPInterval> intervals;
-    vector<uint64_t> parents;
-    std::ifstream m_ifs(mSubstrFile);
-    std::ifstream p_ifs(mSubstrParentFile);
-    bool mSubstrFileExist = m_ifs.is_open();
-    bool mSubstrParentFileExist = p_ifs.is_open();
-    if (!mSubstrFileExist || !mSubstrParentFileExist)
-    {
-        MinimalSubstringsTreeConstruction::construct(text, intervals, parents);
-        IO::write(mSubstrFile, intervals);
-        IO::write(mSubstrParentFile, parents);
-
-    }
-    else
-    {
-        IO::load<LCPInterval>(mSubstrFile, intervals);
-        IO::load<uint64_t>(mSubstrParentFile, parents);
-    }
-    uint64_t mSubstrCount = intervals.size();
-
+    MinimalSubstringTree mstree;    
+    mstree.loadOrConstruct(text, mSubstrFile);
+    uint64_t mSubstrCount = mstree.nodes.size();
     vector<uint64_t> attrs;
 
     auto start = std::chrono::system_clock::now();
-    LazyAttractorAlgorithm algo(text, intervals, parents);
-    algo.compute(attrs);
+    //LazyAttractorAlgorithm algo(text, intervals, parents);
+    LazyUFTree::computeAttractors(text, mstree.nodes, mstree.parents, attrs);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 

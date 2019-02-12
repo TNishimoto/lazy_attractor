@@ -22,10 +22,12 @@ class FMIndex
     vector<uint64_t> C;
     wt_gmr<> wt;
     FMIndex(string &text, vector<uint64_t> &sa)
-    {
+    {        
         constructBWT(text, sa, this->bwt);
         constructC(this->bwt, this->C);
         construct_im(wt, this->bwt);
+
+
     }
     uint64_t LF(uint64_t i)
     {
@@ -91,14 +93,15 @@ class FMIndex
     static void constructC(int_vector<> &text, vector<uint64_t> &output)
     {
         vector<uint64_t> tmp;
-        tmp.resize(UINT8_MAX, 0);
-        output.resize(UINT8_MAX, 0);
+        tmp.resize(((uint64_t)UINT8_MAX) + 1  , 0);
+        output.resize(((uint64_t)UINT8_MAX) + 1 , 0);
 
         for (uint64_t i = 0; i < text.size(); i++)
         {
             tmp[text[i]]++;
         }
-        for (uint64_t i = 1; i <= 255; i++)
+
+        for (uint64_t i = 1; i < output.size(); i++)
         {
             output[i] = output[i - 1] + tmp[i - 1];
         }

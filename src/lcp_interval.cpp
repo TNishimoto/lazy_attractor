@@ -1,5 +1,6 @@
 
 #include "lcp_interval.hpp"
+#include "sa_lcp.hpp"
 
 using namespace sdsl;
 using namespace std;
@@ -205,6 +206,33 @@ void createLCPIntervals(vector<uint64_t> &sa, vector<uint64_t> &lcp, vector<LCPI
     }
     std::cout << "[END]" << std::endl;
 }
+
+void createLCPIntervals(string &text, vector<LCPInterval> &outputIntervals, vector<uint64_t> &outputParentVec)
+{
+
+    for (uint64_t i = 0; i < text.size(); i++)
+    {
+        if (text[i] == 0)
+        {
+            std::cout << "the input text contains zero." << std::endl;
+            throw - 1;
+        }
+    }
+    text.push_back(0);
+
+    vector<uint64_t> sa, isa, lcp, parents;
+    stool::constructSA(text, sa, isa);
+    if (sa[0] != text.size() - 1)
+    {
+        std::cout << "the input text contains negative values." << std::endl;
+        throw - 1;
+    }
+    constructLCP(text, lcp, sa, isa);
+    createLCPIntervals(sa, lcp, outputIntervals, outputParentVec);
+
+    text.pop_back();
+}
+
 /*
 void createSuffixLinks(string &text, vector<uint64_t> &sa, vector<uint64_t> &lcp, vector<LCPInterval> &intervals, vector<uint64_t> &parentVec, vector<uint64_t> &outputSuffixLinks){
     

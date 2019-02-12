@@ -4,15 +4,16 @@
 #include <algorithm>
 #include <set>
 #include "cmdline.h"
-#include <sdsl/suffix_arrays.hpp>
-#include <sdsl/suffix_trees.hpp>
-#include <sdsl/bit_vectors.hpp>
+//#include <sdsl/suffix_arrays.hpp>
+//#include <sdsl/suffix_trees.hpp>
+//#include <sdsl/bit_vectors.hpp>
 
 #include "sa_lcp.hpp"
 #include "lcp_interval.hpp"
-#include "minimal_substrings.hpp"
-#include "mstree.hpp"
-#include "offline_suffix_tree.hpp"
+//#include "minimal_substrings.hpp"
+//#include "mstree.hpp"
+//#include "offline_suffix_tree.hpp"
+//#include "minimal_substring_tree.hpp"
 
 using namespace std;
 using namespace sdsl;
@@ -46,34 +47,10 @@ void computeMinimalSubstrings(string &text, vector<LCPInterval> &intervals)
             std::cout << cst.lb(p) << "/" << cst.rb(p) << std::endl;
             checker[id] = true;
         }
-        /*
-        if (x % 1000 == 0)
-            std::cout << "\r"
-                      << "computing LCP intervals... : [" << x << "/" << size << "]" << std::flush;
-                      */
     }
-    /*
-    for (uint64_t x = 0; x < size; x++)
-    {
-        auto p = cst.inv_id(x);
-        auto p2 = cst.lb(p);
-        auto p3 = cst.rb(p);
-        uint64_t degree = cst.degree(p);
-
-        for (uint64_t i = 0; i < degree; i++)
-        {
-            bool b = CSTHelper::isMinimalSubstring(cst, text, cst.id(p), i);
-            if (b)
-            {
-                auto child = cst.select_child(p, i + 1);
-                LCPInterval interval = LCPInterval(cst.lb(child) - 1, cst.rb(child) - 1, cst.depth(p) + 1);
-                intervals.push_back(interval);
-            }
-        }
-    }
-    */
     std::cout << "done." << std::endl;
 }
+/*
 void check(string &text, vector<LCPInterval> &intervals, vector<uint64_t> &parentVec)
 {
 
@@ -120,6 +97,7 @@ void check(string &text, vector<LCPInterval> &intervals, vector<uint64_t> &paren
     std::cout << std::endl;
     std::cout << (b ? "OK!" : "OUT") << std::endl;
 }
+*/
 int main(int argc, char *argv[])
 {
     
@@ -135,18 +113,76 @@ int main(int argc, char *argv[])
     IO::load(inputFile, text);
     vector<LCPInterval> intervals1, intervals2;
     vector<uint64_t> parents1, parents2;
+    /*
+    OnlineLCPInterval::testcompute(text, intervals1);
+    stool::createLCPIntervals(text, intervals2, parents2);
 
+    for(uint64_t i=0;i<intervals1.size();i++){
+        std::cout << intervals1[i].toString() << std::endl;
+    }
+    */
+
+    /*
+    std::cout << "@@@" << std::endl;
+    for(uint64_t i=0;i<intervals2.size();i++){
+        std::cout << intervals2[i].toString() << std::endl;
+    }
+
+    std::cout << intervals1.size() << "/" << intervals2.size() << std::endl;
+    */
+    
+    auto start1 = std::chrono::system_clock::now();
+    MinimalSubstringTree::construct(text, intervals1, parents1);
+    auto end1 = std::chrono::system_clock::now();
+    double elapsed1 = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start1).count();
+
+
+    auto start2 = std::chrono::system_clock::now();
+    MinimalSubstringsTreeConstruction::construct(text, intervals2, parents2);
+    //MinimalSubstringsConstruction::construct(text, intervals2, parents2);
+    auto end2 = std::chrono::system_clock::now();
+    double elapsed2 = std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count();
+    std::cout << elapsed1 << "/" << elapsed2 << std::endl;
+
+
+
+/*
+    std::cout << intervals1.size() << "/" << intervals2.size() << std::endl;
+    
+for(uint64_t i=0;i<intervals1.size();i++){
+        std::cout << intervals1[i].toString() << std::endl;
+    }
+    std::cout << "@@@" << std::endl;
+    for(uint64_t i=0;i<intervals2.size();i++){
+        std::cout << intervals2[i].toString() << std::endl;
+    }
+*/
+    for(uint64_t i=0;i<intervals1.size();i++){
+        if(intervals1[i].i != intervals2[i].i){
+            std::cout << "a" << std::endl;
+            throw -1;
+        }
+        if(intervals1[i].j != intervals2[i].j){
+            std::cout << "b" << std::endl;
+            throw -1;
+        }
+        if(intervals1[i].lcp != intervals2[i].lcp){
+            std::cout << "c" << std::endl;
+            throw -1;
+        }
+        if(parents1[i] != parents2[i]){
+            std::cout << "e" << std::endl;
+
+            throw -1;
+        }
+
+    }
+    /*
     auto start1 = std::chrono::system_clock::now();
     MinimalSubstringsConstruction::construct(text, intervals1, parents1);
     auto end1 = std::chrono::system_clock::now();
     double elapsed1 = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start1).count();
 
-    auto start2 = std::chrono::system_clock::now();
-    MinimalSubstringsTreeConstruction::construct(text, intervals2, parents2);
-    auto end2 = std::chrono::system_clock::now();
-    double elapsed2 = std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count();
-
-    std::cout << intervals1.size() << "/" << intervals2.size() << std::endl;
     std::cout << elapsed1 << "/" << elapsed2 << std::endl;
 
     for(uint64_t i=0;i<intervals1.size();i++){
@@ -164,6 +200,7 @@ int main(int argc, char *argv[])
         }
 
     }
+    */
 
     /*
     // Loading Minimal Substrings

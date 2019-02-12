@@ -7,8 +7,9 @@
 #include "io.h"
 #include "sa_lcp.hpp"
 #include "verification_attractor.hpp"
-#include "minimal_substrings.hpp"
-#include "mstree.hpp"
+//#include "minimal_substrings.hpp"
+//#include "mstree.hpp"
+#include "minimal_substring_tree.hpp"
 
 using namespace std;
 using namespace sdsl;
@@ -161,28 +162,14 @@ int main(int argc, char *argv[])
     {
         mSubstrFile = inputFile + ".msub";
     }
-    string mSubstrParentFile = mSubstrFile + ".parents";
-    vector<LCPInterval> intervals;
-    vector<uint64_t> parents;
+    MinimalSubstringTree mstree;    
+    mstree.loadOrConstruct(text, mSubstrFile);
 
-    std::ifstream m_ifs(mSubstrFile);
-    bool mSubstrFileExist = m_ifs.is_open();
-    if (!mSubstrFileExist)
-    {
-        MinimalSubstringsTreeConstruction::construct(text, intervals, parents);
-        IO::write(mSubstrFile, intervals);
-        IO::write(mSubstrParentFile, parents);
-    }
-    else
-    {
-        IO::load<LCPInterval>(mSubstrFile, intervals);
-        IO::load<uint64_t>(mSubstrParentFile, parents);
-    }
 
     vector<uint64_t> sa, isa, freeIntervalIndexes;
     auto start = std::chrono::system_clock::now();
     constructSA(text, sa, isa);
-    VerificationAttractor::getFreeIntervals(sa, isa, intervals, attractors, freeIntervalIndexes);
+    VerificationAttractor::getFreeIntervals(sa, isa, mstree.nodes, attractors, freeIntervalIndexes);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
@@ -194,7 +181,7 @@ int main(int argc, char *argv[])
         string log = "\"";
         for (uint64_t j = 0; j < freeIntervalIndexes.size(); j++)
         {
-            LCPInterval interval = intervals[freeIntervalIndexes[j]];
+            LCPInterval interval = mstree.nodes[freeIntervalIndexes[j]];
             string mstr = text.substr(sa[interval.i], interval.lcp);
             log.append(mstr);
             log.append("\" occs:");
@@ -229,7 +216,7 @@ int main(int argc, char *argv[])
     std::cout << "Attractor File : " << attractorFile << std::endl;
     std::cout << "The length of the input text : " << text.size() << std::endl;
     double charperms = (double)text.size() / elapsed;
-    std::cout << "The number of minimal substrings : " << intervals.size() << std::endl;
+    std::cout << "The number of minimal substrings : " << mstree.nodes.size() << std::endl;
     std::cout << "The number of attractors : " << attractors.size() << std::endl;
     std::cout << "Excecution time : " << ((uint64_t)elapsed) << "ms";
     std::cout << "[" << charperms << "chars/ms]" << std::endl;

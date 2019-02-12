@@ -13,11 +13,15 @@
 #include <sdsl/suffix_trees.hpp>
 #include <sdsl/bit_vectors.hpp>
 #include "lcp_interval.hpp"
+#include "online_lcp_interval.hpp"
+#include "online_ms_interval.hpp"
+#include "fast_mstree.hpp"
 
 using CST = cst_sct3<csa_bitcompressed<>>;
 //using CST = csa_wt<wt_int<rrr_vector<>>>;
 namespace stool
 {
+
 class CSTHelper
 {
   public:
@@ -234,6 +238,9 @@ class MinimalSubstringsConstruction
   public:
     static void computeMinimalSubstrings(string &text, vector<LCPInterval> &intervals);
     static void construct(string &text, vector<LCPInterval> &outputIntervals, vector<uint64_t> &outputParents);
+
+    static void computeMinimalSubstringsTreeWithoutIndexLeave(string &text, vector<LCPInterval> &outputIntervals, vector<uint64_t> &outputParents);
+    //static void construct2(string &text, vector<LCPInterval> &outputIntervals, vector<uint64_t> &outputParents);
 };
 
 } // namespace stool
