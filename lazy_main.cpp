@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        IO::write(outputFile, attrs);
+        IO::write(outputFile, attrs, UINT64_MAX-1);
     }
 
     std::cout << "\033[36m";

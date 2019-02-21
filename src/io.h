@@ -38,6 +38,13 @@ class IO
 		vec.resize(len);
 		stream.read((char *)&(vec)[0], len * sizeof(T));
 	}
+	static uint64_t getSize(std::ifstream &stream)
+	{
+		stream.seekg(0, ios::end);
+		uint64_t n = (unsigned long)stream.tellg();
+		stream.seekg(0, ios::beg);
+		return n;
+	}
 
 	template <typename T>
 	static void load(std::ifstream &stream, vector<T> &vec)
@@ -46,7 +53,7 @@ class IO
 	}
 	template <typename T>
 	static void load(string &filename, vector<T> &vec)
-	{		
+	{
 		std::cout << "Loading: " << filename << std::endl;
 
 		ifstream inputStream1;
@@ -55,6 +62,32 @@ class IO
 
 		inputStream1.close();
 		inputStream1.clear();
+	}
+	template <typename T>
+	static void load(string &filename, vector<T> &vec, uint64_t hash)
+	{
+		std::cout << "Loading: " << filename << std::endl;
+
+		ifstream inputStream;
+		inputStream.open(filename, ios::binary);
+		uint64_t n = getSize(inputStream);
+		uint64_t hashSize = sizeof(uint64_t);
+		uint64_t dataSize = (n - hashSize) / sizeof(T);
+		uint64_t loadhash;
+		inputStream.read((char *)(&loadhash), sizeof(uint64_t));
+		if (loadhash != hash)
+		{
+			std::cout << "\033[31m";
+			std::cout << "Error: " << filename << " has an invalid hash.";
+			std::cout << "\033[39m" << std::endl;
+			std::exit(EXIT_FAILURE);
+		}
+
+		vec.resize(dataSize);
+		inputStream.read((char *)&(vec)[0], dataSize * sizeof(T));
+
+		inputStream.close();
+		inputStream.clear();
 	}
 
 	template <typename T>
@@ -82,6 +115,18 @@ class IO
 		return true;
 	}
 	template <typename T>
+	static bool write(ofstream &out, vector<T> &text, uint64_t hash)
+	{
+		if (!out)
+			return 1;
+
+		out.write(reinterpret_cast<const char *>(&hash), sizeof(uint64_t));
+		out.write(reinterpret_cast<const char *>(&text[0]), text.size() * sizeof(T));
+
+		return true;
+	}
+
+	template <typename T>
 	static bool write(string &filename, vector<T> &text)
 	{
 		std::cout << "Writing: " << filename << std::endl;
@@ -90,6 +135,16 @@ class IO
 		out.close();
 		return true;
 	}
+	template <typename T>
+	static bool write(string &filename, vector<T> &text, uint64_t hash)
+	{
+		std::cout << "Writing: " << filename << std::endl;
+		ofstream out(filename, ios::out | ios::binary);
+		write<T>(out, text, hash);
+		out.close();
+		return true;
+	}
+
 	static bool load(std::ifstream &file, string &output)
 	{
 
@@ -117,6 +172,7 @@ class IO
 		inputStream.open(filename, ios::binary);
 		load(inputStream, output);
 	}
+
 	//static bool write(string &filename, vector<int32_t> &text);
 	static bool write(ofstream &os, std::string &text)
 	{

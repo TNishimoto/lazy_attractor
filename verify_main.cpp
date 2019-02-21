@@ -15,6 +15,32 @@ using namespace std;
 using namespace sdsl;
 using namespace stool;
 
+bool checkAttractorTextFile(string &text)
+{
+    std::unordered_set<char> okSet;
+    okSet.insert('0');
+    okSet.insert('1');
+    okSet.insert('2');
+    okSet.insert('3');
+    okSet.insert('4');
+    okSet.insert('5');
+    okSet.insert('6');
+    okSet.insert('7');
+    okSet.insert('8');
+    okSet.insert('9');
+    okSet.insert(' ');
+    okSet.insert(',');
+    okSet.insert('\n');
+    okSet.insert('\r');
+    for (auto &it : text)
+    {
+        if (okSet.find(it) == okSet.end())
+        {
+            return false;
+        }
+    }
+    return true;
+}
 template <typename List>
 void split(const std::string &s, const std::string &delim, List &result)
 {
@@ -55,6 +81,15 @@ void loadAttractorFile(string attractorFile, string type, vector<uint64_t> &attr
     {
         string text;
         IO::load(attractorFile, text);
+        bool b = checkAttractorTextFile(text);
+        if (!b)
+        {
+            std::cout << "\033[31m";
+            std::cout << "Error: the text file for attractors allow to contain 0-9 characters, spaces, and commas.";
+            std::cout << "\033[39m" << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+
         vector<string> strs;
         split(text, ",", strs);
         for (auto &character : strs)
@@ -65,7 +100,7 @@ void loadAttractorFile(string attractorFile, string type, vector<uint64_t> &attr
     }
     else
     {
-        IO::load<uint64_t>(attractorFile, attractors);
+        IO::load<uint64_t>(attractorFile, attractors, UINT64_MAX-1);
     }
     sort(attractors.begin(), attractors.end());
 }
@@ -162,10 +197,9 @@ int main(int argc, char *argv[])
     {
         mSubstrFile = inputFile + ".msub";
     }
-    MinimalSubstringTree mstree;    
+    MinimalSubstringTree mstree;
     //mstree.loadOrConstruct(text, mSubstrFile);
     mstree.loadOrConstruct(mSubstrFile, &text);
-
 
     vector<uint64_t> sa, isa, freeIntervalIndexes;
     auto start = std::chrono::system_clock::now();
