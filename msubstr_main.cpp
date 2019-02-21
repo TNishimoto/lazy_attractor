@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
             outputFile = inputFile + ".msub";
         }
     }
-    string parentFile = outputFile + ".parents";
+    //string parentFile = outputFile + ".parents";
 
 
     // Loading Input Text
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        mstree.write(outputFile);
+        mstree.write(outputFile, text);
         //IO::write(outputFile, intervals);
         //IO::write(parentFile, parents);
 
@@ -139,8 +139,7 @@ int main(int argc, char *argv[])
     std::cout << "\033[36m";
     std::cout << "=============RESULT===============" << std::endl;
     std::cout << "File : " << inputFile << std::endl;
-    std::cout << "Output1 : " << outputFile << std::endl;
-    std::cout << "Output2 : " << parentFile << std::endl;
+    std::cout << "Output MSUB file : " << outputFile << std::endl;
     std::cout << "The length of the input text : " << text.size() << std::endl;
     double charperms = (double)text.size() / elapsed;
     std::cout << "The number of minimal substrings : " << mstree.nodes.size() << std::endl;

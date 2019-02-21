@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
         mSubstrFile = inputFile + ".msub";
     }
     MinimalSubstringTree mstree;    
-    mstree.loadOrConstruct(text, mSubstrFile);
+    mstree.loadOrConstruct(mSubstrFile, &text);
 
     uint64_t mSubstrCount = mstree.nodes.size();
 

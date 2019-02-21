@@ -29,6 +29,7 @@ public:
   {
     MinimalSubstringTree::construct(text, this->nodes, this->parents);
   }
+  /*
   void load(string filepath)
   {
     string filepath2 = filepath + ".parents";
@@ -42,25 +43,10 @@ public:
     IO::write(filepath, nodes);
     IO::write(filepath2, parents);
   }
-  void loadOrConstruct(string &text, string filepath)
-  {
-    string filepath2 = filepath + ".parents";
-    std::ifstream m_ifs(filepath);
-    std::ifstream p_ifs(filepath2);
-    bool mSubstrFileExist = m_ifs.is_open();
-    bool mSubstrParentFileExist = p_ifs.is_open();
-    if (!mSubstrFileExist || !mSubstrParentFileExist)
-    {
-      MinimalSubstringTree::construct(text, this->nodes, this->parents);
-      IO::write(filepath, this->nodes);
-      IO::write(filepath2, this->parents);
-    }
-    else
-    {
-      IO::load<LCPInterval>(filepath, this->nodes);
-      IO::load<uint64_t>(filepath2, this->parents);
-    }
-  }
+  */
+  void write(string filepath, string &text);
+  void load(string filepath, string &text);
+  void loadOrConstruct(string filepath, string *text);
 };
 
 } // namespace stool

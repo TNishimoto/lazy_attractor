@@ -163,7 +163,8 @@ int main(int argc, char *argv[])
         mSubstrFile = inputFile + ".msub";
     }
     MinimalSubstringTree mstree;    
-    mstree.loadOrConstruct(text, mSubstrFile);
+    //mstree.loadOrConstruct(text, mSubstrFile);
+    mstree.loadOrConstruct(mSubstrFile, &text);
 
 
     vector<uint64_t> sa, isa, freeIntervalIndexes;

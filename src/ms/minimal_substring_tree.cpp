@@ -8,6 +8,78 @@
 #include "minimal_substring_tree.hpp"
 namespace stool
 {
+void MinimalSubstringTree::write(string filepath, string &text)
+{
+
+    ofstream out(filepath, ios::out | ios::binary);
+    //variables.serialize(out);
+    std::hash<std::string> hash_fn;
+    uint64_t hash = hash_fn(text);
+    uint64_t len = text.size();
+    out.write(reinterpret_cast<const char *>(&hash), sizeof(uint64_t));
+    out.write(reinterpret_cast<const char *>(&len), sizeof(uint64_t));
+    stool::IO::write(out, nodes, false);
+    stool::IO::write(out, parents, false);
+
+    out.close();
+    //this->printInfo();
+}
+void MinimalSubstringTree::load(string filepath, string &text)
+{
+    std::ifstream m_ifs(filepath);
+    bool mSubstrFileExist = m_ifs.is_open();
+    if (!mSubstrFileExist)
+    {
+        std::cout << "\033[31m";
+        std::cout << "Error: " << filepath << "does not exist." << std::endl;
+        std::cout << "\033[39m" << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+
+    ifstream inputStream;
+    inputStream.open(filepath, ios::binary);
+
+    std::hash<std::string> hash_fn;
+    uint64_t hash = hash_fn(text);
+    uint64_t len = text.size();
+
+    uint64_t load_hash;
+    uint64_t load_len;
+
+    inputStream.read((char *)&load_hash, sizeof(uint64_t));
+    inputStream.read((char *)&load_len, sizeof(uint64_t));
+    stool::IO::load(inputStream, nodes, false);
+    stool::IO::load(inputStream, parents, false);
+
+    inputStream.close();
+    if (load_hash != hash || load_len != len)
+    {
+        std::cout << "\033[31m";
+        std::cout << "Error: " << filepath << " is not the msub file of the input file." << std::endl;
+        std::cout << "Please construct the msub file by msubstr.out.";
+        std::cout << "\033[39m" << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+    //this->printInfo();
+}
+void MinimalSubstringTree::loadOrConstruct(string filepath, string *text)
+{
+    std::ifstream m_ifs(filepath);
+    bool mSubstrFileExist = m_ifs.is_open();
+    if (!mSubstrFileExist)
+    {
+        MinimalSubstringTree::construct(*text, this->nodes, this->parents);
+        this->write(filepath, *text);
+        //IO::write(filepath, this->nodes);
+        //IO::write(filepath2, this->parents);
+    }
+    else
+    {
+        this->load(filepath, *text);
+        //IO::load<LCPInterval>(filepath, this->nodes);
+        //IO::load<uint64_t>(filepath2, this->parents);
+    }
+}
 void MinimalSubstringTree::constructMSIntervalParents(vector<LCPInterval> &intervals, vector<uint64_t> &outputParents)
 {
     stack<uint64_t> stack;
@@ -66,7 +138,7 @@ void MinimalSubstringTree::construct(string &text, vector<LCPInterval> &outputIn
 
     std::cout << "Constructing FM-Index..." << std::endl;
     FMIndex fmi(text, sa);
-    std::cout << "Computing minimal substrings..." << std::flush;    
+    std::cout << "Computing minimal substrings..." << std::flush;
     OnlineMSInterval::construct(sa, lcp, fmi, outputIntervals);
 
     MinimalSubstringTree::constructMSIntervalParents(outputIntervals, outputParents);
