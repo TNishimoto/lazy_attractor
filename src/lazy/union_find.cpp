@@ -55,7 +55,7 @@ UnionFind::GINDEX UnionFind::unionOperation(UnionFind::GINDEX i, UnionFind::GIND
     }
     return this->find(i);
 }
-string UnionFind::toString()
+std::string UnionFind::toString()
 {
     return stool::Printer::toString(this->array, 2);
 }

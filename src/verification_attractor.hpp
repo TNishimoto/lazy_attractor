@@ -7,7 +7,7 @@
 #include "lcp_interval.hpp"
 #include "sa_lcp.hpp"
 #include <sdsl/rmq_support.hpp> // include header for range minimum queries
-using namespace std;
+//using namespace std;
 
 using namespace sdsl;
 namespace stool
@@ -16,10 +16,10 @@ namespace stool
 class VerificationAttractor
 {
   public:
-    static void getFreeIntervals(vector<uint64_t> &sa, vector<uint64_t> &isa, vector<LCPInterval> &intervals, vector<uint64_t> &attractors, vector<uint64_t> &outputFreeIntervalIndexes)
+    static void getFreeIntervals(std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval> &intervals, std::vector<uint64_t> &attractors, std::vector<uint64_t> &outputFreeIntervalIndexes)
     {
         uint64_t n = sa.size();
-        //vector<uint64_t> isa, nearArr;
+        //std::vector<uint64_t> isa, nearArr;
         int_vector<> v(n, INT64_MAX);
         /*
         isa.resize(n);

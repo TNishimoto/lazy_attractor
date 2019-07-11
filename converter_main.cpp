@@ -8,7 +8,7 @@
 #include "sa_lcp.hpp"
 #include "verification_attractor.hpp"
 
-using namespace std;
+//using namespace std;
 using namespace sdsl;
 using namespace stool;
 
@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
     p.add<string>("output_file", 'o', "output file name (the default output name is 'input_file.ext')", false, "");
 
     p.parse_check(argc, argv);
-    string inputFile = p.get<string>("input_file");
-    string outputFile = p.get<string>("output_file");
+    std::string inputFile = p.get<string>("input_file");
+    std::string outputFile = p.get<string>("output_file");
 
     if (outputFile.size() == 0)
     {
@@ -39,10 +39,10 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    vector<std::pair<uint64_t,uint64_t>> pairs;
+    std::vector<std::pair<uint64_t,uint64_t>> pairs;
     IO::load(inputFile, pairs);
 
-    vector<uint64_t> attrs;
+    std::vector<uint64_t> attrs;
 
     uint64_t x=0;
     for(auto& p : pairs){

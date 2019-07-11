@@ -10,7 +10,7 @@
 #include <sdsl/suffix_trees.hpp>
 
 using namespace sdsl;
-using namespace std;
+//using namespace std;
 
 namespace stool
 {
@@ -23,9 +23,9 @@ class LCPInterval
     uint64_t lcp;
     LCPInterval();
     LCPInterval(uint64_t _i, uint64_t _j, uint64_t _lcp);
-    string toString();
-    bool check(int_vector<> &text, vector<uint64_t> &sa);
-    static void print(int_vector<> &text, vector<uint64_t> &sa, vector<LCPInterval> &intervals);
+    std::string toString();
+    bool check(int_vector<> &text, std::vector<uint64_t> &sa);
+    static void print(int_vector<> &text, std::vector<uint64_t> &sa, std::vector<LCPInterval> &intervals);
 
     bool operator<(const LCPInterval &right) const
     {
@@ -57,7 +57,7 @@ class LCPInterval
     return !(this->operator==(rhs));
     }
     */
-    bool containsPosition(vector<uint64_t> &sa, uint64_t pos) const
+    bool containsPosition(std::vector<uint64_t> &sa, uint64_t pos) const
     {
         for (uint64_t x = this->i; x <= this->j; x++)
         {
@@ -69,10 +69,10 @@ class LCPInterval
         return false;
     }
 };
-void createLCPIntervals(vector<uint64_t> &sa, vector<uint64_t> &lcp, vector<LCPInterval> &intervals);
-void createLCPIntervals(vector<uint64_t> &sa, vector<uint64_t> &lcp, vector<LCPInterval> &outputIntervals, vector<uint64_t> &outputParentVec);
+void createLCPIntervals(std::vector<uint64_t> &sa, std::vector<uint64_t> &lcp, std::vector<LCPInterval> &intervals);
+void createLCPIntervals(std::vector<uint64_t> &sa, std::vector<uint64_t> &lcp, std::vector<LCPInterval> &outputIntervals, std::vector<uint64_t> &outputParentVec);
 
-void createLCPIntervals(string &text, vector<LCPInterval> &outputIntervals, vector<uint64_t> &outputParentVec);
+void createLCPIntervals(std::string &text, std::vector<LCPInterval> &outputIntervals, std::vector<uint64_t> &outputParentVec);
 
 //void createSuffixLinks(string &text, vector<uint64_t> &sa, vector<uint64_t> &lcp, vector<LCPInterval> &intervals, vector<uint64_t> &parentVec, vector<uint64_t> &outputSuffixLinks);
 

@@ -9,7 +9,7 @@
 #include <sdsl/wavelet_trees.hpp>
 
 #include "sa_lcp.hpp"
-using namespace std;
+//using namespace std;
 using namespace sdsl;
 
 namespace stool
@@ -19,9 +19,9 @@ class FMIndex
 {
   public:
     int_vector<> bwt;
-    vector<uint64_t> C;
+    std::vector<uint64_t> C;
     wt_gmr<> wt;
-    FMIndex(string &text, vector<uint64_t> &sa)
+    FMIndex(std::string &text, std::vector<uint64_t> &sa)
     {        
         constructBWT(text, sa, this->bwt);
         constructC(this->bwt, this->C);
@@ -72,7 +72,7 @@ class FMIndex
         return true;
     }
 
-    static void constructBWT(string &text, vector<uint64_t> &sa, int_vector<> &outputBWT)
+    static void constructBWT(std::string &text, std::vector<uint64_t> &sa, int_vector<> &outputBWT)
     {
         //vector<uint64_t> sa;
         //stool::constructSA(text, sa);
@@ -90,9 +90,9 @@ class FMIndex
             }
         }
     }
-    static void constructC(int_vector<> &text, vector<uint64_t> &output)
+    static void constructC(int_vector<> &text, std::vector<uint64_t> &output)
     {
-        vector<uint64_t> tmp;
+        std::vector<uint64_t> tmp;
         tmp.resize(((uint64_t)UINT8_MAX) + 1  , 0);
         output.resize(((uint64_t)UINT8_MAX) + 1 , 0);
 

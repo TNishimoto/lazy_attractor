@@ -1,7 +1,7 @@
 #pragma once
 #include "io.h"
 #include <stack>
-using namespace std;
+//using namespace std;
 
 namespace stool{
 
@@ -11,10 +11,10 @@ https://en.wikipedia.org/wiki/Disjoint-set_data_structure
 */
 class UnionFind{
     private:
-    vector<uint64_t> findTmpVec;
+    std::vector<uint64_t> findTmpVec;
     //std::stack<std::pair<uint64_t, uint64_t>> stack;
-    vector<uint64_t> array;
-    vector<uint8_t> rank_array;
+    std::vector<uint64_t> array;
+    std::vector<uint8_t> rank_array;
 
     public:
     using GINDEX = uint64_t;
@@ -40,7 +40,7 @@ class UnionFind{
     }
     // Get the data structure when we used the last unionOperationWithBackup operation.
     //void back();
-    string toString();
+    std::string toString();
 
 };
 }

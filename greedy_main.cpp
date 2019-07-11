@@ -9,7 +9,7 @@
 #include "minimal_substring_tree.hpp"
 #include "greedy_attractor.hpp"
 
-using namespace std;
+//using namespace std;
 using namespace sdsl;
 using namespace stool;
 
@@ -22,17 +22,17 @@ int main(int argc, char *argv[])
 //std::cout << "\033[30m" << std::endl;
 #endif
     cmdline::parser p;
-    p.add<string>("input_file", 'i', "Input text file name", true);
-    p.add<string>("output_file", 'o', "(option) Output attractor file name(the default output name is 'input_file.greedy.attrs')", false, "");
-    p.add<string>("output_type", 't', "(option) Output mode(binary or text)", false, "binary");
-    p.add<string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
+    p.add<std::string>("input_file", 'i', "Input text file name", true);
+    p.add<std::string>("output_file", 'o', "(option) Output attractor file name(the default output name is 'input_file.greedy.attrs')", false, "");
+    p.add<std::string>("output_type", 't', "(option) Output mode(binary or text)", false, "binary");
+    p.add<std::string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
     p.add<uint>("block_size", 'b', "(option) block size", false, 1000);
 
     p.parse_check(argc, argv);
-    string inputFile = p.get<string>("input_file");
-    string mSubstrFile = p.get<string>("msubstr_file");
-    string outputFile = p.get<string>("output_file");
-    string outputMode = p.get<string>("output_type");
+    std::string inputFile = p.get<std::string>("input_file");
+    std::string mSubstrFile = p.get<std::string>("msubstr_file");
+    std::string outputFile = p.get<std::string>("output_file");
+    std::string outputMode = p.get<std::string>("output_type");
     uint blockSize = p.get<uint>("block_size");
     if (blockSize < 5)
         blockSize = 5;
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         std::cout << inputFile << " cannot open." << std::endl;
         return -1;
     }
-    string text;
+    std::string text;
     IO::load(inputFile, text);
 
     // Loading Minimal Substrings
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 
     uint64_t mSubstrCount = mstree.nodes.size();
 
-    vector<uint64_t> sa, attrs;
+    std::vector<uint64_t> sa, attrs;
     auto start = std::chrono::system_clock::now();
     constructSA(text, sa);
     GreedyAttractorAlgorithm::compute(sa, mstree.nodes, blockSize, attrs);
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
     if (outputMode == "text")
     {
-        string otext = "";
+        std::string otext = "";
         for (uint64_t i = 0; i < attrs.size(); i++)
         {
             otext.append(std::to_string(attrs[i]));

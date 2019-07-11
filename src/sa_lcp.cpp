@@ -9,7 +9,7 @@ namespace stool
 uint64_t intervalTotalCount = 0;
 uint64_t rlcpCounter = 0;
 
-void constructSA(string &text, vector<uint64_t> &sa)
+void constructSA(std::string &text, std::vector<uint64_t> &sa)
 {
     
     std::cout << "Constructing Suffix Array..." << std::flush;
@@ -27,7 +27,7 @@ void constructSA(string &text, vector<uint64_t> &sa)
     
     std::cout << "[END]" << std::endl;
 }
-void constructISA(string &text, vector<uint64_t> &sa, vector<uint64_t> &isa)
+void constructISA(std::string &text, std::vector<uint64_t> &sa, std::vector<uint64_t> &isa)
 {
     uint64_t n = text.size();
     isa.resize(n);
@@ -37,7 +37,7 @@ void constructISA(string &text, vector<uint64_t> &sa, vector<uint64_t> &isa)
         isa[sa[i]] = i;
     }
 }
-void constructISA(vector<uint64_t> &sa, vector<uint64_t> &outputISA){
+void constructISA(std::vector<uint64_t> &sa, std::vector<uint64_t> &outputISA){
 
     std::cout << "Constructing Inverse Suffix Array..." << std::flush;
 
@@ -52,7 +52,7 @@ void constructISA(vector<uint64_t> &sa, vector<uint64_t> &outputISA){
 
 }
 
-void constructSA(string &text, vector<uint64_t> &sa, vector<uint64_t> &isa)
+void constructSA(std::string &text, std::vector<uint64_t> &sa, std::vector<uint64_t> &isa)
 {
     
     std::cout << "Constructing Suffix Array..." << std::flush;
@@ -73,7 +73,7 @@ void constructSA(string &text, vector<uint64_t> &sa, vector<uint64_t> &isa)
     
 
 }
-void constructLCP(string &text, vector<uint64_t> &lcp, vector<uint64_t> &sa, vector<uint64_t> &isa)
+void constructLCP(std::string &text, std::vector<uint64_t> &lcp, std::vector<uint64_t> &sa, std::vector<uint64_t> &isa)
 {
     lcp.resize(text.size(), 0);
     uint64_t n = text.size();
@@ -105,7 +105,7 @@ void constructLCP(string &text, vector<uint64_t> &lcp, vector<uint64_t> &sa, vec
 }
 namespace StringFunctions
 {
-uint64_t LCE(string &text, uint64_t i, uint64_t j)
+uint64_t LCE(std::string &text, uint64_t i, uint64_t j)
 {
     if (i > j)
         return LCE(text, j, i);
@@ -120,9 +120,9 @@ uint64_t LCE(string &text, uint64_t i, uint64_t j)
     }
     return x;
 }
-void reverse(string &text)
+void reverse(std::string &text)
 {
-    string tmp = text;
+    std::string tmp = text;
     for (uint64_t i = 0; i < text.size(); i++)
     {
         text[i] = tmp[text.size() - 1 - i];

@@ -7,7 +7,7 @@
 #include <stack>
 
 using namespace sdsl;
-using namespace std;
+//using namespace std;
 
 namespace stool
 {
@@ -35,19 +35,19 @@ class OnlineMSInterval
   void insert(LCPInterval &interval);
   //void collectChars(SpecializedLCPInterval &interval);
   void findMSInterval(uint64_t i, std::unordered_set<uint8_t> &excludedChars);
-  void getExcludedChars(SpecializedLCPInterval &interval, vector<uint64_t> &children, std::unordered_set<uint8_t> &outputExcludedChars);
-  void getChildren(SpecializedLCPInterval &interval, vector<uint64_t> &outputVec);
-  void mergeMapInfo(SpecializedLCPInterval &interval, vector<uint64_t> &children);
+  void getExcludedChars(SpecializedLCPInterval &interval, std::vector<uint64_t> &children, std::unordered_set<uint8_t> &outputExcludedChars);
+  void getChildren(SpecializedLCPInterval &interval, std::vector<uint64_t> &outputVec);
+  void mergeMapInfo(SpecializedLCPInterval &interval, std::vector<uint64_t> &children);
 
   void addLCPInterval(SpecializedLCPInterval &interval);
-  void constructMSIntervals(vector<LCPInterval> &outputIntervals);
+  void constructMSIntervals(std::vector<LCPInterval> &outputIntervals);
 
 public:
   OnlineMSInterval(FMIndex &_fmi) : fmi(_fmi)
   {
   }
 
-  static void construct(vector<uint64_t> &sa, vector<uint64_t> &lcp, FMIndex &fmi, vector<LCPInterval> &outputIntervals)
+  static void construct(std::vector<uint64_t> &sa, std::vector<uint64_t> &lcp, FMIndex &fmi, std::vector<LCPInterval> &outputIntervals)
   {
     OnlineLCPInterval oli = OnlineLCPInterval(sa, lcp);
     OnlineMSInterval omi = OnlineMSInterval(fmi);

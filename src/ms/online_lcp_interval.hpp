@@ -5,7 +5,7 @@
 #include <stack>
 
 using namespace sdsl;
-using namespace std;
+//using namespace std;
 
 namespace stool
 {
@@ -25,9 +25,9 @@ public:
   {
   }
 
-  string toString()
+  std::string toString()
   {
-    return "[" + to_string(i) + ", " + to_string(j) + ", " + to_string(parentEdgeLength) + "]";
+    return "[" + std::to_string(i) + ", " + std::to_string(j) + ", " + std::to_string(parentEdgeLength) + "]";
   }
 };
 
@@ -37,8 +37,8 @@ class OnlineLCPInterval
   std::stack<LCPInterval> stack;
   std::stack<std::pair<uint64_t, uint64_t>> stack2;
 
-  vector<uint64_t> &sa;
-  vector<uint64_t> &lcp;
+  std::vector<uint64_t> &sa;
+  std::vector<uint64_t> &lcp;
   int64_t n = 0;
   LCPInterval oFstInterval;
   std::queue<LCPInterval> queue;
@@ -48,10 +48,10 @@ class OnlineLCPInterval
   bool next();
   bool nextLCPIntervalWithParent();
   bool nextLCPInterval();
-  void testcompute(string &text, vector<LCPInterval> &outputIntervals);
+  void testcompute(std::string &text, std::vector<LCPInterval> &outputIntervals);
 public:
   uint64_t counter_i = 0;
-  OnlineLCPInterval(vector<uint64_t> &_sa, vector<uint64_t> &_lcp);
+  OnlineLCPInterval(std::vector<uint64_t> &_sa, std::vector<uint64_t> &_lcp);
   // Return the next LCP interval of the LCP interval returned immediately before, and true.
   // If the interval returned immediately before is the last interval, it returns false.
   bool takeFront(SpecializedLCPInterval &outputInterval);

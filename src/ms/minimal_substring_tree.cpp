@@ -8,10 +8,10 @@
 #include "minimal_substring_tree.hpp"
 namespace stool
 {
-void MinimalSubstringTree::write(string filepath, string &text)
+void MinimalSubstringTree::write(std::string filepath, std::string &text)
 {
 
-    ofstream out(filepath, ios::out | ios::binary);
+    std::ofstream out(filepath, std::ios::out | std::ios::binary);
     //variables.serialize(out);
     std::hash<std::string> hash_fn;
     uint64_t hash = hash_fn(text);
@@ -24,7 +24,7 @@ void MinimalSubstringTree::write(string filepath, string &text)
     out.close();
     //this->printInfo();
 }
-void MinimalSubstringTree::load(string filepath, string &text)
+void MinimalSubstringTree::load(std::string filepath, std::string &text)
 {
     std::ifstream m_ifs(filepath);
     bool mSubstrFileExist = m_ifs.is_open();
@@ -36,8 +36,8 @@ void MinimalSubstringTree::load(string filepath, string &text)
         std::exit(EXIT_FAILURE);
     }
 
-    ifstream inputStream;
-    inputStream.open(filepath, ios::binary);
+    std::ifstream inputStream;
+    inputStream.open(filepath, std::ios::binary);
 
     std::hash<std::string> hash_fn;
     uint64_t hash = hash_fn(text);
@@ -62,7 +62,7 @@ void MinimalSubstringTree::load(string filepath, string &text)
     }
     //this->printInfo();
 }
-void MinimalSubstringTree::loadOrConstruct(string filepath, string *text)
+void MinimalSubstringTree::loadOrConstruct(std::string filepath, std::string *text)
 {
     std::ifstream m_ifs(filepath);
     bool mSubstrFileExist = m_ifs.is_open();
@@ -80,9 +80,9 @@ void MinimalSubstringTree::loadOrConstruct(string filepath, string *text)
         //IO::load<uint64_t>(filepath2, this->parents);
     }
 }
-void MinimalSubstringTree::constructMSIntervalParents(vector<LCPInterval> &intervals, vector<uint64_t> &outputParents)
+void MinimalSubstringTree::constructMSIntervalParents(std::vector<LCPInterval> &intervals, std::vector<uint64_t> &outputParents)
 {
-    stack<uint64_t> stack;
+    std::stack<uint64_t> stack;
     outputParents.resize(intervals.size(), UINT64_MAX);
     for (uint64_t i = 0; i < intervals.size(); i++)
     {
@@ -113,7 +113,7 @@ void MinimalSubstringTree::constructMSIntervalParents(vector<LCPInterval> &inter
     std::cout << "[END]" << std::endl;
 }
 
-void MinimalSubstringTree::construct(string &text, vector<LCPInterval> &outputIntervals, vector<uint64_t> &outputParents)
+void MinimalSubstringTree::construct(std::string &text, std::vector<LCPInterval> &outputIntervals, std::vector<uint64_t> &outputParents)
 {
     for (uint64_t i = 0; i < text.size(); i++)
     {
@@ -125,7 +125,7 @@ void MinimalSubstringTree::construct(string &text, vector<LCPInterval> &outputIn
     }
     text.push_back(0);
 
-    vector<uint64_t> sa, isa, lcp, parents;
+    std::vector<uint64_t> sa, isa, lcp, parents;
     stool::constructSA(text, sa, isa);
     if (sa[0] != text.size() - 1)
     {
