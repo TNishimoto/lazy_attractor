@@ -6,6 +6,7 @@ using namespace std;
 namespace stool
 {
 
+// interval : the interval of cV, where c is a character and V is the string by a node on the suffix tree.
 void OnlineMSInterval::insert(LCPInterval &interval)
 {
   if (interval.i != 0)
@@ -22,6 +23,7 @@ void OnlineMSInterval::insert(LCPInterval &interval)
     }
     else
     {
+      // not excecuted.
       if (interval.lcp < omap2[interval.j])
       {
         omap2[interval.j] = interval.lcp;
@@ -82,10 +84,27 @@ void OnlineMSInterval::addLCPInterval(SpecializedLCPInterval &interval)
 void OnlineMSInterval::findMSInterval(uint64_t i, std::unordered_set<uint8_t> &excludedChars)
 {
   auto &info = this->charMap[i];
+    /* 
+        std::cout << info.interval.toString() << std::endl;
+        for (uint8_t c : excludedChars)
+        {
+          std::cout << (char) c << ",";
+        }
+        std::cout << std::endl;
+        for (uint8_t c : info.set)
+        {
+          std::cout << (char) c << ",";
+        }
+        std::cout << std::endl;
+        */
+
+
   if (info.set.size() != 1)
   {
     for (uint8_t it : info.set)
     {
+
+
       if (excludedChars.find(it) == excludedChars.end())
       {
         //this->debug++;

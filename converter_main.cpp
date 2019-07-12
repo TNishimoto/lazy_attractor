@@ -8,7 +8,7 @@
 #include "sa_lcp.hpp"
 #include "verification_attractor.hpp"
 
-//using namespace std;
+using namespace std;
 using namespace sdsl;
 using namespace stool;
 

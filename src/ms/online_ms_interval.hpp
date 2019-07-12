@@ -16,6 +16,7 @@ class SCharMapInfo
 {
 public:
   //uint64_t j;
+  //The previous characters in the interval instance, i.e., Chars(bwt[i..j]), where interval = [i..j].
   std::unordered_set<uint8_t> set;
   SpecializedLCPInterval interval;
   SCharMapInfo()
@@ -36,6 +37,7 @@ class OnlineMSInterval
   //void collectChars(SpecializedLCPInterval &interval);
   void findMSInterval(uint64_t i, std::unordered_set<uint8_t> &excludedChars);
   void getExcludedChars(SpecializedLCPInterval &interval, std::vector<uint64_t> &children, std::unordered_set<uint8_t> &outputExcludedChars);
+  // Get the interval of each child of the node by the input interval
   void getChildren(SpecializedLCPInterval &interval, std::vector<uint64_t> &outputVec);
   void mergeMapInfo(SpecializedLCPInterval &interval, std::vector<uint64_t> &children);
 
