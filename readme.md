@@ -1,5 +1,5 @@
 # LazyAttractor
-hogehoge
+hogehoge!
 
 # download and compile
     $ git clone https://github.com/TNishimoto/lazy_attractor
