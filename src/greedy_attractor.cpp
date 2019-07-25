@@ -2,6 +2,8 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <limits>
+#include <algorithm>
 //#include <unordered_set>
 #include "greedy_attractor.hpp"
 using namespace std;
@@ -16,7 +18,7 @@ void GreedyAttractorAlgorithm::addCount(LCPInterval<uint64_t> &interval, int64_t
     {
         posArr.push_back(sa[i]);
     }
-    sort(posArr.begin(), posArr.end());
+    std::sort(posArr.begin(), posArr.end());
     for (uint64_t x = 0; x < posArr.size(); x++)
     {
         uint64_t pos = posArr[x];
