@@ -5,7 +5,7 @@
 #include <set>
 #include "cmdline.h"
 #include "io.h"
-#include "sa_lcp.hpp"
+#include "sa.hpp"
 #include "verification_attractor.hpp"
 //#include "minimal_substrings.hpp"
 //#include "mstree.hpp"
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
     {
         mSubstrFile = inputFile + ".msub";
     }
-    MinimalSubstringTree mstree;
+    stool::esaxx::MinimalSubstringTree<uint8_t, uint64_t> mstree;
     //mstree.loadOrConstruct(text, mSubstrFile);
     mstree.loadOrConstruct(mSubstrFile, &text);
 

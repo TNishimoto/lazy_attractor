@@ -5,12 +5,13 @@
 #include <set>
 #include "cmdline.h"
 #include "io.h"
-#include "sa_lcp.hpp"
+#include "mycode.hpp"
 #include "minimal_substring_tree.hpp"
+//#include "sa.hpp"
 #include "greedy_attractor.hpp"
 
 //using namespace std;
-using namespace sdsl;
+//using namespace sdsl;
 using namespace stool;
 
 int main(int argc, char *argv[])
@@ -57,22 +58,23 @@ int main(int argc, char *argv[])
         std::cout << inputFile << " cannot open." << std::endl;
         return -1;
     }
-    std::string text;
-    IO::load(inputFile, text);
+    //std::string text;
+    //IO::load(inputFile, text);
+    std::vector<uint8_t> text = stool::load_text_from_file(inputFile); // input text
 
     // Loading Minimal Substrings
     if (mSubstrFile.size() == 0)
     {
         mSubstrFile = inputFile + ".msub";
     }
-    MinimalSubstringTree mstree;    
+    stool::esaxx::MinimalSubstringTree<uint8_t,uint64_t> mstree;    
     mstree.loadOrConstruct(mSubstrFile, &text);
 
     uint64_t mSubstrCount = mstree.nodes.size();
 
-    std::vector<uint64_t> sa, attrs;
+    std::vector<uint64_t> attrs;
     auto start = std::chrono::system_clock::now();
-    constructSA(text, sa);
+    std::vector<uint64_t> sa = stool::constructSA<uint8_t,uint64_t>(text);
     GreedyAttractorAlgorithm::compute(sa, mstree.nodes, blockSize, attrs);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();

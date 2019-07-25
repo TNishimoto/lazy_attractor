@@ -2,15 +2,14 @@
 #include <string>
 #include <memory>
 #include <map>
-#include <unordered_set>
-#include "lcp_interval.hpp"
+//#include <unordered_set>
 #include "greedy_attractor.hpp"
 using namespace std;
 
 namespace stool
 {
 
-void GreedyAttractorAlgorithm::addCount(LCPInterval &interval, int64_t addValue)
+void GreedyAttractorAlgorithm::addCount(LCPInterval<uint64_t> &interval, int64_t addValue)
 {
     vector<uint64_t> posArr;
     for (uint64_t i = interval.i; i <= interval.j; i++)
@@ -92,7 +91,7 @@ uint64_t GreedyAttractorAlgorithm::getMaxTPosition()
     }
     return p;
 }
-void GreedyAttractorAlgorithm::getContainingIntervals(uint64_t pos, vector<LCPInterval> &outputIntervals)
+void GreedyAttractorAlgorithm::getContainingIntervals(uint64_t pos, vector<LCPInterval<uint64_t>> &outputIntervals)
 {
     for (auto it = this->currentIntervals.begin(); it != this->currentIntervals.end(); ++it)
     {
@@ -102,7 +101,7 @@ void GreedyAttractorAlgorithm::getContainingIntervals(uint64_t pos, vector<LCPIn
         }
     }
 }
-void GreedyAttractorAlgorithm::compute(vector<uint64_t> &sa, vector<LCPInterval> &intervals, uint64_t _blockSize, vector<uint64_t> &outputAttrs)
+void GreedyAttractorAlgorithm::compute(vector<uint64_t> &sa, vector<LCPInterval<uint64_t>> &intervals, uint64_t _blockSize, vector<uint64_t> &outputAttrs)
 {
     GreedyAttractorAlgorithm algo(intervals, &sa, _blockSize);
 
@@ -125,7 +124,7 @@ void GreedyAttractorAlgorithm::compute(vector<uint64_t> &sa, vector<LCPInterval>
 }
 void GreedyAttractorAlgorithm::addAttractor(uint64_t pos)
 {
-    vector<LCPInterval> maxPosIntervals;
+    vector<LCPInterval<uint64_t>> maxPosIntervals;
     this->getContainingIntervals(pos, maxPosIntervals);
     for (auto &interval : maxPosIntervals)
     {
@@ -135,7 +134,7 @@ void GreedyAttractorAlgorithm::addAttractor(uint64_t pos)
     this->countVec[pos] = UINT64_MAX;
     //this->updateMaxPosVec();
 }
-GreedyAttractorAlgorithm::GreedyAttractorAlgorithm(vector<LCPInterval> &intervals, vector<uint64_t> *_sa, uint64_t _blockSize) : sa(*_sa)
+GreedyAttractorAlgorithm::GreedyAttractorAlgorithm(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> *_sa, uint64_t _blockSize) : sa(*_sa)
 {
     std::cout << "Constructing Data Strutures..." << std::flush;
 
