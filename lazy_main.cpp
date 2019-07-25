@@ -72,7 +72,9 @@ int main(int argc, char *argv[])
     //mstree.loadOrConstruct(text, mSubstrFile);
 
     text.push_back(0);
-    mstree.loadOrConstruct(mSubstrFile, &text);
+    //mstree.loadOrConstruct(mSubstrFile, &text);
+
+    stool::esaxx::MinimalSubstringTree<uint8_t, uint64_t>::construct(text, mstree.nodes, mstree.parents);
     text.pop_back();
 
     uint64_t mSubstrCount = mstree.nodes.size();

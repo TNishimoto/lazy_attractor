@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 
   if (outputMode == "text")
   {
-    T.pop_back();
+    //T.pop_back();
     vector<uint64_t> sa = stool::constructSA<>(T);
     string otext = "";
 
