@@ -179,7 +179,7 @@ void LazyUFTree::computeAttractors(vector<uint8_t> &text, vector<LCPInterval<uin
         while (sortedMinimumSubstrings.size() > 0)
         {
             auto top = sortedMinimumSubstrings.top();
-            if (top.second == i)
+            if ((int64_t)top.second == i)
             {
                 if (!lufTree.checkRemovedInterval(top.first))
                 {

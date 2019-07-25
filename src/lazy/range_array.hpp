@@ -40,7 +40,7 @@ public:
   {
     outputVec.resize(intervalCount, UINT64_MAX);
     int64_t p = -1;
-    for (int64_t i = 0; i < this->startingPositions.size(); i++)
+    for (int64_t i = 0; i < (int64_t)this->startingPositions.size(); i++)
     {
       if (this->startingPositions[i] == 1)
       {

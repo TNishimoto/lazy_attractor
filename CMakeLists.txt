@@ -21,8 +21,8 @@ INCLUDE_DIRECTORIES(src)
 INCLUDE_DIRECTORIES(src/lazy)
 #INCLUDE_DIRECTORIES(src/ms)
 #INCLUDE_DIRECTORIES(src/ms/fast)
-INCLUDE_DIRECTORIES(module/esaxx/src/minimal_substrings)
-INCLUDE_DIRECTORIES(module/esaxx/src)
+#INCLUDE_DIRECTORIES(module/esaxx/src/minimal_substrings)
+#INCLUDE_DIRECTORIES(module/esaxx/src)
 
 #FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp src/ms/*.cpp src/ms/fast/*.cpp)
 #set(EXECUTABLE_OUTPUT_PATH ./bin)
@@ -45,6 +45,9 @@ include_directories(~/include)
 FILE(GLOB STOOL_SOURCES module/stool/src/*.cpp)
 INCLUDE_DIRECTORIES(module)
 
+#ESAXX submodule
+#FILE(GLOB ESAXX_SOURCES module/esaxx/src/*.cpp module/esaxx/src/minimal_substring/*.cpp)
+#FILE(GLOB ESAXX_SOURCES module/esaxx/src/sa.cpp module/esaxx/src/mycode.cpp)
 
 
 #add_library(ms STATIC module/esaxx/src/minimal_substrings/minimal_substring_tree.hpp)
@@ -52,7 +55,6 @@ INCLUDE_DIRECTORIES(module)
 #target_link_libraries(fn sdsl divsufsort divsufsort64)
 
 FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp)
-FILE(GLOB ESAXX_SOURCES module/esaxx/src/sa.cpp module/esaxx/src/mycode.cpp)
 add_library(fn STATIC ${SOURCES} ${ESAXX_SOURCES} ${STOOL_SOURCES})
 target_link_libraries(fn sdsl divsufsort divsufsort64)
 

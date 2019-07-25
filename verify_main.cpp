@@ -9,7 +9,7 @@
 #include "verification_attractor.hpp"
 //#include "minimal_substrings.hpp"
 //#include "mstree.hpp"
-#include "minimal_substring_tree.hpp"
+#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
 
 using namespace std;
 using namespace sdsl;

@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "naive_minimal_substrings.hpp"
-#include "minimal_substring_tree.hpp"
+#include "esaxx/src/minimal_substrings/naive_minimal_substrings.hpp"
+#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
 #include "stool/src/cmdline.h"
 #include "stool/src/sa_bwt_lcp.hpp"
 

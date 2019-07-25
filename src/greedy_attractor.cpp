@@ -107,7 +107,7 @@ void GreedyAttractorAlgorithm::compute(vector<uint64_t> &sa, vector<LCPInterval<
 {
     GreedyAttractorAlgorithm algo(intervals, &sa, _blockSize);
 
-    uint64_t prev = UINT64_MAX;
+    //uint64_t prev = UINT64_MAX;
     uint64_t iter = 0;
     std::cout << "computing greedy attractors... : [" << algo.currentIntervals.size() << "]" << std::flush;
 

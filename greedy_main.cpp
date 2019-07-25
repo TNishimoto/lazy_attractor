@@ -7,7 +7,7 @@
 #include "stool/src/io.hpp"
 #include "stool/src/cmdline.h"
 
-#include "minimal_substring_tree.hpp"
+#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
 //#include "sa.hpp"
 #include "greedy_attractor.hpp"
 

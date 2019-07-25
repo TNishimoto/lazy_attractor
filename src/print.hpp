@@ -57,8 +57,8 @@ class Printer
 	static void toIntegerString(std::vector<X> &items, std::string &result, uint64_t padding)
 	{
 		result += "[";
-		int k = items.size();
-		for (unsigned int i = 0; i < (int)items.size(); i++)
+		//int k = items.size();
+		for (uint64_t i = 0; i < items.size(); i++)
 		{
 			std::string s = "";
 
@@ -82,15 +82,15 @@ class Printer
 	static void toIntegerString(std::string &items, std::string &result, uint64_t padding)
 	{
 		result += "[";
-		int k = items.size();
-		for (unsigned int i = 0; i < (int)items.size(); i++)
+		//int k = items.size();
+		for (uint64_t i = 0; i < items.size(); i++)
 		{
 			std::string s = "";
 
-			if(items[i] == UINT64_MAX){
+			if((uint64_t)items[i] == UINT64_MAX){
 			s = "-";
 			}
-			else if(items[i] == UINT64_MAX-1){
+			else if((uint64_t)items[i] == UINT64_MAX-1){
 			s = "*";
 			}
 			else{
