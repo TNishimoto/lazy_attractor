@@ -1,0 +1,6 @@
+[submodule "module/libdivsufsort"]
+	path = module/libdivsufsort
+	url = https://github.com/TNishimoto/libdivsufsort
+[submodule "module/esaxx"]
+	path = module/esaxx
+	url = https://github.com/TNishimoto/esaxx
