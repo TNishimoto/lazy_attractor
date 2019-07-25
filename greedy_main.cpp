@@ -3,9 +3,10 @@
 #include <random>
 #include <algorithm>
 #include <set>
-#include "cmdline.h"
 #include "io.h"
-#include "mycode.hpp"
+#include "stool/src/io.hpp"
+#include "stool/src/cmdline.h"
+
 #include "minimal_substring_tree.hpp"
 //#include "sa.hpp"
 #include "greedy_attractor.hpp"

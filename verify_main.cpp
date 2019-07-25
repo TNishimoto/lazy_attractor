@@ -3,9 +3,9 @@
 #include <random>
 #include <algorithm>
 #include <set>
-#include "cmdline.h"
+#include "stool/src/cmdline.h"
 #include "io.h"
-#include "sa.hpp"
+#include "stool/src/sa_bwt_lcp.hpp"
 #include "verification_attractor.hpp"
 //#include "minimal_substrings.hpp"
 //#include "mstree.hpp"
@@ -150,6 +150,9 @@ void loadAttractors(string attractorFile, vector<uint64_t> &attractors)
 
 int main(int argc, char *argv[])
 {
+    using CHAR = uint8_t;
+    using INDEX = uint64_t;
+
 #ifdef DEBUG
     std::cout << "\033[41m";
     std::cout << "DEBUG MODE!";
@@ -185,8 +188,9 @@ int main(int argc, char *argv[])
         std::cout << inputFile << " cannot open." << std::endl;
         return -1;
     }
-    string text;
-    IO::load(inputFile, text);
+    //string text;
+    //IO::load(inputFile, text);
+    vector<CHAR> text = stool::load_text_from_file(inputFile, false);
 
     // Loading Attractor File
     vector<uint64_t> attractors;
@@ -201,9 +205,10 @@ int main(int argc, char *argv[])
     //mstree.loadOrConstruct(text, mSubstrFile);
     mstree.loadOrConstruct(mSubstrFile, &text);
 
-    vector<uint64_t> sa, isa, freeIntervalIndexes;
+    vector<uint64_t> freeIntervalIndexes;
     auto start = std::chrono::system_clock::now();
-    constructSA(text, sa, isa);
+    vector<uint64_t> sa = stool::constructSA(text);
+    vector<uint64_t> isa = stool::constructISA(text, sa);
     VerificationAttractor::getFreeIntervals(sa, isa, mstree.nodes, attractors, freeIntervalIndexes);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
@@ -213,10 +218,11 @@ int main(int argc, char *argv[])
     }
     else
     {
+        /*
         string log = "\"";
         for (uint64_t j = 0; j < freeIntervalIndexes.size(); j++)
         {
-            LCPInterval interval = mstree.nodes[freeIntervalIndexes[j]];
+            LCPInterval<INDEX> interval = mstree.nodes[freeIntervalIndexes[j]];
             string mstr = text.substr(sa[interval.i], interval.lcp);
             log.append(mstr);
             log.append("\" occs:");
@@ -243,6 +249,7 @@ int main(int argc, char *argv[])
             }
         }
         IO::write(outputFile, log);
+        */
     }
 
     std::cout << "\033[36m";

@@ -2,8 +2,7 @@
 #include "io.h"
 #include <stack>
 #include "uftree.hpp"
-#include "sa_lcp.hpp"
-#include "lcp_interval.hpp"
+#include "stool/src/sa_bwt_lcp.hpp"
 #include <sdsl/bit_vectors.hpp>
 #include <sdsl/int_vector.hpp>
 //using namespace std;
@@ -23,14 +22,14 @@ class SAPositionToMSLeaf
   bit_vector startingPositions;
   rank_support_v<1> bv_rank;
 
-  static void checkRangeArray(std::vector<LCPInterval> &intervals, std::vector<uint64_t> &parents);
-  static void constructRangeArray(std::vector<LCPInterval> &intervals, std::vector<uint64_t> &parents, uint64_t textSize);
+  static void checkRangeArray(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents);
+  static void constructRangeArray(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, uint64_t textSize);
 public:
   SAPositionToMSLeaf()
   {
   }
 
-  void construct(std::vector<LCPInterval> &intervals, std::vector<uint64_t> &parents, uint64_t textSize);
+  void construct(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, uint64_t textSize);
   // Return the leaf ID containing pos in minimal substring tree.
   uint64_t getParentMSIntervalID(SINDEX pos)
   {

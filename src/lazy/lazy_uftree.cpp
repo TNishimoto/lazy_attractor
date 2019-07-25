@@ -1,10 +1,10 @@
 #include <stack>
-#include "sa_lcp.hpp"
+#include "stool/src/sa_bwt_lcp.hpp"
 #include "lazy_uftree.hpp"
 namespace stool
 {
 
-LazyUFTree::LazyUFTree(vector<LCPInterval> &_intervals, vector<uint64_t> &_parents, uint64_t textSize) : intervals(_intervals), parents(_parents)
+LazyUFTree::LazyUFTree(vector<LCPInterval<uint64_t>> &_intervals, vector<uint64_t> &_parents, uint64_t textSize) : intervals(_intervals), parents(_parents)
 {
 
     std::cout << "construct rangeArray" << std::endl;
@@ -156,11 +156,11 @@ void LazyUFTree::constructSortedMinimumSubstrings(vector<uint64_t> &sa, stack<st
         outputSortedMinimumSubstrings.push(vec2[i]);
     }
 }
-void LazyUFTree::computeAttractors(string &text, vector<LCPInterval> &_intervals, vector<uint64_t> &_parents, vector<uint64_t> &outputAttrs)
+void LazyUFTree::computeAttractors(vector<uint8_t> &text, vector<LCPInterval<uint64_t>> &_intervals, vector<uint64_t> &_parents, vector<uint64_t> &outputAttrs)
 {
-    vector<uint64_t> sa, isa;
     stack<std::pair<uint64_t, uint64_t>> sortedMinimumSubstrings;
-    constructSA(text, sa, isa);
+    vector<uint64_t> sa = constructSA(text);
+    vector<uint64_t> isa = constructISA(text, sa);
 
     LazyUFTree lufTree(_intervals, _parents, text.size());
     //lufTree.initialize;

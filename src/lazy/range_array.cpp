@@ -1,11 +1,10 @@
 #include <stack>
-#include "sa_lcp.hpp"
 #include "range_array.hpp"
 using namespace std;
 using namespace sdsl;
 
 namespace stool{
-void SAPositionToMSLeaf::checkRangeArray(vector<LCPInterval> &intervals, vector<uint64_t> &parents)
+void SAPositionToMSLeaf::checkRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents)
 {
     uint64_t size = intervals.size();
     for (uint64_t i = 0; i < size; i++)
@@ -20,15 +19,15 @@ void SAPositionToMSLeaf::checkRangeArray(vector<LCPInterval> &intervals, vector<
                 std::cout << "RangeArray Error2" << std::endl;
                 std::cout << x << std::endl;
 
-                std::cout << interval.toString() << std::endl;
+                std::cout << interval.to_string() << std::endl;
                 throw - 1;
             }
             if (interval.lcp > intervals[longestPos].lcp)
             {
                 std::cout << "RangeArray Error" << std::endl;
                 std::cout << longestPos << std::endl;
-                std::cout << intervals[longestPos].toString() << std::endl;
-                std::cout << interval.toString() << std::endl;
+                std::cout << intervals[longestPos].to_string() << std::endl;
+                std::cout << interval.to_string() << std::endl;
 
                 throw - 1;
             }
@@ -38,7 +37,7 @@ void SAPositionToMSLeaf::checkRangeArray(vector<LCPInterval> &intervals, vector<
                       << "checking RangeArray... : [" << i << "/" << (size) << "]" << std::flush;
     }
 }
-void SAPositionToMSLeaf::constructRangeArray(vector<LCPInterval> &intervals, vector<uint64_t> &parents, uint64_t textSize)
+void SAPositionToMSLeaf::constructRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t textSize)
 {
     vector<vector<uint64_t>> childrens;
     childrens.resize(intervals.size());
@@ -79,7 +78,7 @@ void SAPositionToMSLeaf::constructRangeArray(vector<LCPInterval> &intervals, vec
     //checkRangeArray(intervals, parents);
 }
 
-void SAPositionToMSLeaf::construct(vector<LCPInterval> &intervals, vector<uint64_t> &parents, uint64_t textSize)
+void SAPositionToMSLeaf::construct(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t textSize)
 {
     vector<vector<uint64_t>> childrens;
     childrens.resize(intervals.size());

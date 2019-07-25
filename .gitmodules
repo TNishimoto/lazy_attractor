@@ -4,3 +4,6 @@
 [submodule "module/esaxx"]
 	path = module/esaxx
 	url = https://github.com/TNishimoto/esaxx
+[submodule "module/stool"]
+	path = module/stool
+	url = https://github.com/TNishimoto/stool

@@ -3,9 +3,10 @@
 #include <random>
 #include <algorithm>
 #include <set>
-#include "cmdline.h"
+#include "stool/src/cmdline.h"
 #include "io.h"
-#include "sa_lcp.hpp"
+#include "stool/src/io.hpp"
+#include "stool/src/sa_bwt_lcp.hpp"
 //#include "mstree.hpp"
 //#include "greedy_attractor.hpp"
 #include "lazy_uftree.hpp"
@@ -18,6 +19,8 @@ using namespace stool;
 
 int main(int argc, char *argv[])
 {
+    using CHAR = uint8_t;
+    using INDEX = uint64_t;
 #ifdef DEBUG
     std::cout << "\033[41m";
     std::cout << "DEBUG MODE!";
@@ -56,17 +59,21 @@ int main(int argc, char *argv[])
         std::cout << inputFile << " cannot open." << std::endl;
         return -1;
     }
-    string text;
-    IO::load(inputFile, text);
+    //string text;
+    //IO::load(inputFile, text);
+    std::vector<uint8_t> text = stool::load_text_from_file(inputFile, false); // input text
 
     // Loading Minimal Substrings
     if (mSubstrFile.size() == 0)
     {
         mSubstrFile = inputFile + ".msub";
     }
-    MinimalSubstringTree mstree;    
-    //mstree.loadOrConstruct(text, mSubstrFile);    
+    stool::esaxx::MinimalSubstringTree<CHAR,INDEX> mstree;    
+    //mstree.loadOrConstruct(text, mSubstrFile);
+
+    text.push_back(0);
     mstree.loadOrConstruct(mSubstrFile, &text);
+    text.pop_back();
 
     uint64_t mSubstrCount = mstree.nodes.size();
     vector<uint64_t> attrs;

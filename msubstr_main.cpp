@@ -4,11 +4,10 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "cmdline.h"
 #include "naive_minimal_substrings.hpp"
 #include "minimal_substring_tree.hpp"
-
-#include "sa.hpp"
+#include "stool/src/cmdline.h"
+#include "stool/src/sa_bwt_lcp.hpp"
 
 using namespace std;
 using INDEXTYPE = uint64_t;

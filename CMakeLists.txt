@@ -41,15 +41,19 @@ include_directories(${MYMOD_BINARY_DIR}/libdivsufsort/include)
 LINK_DIRECTORIES(~/lib)
 include_directories(~/include)
 
+# STOOL submodule
+FILE(GLOB STOOL_SOURCES module/stool/src/*.cpp)
+INCLUDE_DIRECTORIES(module)
+
 
 
 #add_library(ms STATIC module/esaxx/src/minimal_substrings/minimal_substring_tree.hpp)
 #set(MS "module/esaxx/src/minimal_substrings/minimal_substring_tree.hpp")
 #target_link_libraries(fn sdsl divsufsort divsufsort64)
 
-FILE(GLOB SOURCES src/*.cpp)
+FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp)
 FILE(GLOB ESAXX_SOURCES module/esaxx/src/sa.cpp module/esaxx/src/mycode.cpp)
-add_library(fn STATIC ${SOURCES} ${ESAXX_SOURCES})
+add_library(fn STATIC ${SOURCES} ${ESAXX_SOURCES} ${STOOL_SOURCES})
 target_link_libraries(fn sdsl divsufsort divsufsort64)
 
 
@@ -57,17 +61,17 @@ target_link_libraries(fn sdsl divsufsort divsufsort64)
 #add_executable(a.out main.cpp)
 add_executable(msubstr.out msubstr_main.cpp)
 add_executable(greedy.out  greedy_main.cpp)
-#add_executable(verify.out verify_main.cpp)
+add_executable(verify.out verify_main.cpp)
 ##add_executable(converter.out converter_main.cpp)
-#add_executable(lazy.out lazy_main.cpp)
+add_executable(lazy.out lazy_main.cpp)
 
 
 #target_link_libraries(a.out fn)
 target_link_libraries(msubstr.out fn)
 target_link_libraries(greedy.out fn)
-#target_link_libraries(verify.out fn)
+target_link_libraries(verify.out fn)
 ##target_link_libraries(converter.out fn)
-#target_link_libraries(lazy.out fn)
+target_link_libraries(lazy.out fn)
 
 
 

@@ -4,8 +4,8 @@
 #include <memory>
 #include <map>
 #include <unordered_set>
-#include "mycode.hpp"
-#include "sa.hpp"
+#include "stool/src/io.hpp"
+#include "stool/src/sa_bwt_lcp.hpp"
 //using namespace std;
 
 namespace std
