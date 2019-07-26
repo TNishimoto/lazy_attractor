@@ -14,6 +14,20 @@ namespace lazy
 {
 void GreedyAttractorAlgorithm::addCount(LCPInterval<uint64_t> &interval, int64_t addValue)
 {
+    std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = GreedyAttractorAlgorithm::getSortedCoveredPositions(this->sa, interval);
+    for (std::pair<uint64_t, uint64_t> &it : coveredPositions)
+    {
+        for (uint64_t y = it.first; y <= it.second; y++)
+        {
+            if (this->countVec[y] != UINT64_MAX)
+            {
+                this->countVec[y] += addValue;
+                uint64_t blockPos = y / this->blockSize;
+                this->changedVec[blockPos] = true;
+            }
+        }
+    }
+    /*
     vector<uint64_t> posArr;
     for (uint64_t i = interval.i; i <= interval.j; i++)
     {
@@ -35,7 +49,10 @@ void GreedyAttractorAlgorithm::addCount(LCPInterval<uint64_t> &interval, int64_t
             }
         }
     }
+    */
 }
+
+
 /*
 void GreedyAttractorAlgorithm::updateMaxPosVec()
 {
@@ -127,7 +144,7 @@ void GreedyAttractorAlgorithm::computeGreedyAttractors(vector<uint64_t> &sa, vec
         outputAttrs.push_back(maxTPos);
     }
     std::cout << "[END]" << std::endl;
-    sort(outputAttrs.begin(), outputAttrs.end());
+    std::sort(outputAttrs.begin(), outputAttrs.end());
 }
 void GreedyAttractorAlgorithm::addAttractor(uint64_t pos)
 {
@@ -198,7 +215,6 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computePositionWeights(std::vect
             }
         }
         counter++;
-
     }
     std::cout << std::endl;
     return r;
@@ -224,6 +240,7 @@ std::vector<std::pair<uint64_t, uint64_t>> GreedyAttractorAlgorithm::getSortedCo
     }
     return r;
 }
+
 
 } // namespace lazy
 } // namespace stool

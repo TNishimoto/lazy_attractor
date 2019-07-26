@@ -100,7 +100,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        GreedyAttractorAlgorithm::computeGreedyAttractors(sa, mstree.nodes, blockSize, attrs);
+        //GreedyAttractorAlgorithm::computeGreedyAttractors(sa, mstree.nodes, blockSize, attrs);
+        GreedyAttractorAlgorithm::computeGreedyAttractors2(sa, mstree.nodes, attrs);
         auto end = std::chrono::system_clock::now();
         double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
