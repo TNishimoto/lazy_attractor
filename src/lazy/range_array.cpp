@@ -3,7 +3,10 @@
 using namespace std;
 using namespace sdsl;
 
-namespace stool{
+namespace stool
+{
+namespace lazy
+{
 void SAPositionToMSLeaf::checkRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents)
 {
     uint64_t size = intervals.size();
@@ -146,4 +149,5 @@ void SAPositionToMSLeaf::construct(vector<LCPInterval<uint64_t>> &intervals, vec
     }
     */
 }
-}
+} // namespace lazy
+} // namespace stool

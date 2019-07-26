@@ -12,10 +12,11 @@
 using namespace sdsl;
 namespace stool
 {
-
+namespace lazy
+{
 class VerificationAttractor
 {
-  public:
+public:
     static void getFreeIntervals(std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &attractors, std::vector<uint64_t> &outputFreeIntervalIndexes)
     {
         uint64_t n = sa.size();
@@ -58,4 +59,5 @@ class VerificationAttractor
         std::cout << std::endl;
     }
 };
+} // namespace lazy
 } // namespace stool

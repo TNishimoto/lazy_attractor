@@ -16,6 +16,7 @@
 using namespace std;
 using namespace sdsl;
 using namespace stool;
+using namespace stool::lazy;
 
 int main(int argc, char *argv[])
 {
@@ -61,7 +62,7 @@ int main(int argc, char *argv[])
     }
     //string text;
     //IO::load(inputFile, text);
-    std::vector<uint8_t> text = stool::load_text_from_file(inputFile, false); // input text
+    std::vector<uint8_t> text = stool::load_text_from_file(inputFile, true); // input text
 
     // Loading Minimal Substrings
     if (mSubstrFile.size() == 0)
@@ -71,11 +72,11 @@ int main(int argc, char *argv[])
     stool::esaxx::MinimalSubstringTree<CHAR,INDEX> mstree;    
     //mstree.loadOrConstruct(text, mSubstrFile);
 
-    text.push_back(0);
+    //text.push_back(0);
     //mstree.loadOrConstruct(mSubstrFile, &text);
 
     stool::esaxx::MinimalSubstringTree<uint8_t, uint64_t>::construct(text, mstree.nodes, mstree.parents);
-    text.pop_back();
+    //text.pop_back();
 
     uint64_t mSubstrCount = mstree.nodes.size();
     vector<uint64_t> attrs;
@@ -106,7 +107,7 @@ int main(int argc, char *argv[])
     std::cout << "=============RESULT===============" << std::endl;
     std::cout << "File : " << inputFile << std::endl;
     std::cout << "Output : " << outputFile << std::endl;
-    std::cout << "The length of the input text : " << text.size() << std::endl;
+    std::cout << "The length of the input text (with last special marker) : " << text.size() << std::endl;
     double charperms = (double)text.size() / elapsed;
     std::cout << "The number of minimal substrings : " << mSubstrCount << std::endl;
     std::cout << "The number of attractors : " << attrs.size() << std::endl;

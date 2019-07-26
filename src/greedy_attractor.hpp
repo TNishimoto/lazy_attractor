@@ -21,7 +21,8 @@ struct hash<stool::LCPInterval<uint64_t>>
 } // namespace std
 namespace stool
 {
-
+namespace lazy
+{
 class GreedyAttractorAlgorithm
 {
     std::vector<bool> changedVec;
@@ -42,10 +43,10 @@ class GreedyAttractorAlgorithm
     void addAttractor(uint64_t pos);
     //void updateMaxPosVec();
 
-
-  public:
+public:
     GreedyAttractorAlgorithm(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> *_sa, uint64_t _blockSize);
 
     static void compute(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals, uint64_t _blockSize, std::vector<uint64_t> &outputAttrs);
 };
+} // namespace lazy
 } // namespace stool

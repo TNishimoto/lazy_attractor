@@ -3,7 +3,8 @@
 #include "lazy_uftree.hpp"
 namespace stool
 {
-
+namespace lazy
+{
 LazyUFTree::LazyUFTree(vector<LCPInterval<uint64_t>> &_intervals, vector<uint64_t> &_parents, uint64_t textSize) : intervals(_intervals), parents(_parents)
 {
 
@@ -34,12 +35,12 @@ uint64_t LazyUFTree::getLongestLCPIntervalID(SINDEX pos)
             if (this->checkRemovedInterval(parent))
             {
 
-                #ifdef DEBUG
+#ifdef DEBUG
                 uint64_t p = this->uftree.unionParent(id);
                 assert(p != UINT64_MAX);
-                #else
+#else
                 this->uftree.unionParent(id);
-                #endif
+#endif
             }
             else
             {
@@ -207,5 +208,5 @@ void LazyUFTree::computeAttractors(vector<uint8_t> &text, vector<LCPInterval<uin
 
     sort(outputAttrs.begin(), outputAttrs.end());
 }
-
+} // namespace lazy
 } // namespace stool

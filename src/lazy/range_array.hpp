@@ -10,7 +10,8 @@ using namespace sdsl;
 
 namespace stool
 {
-
+namespace lazy
+{
 using SINDEX = uint64_t;
 using TINDEX = uint64_t;
 
@@ -24,6 +25,7 @@ class SAPositionToMSLeaf
 
   static void checkRangeArray(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents);
   static void constructRangeArray(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, uint64_t textSize);
+
 public:
   SAPositionToMSLeaf()
   {
@@ -54,4 +56,5 @@ public:
     }
   }
 };
+} // namespace lazy
 } // namespace stool

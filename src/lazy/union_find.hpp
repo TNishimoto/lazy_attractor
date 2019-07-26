@@ -4,28 +4,32 @@
 #include <vector>
 //using namespace std;
 
-namespace stool{
+namespace stool
+{
 
 /*
 Disjoint-set data structure
 https://en.wikipedia.org/wiki/Disjoint-set_data_structure
 */
-class UnionFind{
-    private:
+namespace lazy
+{
+class UnionFind
+{
+private:
     std::vector<uint64_t> findTmpVec;
     //std::stack<std::pair<uint64_t, uint64_t>> stack;
     std::vector<uint64_t> array;
     std::vector<uint8_t> rank_array;
 
-    public:
+public:
     using GINDEX = uint64_t;
 
-
-    uint64_t size(){
+    uint64_t size()
+    {
         return this->array.size();
     }
-    UnionFind(){
-
+    UnionFind()
+    {
     }
     // Construct size-groups whose each size is 1.
     void initialize(uint64_t size);
@@ -35,14 +39,14 @@ class UnionFind{
     // Unify two groups of i-th and j-th element and return the group number.
     GINDEX unionOperation(GINDEX i, GINDEX j);
 
-    void add(){
+    void add()
+    {
         this->array.push_back(this->size());
         this->rank_array.push_back(1);
     }
     // Get the data structure when we used the last unionOperationWithBackup operation.
     //void back();
     std::string toString();
-
 };
-}
-
+} // namespace lazy
+} // namespace stool

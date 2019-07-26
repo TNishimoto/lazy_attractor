@@ -14,6 +14,7 @@
 using namespace std;
 using namespace sdsl;
 using namespace stool;
+//using namespace stool::lazy;
 
 bool checkAttractorTextFile(string &text)
 {
@@ -190,7 +191,7 @@ int main(int argc, char *argv[])
     }
     //string text;
     //IO::load(inputFile, text);
-    vector<CHAR> text = stool::load_text_from_file(inputFile, false);
+    vector<CHAR> text = stool::load_text_from_file(inputFile, true);
 
     // Loading Attractor File
     vector<uint64_t> attractors;
@@ -209,7 +210,7 @@ int main(int argc, char *argv[])
     auto start = std::chrono::system_clock::now();
     vector<uint64_t> sa = stool::constructSA(text);
     vector<uint64_t> isa = stool::constructISA(text, sa);
-    VerificationAttractor::getFreeIntervals(sa, isa, mstree.nodes, attractors, freeIntervalIndexes);
+    lazy::VerificationAttractor::getFreeIntervals(sa, isa, mstree.nodes, attractors, freeIntervalIndexes);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
@@ -257,7 +258,7 @@ int main(int argc, char *argv[])
     std::cout << "=============RESULT===============" << std::endl;
     std::cout << "File : " << inputFile << std::endl;
     std::cout << "Attractor File : " << attractorFile << std::endl;
-    std::cout << "The length of the input text : " << text.size() << std::endl;
+    std::cout << "The length of the input text (with last special marker) : " << text.size() << std::endl;
     double charperms = (double)text.size() / elapsed;
     std::cout << "The number of minimal substrings : " << mstree.nodes.size() << std::endl;
     std::cout << "The number of attractors : " << attractors.size() << std::endl;

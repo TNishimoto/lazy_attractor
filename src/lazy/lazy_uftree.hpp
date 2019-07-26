@@ -10,9 +10,11 @@ using namespace sdsl;
 
 namespace stool
 {
-
-class LazyUFTree{
-  private:
+namespace lazy
+{
+class LazyUFTree
+{
+private:
   UFTree uftree;
   std::vector<bool> removeVec;
   uint64_t getLongestLCPIntervalID(SINDEX pos);
@@ -27,10 +29,10 @@ class LazyUFTree{
   uint64_t removeMSIntervals(TINDEX pos, std::vector<uint64_t> &isa, TINDEX lastAttractor);
   void constructSortedMinimumSubstrings(std::vector<uint64_t> &sa, std::stack<std::pair<uint64_t, uint64_t>> &outputSortedMinimumSubstrings);
 
-  public:
+public:
   LazyUFTree(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize);
   void initialize(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize);
   static void computeAttractors(vector<uint8_t> &text, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, std::vector<uint64_t> &outputAttrs);
-
 };
-}
+} // namespace lazy
+} // namespace stool

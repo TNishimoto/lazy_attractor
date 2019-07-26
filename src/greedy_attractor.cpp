@@ -10,7 +10,8 @@ using namespace std;
 
 namespace stool
 {
-
+namespace lazy
+{
 void GreedyAttractorAlgorithm::addCount(LCPInterval<uint64_t> &interval, int64_t addValue)
 {
     vector<uint64_t> posArr;
@@ -173,5 +174,5 @@ GreedyAttractorAlgorithm::GreedyAttractorAlgorithm(vector<LCPInterval<uint64_t>>
     }
     */
 }
-
+} // namespace lazy
 } // namespace stool
