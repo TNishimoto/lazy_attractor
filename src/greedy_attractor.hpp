@@ -29,16 +29,18 @@ class GreedyAttractorAlgorithm
     std::vector<uint64_t> maxPosVec;
 
     std::vector<uint64_t> countVec;
-    //vector<LCPInterval> &intervals;
     std::vector<uint64_t> &sa;
-    //vector<uint64_t> isa;
     std::unordered_set<LCPInterval<uint64_t>> currentIntervals;
     uint64_t blockSize = 1000;
 
     uint64_t blockNum;
 
     void addCount(LCPInterval<uint64_t> &interval, int64_t addValue);
-    uint64_t getMaxTPosition();
+
+    /* 
+    Compute the position covered by most minimal substrings.
+    */
+    uint64_t computeMaximalCoveredPosition();
     void getContainingIntervals(uint64_t pos, std::vector<LCPInterval<uint64_t>> &outputIntervals);
     void addAttractor(uint64_t pos);
     //void updateMaxPosVec();
@@ -46,7 +48,11 @@ class GreedyAttractorAlgorithm
 public:
     GreedyAttractorAlgorithm(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> *_sa, uint64_t _blockSize);
 
-    static void compute(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals, uint64_t _blockSize, std::vector<uint64_t> &outputAttrs);
+    static void computeGreedyAttractors(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals, uint64_t _blockSize, std::vector<uint64_t> &outputAttrs);
+    static std::vector<uint64_t> computePositionWeights(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
+    static std::vector<std::pair<uint64_t,uint64_t>> getSortedCoveredPositions(std::vector<uint64_t> &sa, LCPInterval<uint64_t> &interval);
+    
+
 };
 } // namespace lazy
 } // namespace stool

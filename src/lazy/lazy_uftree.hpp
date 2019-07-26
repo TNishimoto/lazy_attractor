@@ -5,7 +5,6 @@
 #include "stool/src/sa_bwt_lcp.hpp"
 
 #include "range_array.hpp"
-//using namespace std;
 using namespace sdsl;
 
 namespace stool

@@ -60,7 +60,11 @@ void GreedyAttractorAlgorithm::updateMaxPosVec()
     }
 }
 */
-uint64_t GreedyAttractorAlgorithm::getMaxTPosition()
+
+/* 
+    Compute the position covered by most minimal substrings.
+*/
+uint64_t GreedyAttractorAlgorithm::computeMaximalCoveredPosition()
 {
     uint64_t p = UINT64_MAX;
     uint64_t wholeMax = 0;
@@ -104,7 +108,7 @@ void GreedyAttractorAlgorithm::getContainingIntervals(uint64_t pos, vector<LCPIn
         }
     }
 }
-void GreedyAttractorAlgorithm::compute(vector<uint64_t> &sa, vector<LCPInterval<uint64_t>> &intervals, uint64_t _blockSize, vector<uint64_t> &outputAttrs)
+void GreedyAttractorAlgorithm::computeGreedyAttractors(vector<uint64_t> &sa, vector<LCPInterval<uint64_t>> &intervals, uint64_t _blockSize, vector<uint64_t> &outputAttrs)
 {
     GreedyAttractorAlgorithm algo(intervals, &sa, _blockSize);
 
@@ -118,7 +122,7 @@ void GreedyAttractorAlgorithm::compute(vector<uint64_t> &sa, vector<LCPInterval<
         if (iter % 100 == 0)
             std::cout << "\r"
                       << "computing greedy attractors... : [" << algo.currentIntervals.size() << "]" << std::flush;
-        uint64_t maxTPos = algo.getMaxTPosition();
+        uint64_t maxTPos = algo.computeMaximalCoveredPosition();
         algo.addAttractor(maxTPos);
         outputAttrs.push_back(maxTPos);
     }
@@ -127,9 +131,9 @@ void GreedyAttractorAlgorithm::compute(vector<uint64_t> &sa, vector<LCPInterval<
 }
 void GreedyAttractorAlgorithm::addAttractor(uint64_t pos)
 {
-    vector<LCPInterval<uint64_t>> maxPosIntervals;
-    this->getContainingIntervals(pos, maxPosIntervals);
-    for (auto &interval : maxPosIntervals)
+    vector<LCPInterval<uint64_t>> coveringIntervals;
+    this->getContainingIntervals(pos, coveringIntervals);
+    for (auto &interval : coveringIntervals)
     {
         this->addCount(interval, -1);
         this->currentIntervals.erase(interval);
@@ -174,5 +178,52 @@ GreedyAttractorAlgorithm::GreedyAttractorAlgorithm(vector<LCPInterval<uint64_t>>
     }
     */
 }
+std::vector<uint64_t> GreedyAttractorAlgorithm::computePositionWeights(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
+{
+    std::vector<uint64_t> r;
+    r.resize(sa.size(), 0);
+
+    uint64_t counter = 0;
+    for (LCPInterval<uint64_t> &interval : intervals)
+    {
+        if (counter % 10000 == 0)
+            std::cout << "\r"
+                      << "Computing Position Weights : [" << counter << "/" << intervals.size() << "]" << std::flush;
+        std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = getSortedCoveredPositions(sa, interval);
+        for (std::pair<uint64_t, uint64_t> &it : coveredPositions)
+        {
+            for (uint64_t x = it.first; x <= it.second; x++)
+            {
+                ++r[x];
+            }
+        }
+        counter++;
+
+    }
+    std::cout << std::endl;
+    return r;
+}
+
+std::vector<std::pair<uint64_t, uint64_t>> GreedyAttractorAlgorithm::getSortedCoveredPositions(std::vector<uint64_t> &sa, LCPInterval<uint64_t> &interval)
+{
+    std::vector<std::pair<uint64_t, uint64_t>> r;
+
+    std::vector<uint64_t> posArr;
+    for (uint64_t i = interval.i; i <= interval.j; i++)
+    {
+        posArr.push_back(sa[i]);
+    }
+    std::sort(posArr.begin(), posArr.end());
+
+    for (uint64_t x = 0; x < posArr.size(); x++)
+    {
+        uint64_t pos = posArr[x];
+        uint64_t nextPos = x + 1 < posArr.size() ? posArr[x + 1] : UINT64_MAX;
+        uint64_t endPos = pos + interval.lcp - 1 < nextPos ? pos + interval.lcp - 1 : nextPos - 1;
+        r.push_back(std::pair<uint64_t, uint64_t>(pos, endPos));
+    }
+    return r;
+}
+
 } // namespace lazy
 } // namespace stool

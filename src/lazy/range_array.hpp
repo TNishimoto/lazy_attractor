@@ -5,7 +5,6 @@
 #include "stool/src/sa_bwt_lcp.hpp"
 #include <sdsl/bit_vectors.hpp>
 #include <sdsl/int_vector.hpp>
-//using namespace std;
 using namespace sdsl;
 
 namespace stool
