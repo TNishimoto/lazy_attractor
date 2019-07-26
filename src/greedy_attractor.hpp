@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include "stool/src/io.hpp"
 #include "stool/src/sa_bwt_lcp.hpp"
+#include <set>
 //using namespace std;
 
 namespace std
@@ -45,7 +46,7 @@ class GreedyAttractorAlgorithm
     void addAttractor(uint64_t pos);
     //void updateMaxPosVec();
 
-    static std::pair<uint64_t, uint64_t> decrementCounts(LCPInterval<uint64_t> &removedInterval, std::vector<uint64_t> &countVec, std::vector<uint64_t> &sa)
+    static std::pair<uint64_t, uint64_t> decrementCounts(LCPInterval<uint64_t> &removedInterval, std::vector<uint64_t> &countVec, std::unordered_map<uint64_t, std::set<uint64_t>> &freqRankMap, std::vector<uint64_t> &sa)
     {
         std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = GreedyAttractorAlgorithm::getSortedCoveredPositions(sa, removedInterval);
         //std::cout << "a" << std::flush;
@@ -58,6 +59,12 @@ class GreedyAttractorAlgorithm
             {
                 if (countVec[y] != UINT64_MAX)
                 {
+                    uint64_t count = countVec[y];
+                    freqRankMap[count].erase(y);
+                    if(count > 1){
+                        freqRankMap[count-1].insert(y);
+                    }
+
                     --countVec[y];
                     if (countVec[y] == 0)
                     {
@@ -160,15 +167,30 @@ public:
             currentIntervals.insert(it);
         }
         std::vector<uint64_t> positionWeights = computePositionWeights(sa, intervals);
+        uint64_t maxFreq = *std::max_element(positionWeights.begin(), positionWeights.end());;
+        std::unordered_map<uint64_t, std::set<uint64_t>> freqRankMap;
+        for(uint64_t i=0;i<= maxFreq ;i++){
+            freqRankMap[i] = (std::set<uint64_t>());
+        }
+
+        for (uint64_t i = 0; i < positionWeights.size(); i++)
+        {
+            freqRankMap[positionWeights[i]].insert(i);
+        }
+
+        /*
         std::vector<uint64_t> nextVec;
         nextVec.resize(sa.size(), UINT64_MAX);
         for (uint64_t i = 0; i < nextVec.size() - 1; i++)
         {
             nextVec[i] = i + 1;
         }
+        */
         std::cout << "Initialize Greedy Data Structures[END]" << std::endl;
 
-        uint64_t startPosition = 0;
+        double elapsed1, elapsed2, elapsed3;
+
+        //uint64_t startPosition = 0;
         uint64_t remainingPositionCount = sa.size();
         uint64_t removedFrequencySum = 0;
         uint64_t counter = 0;
@@ -178,39 +200,79 @@ public:
 #ifdef DEBUG_PRINT
             std::cout << "[Attrs, RemainingPositions, LCPIntervals, RemovedFrequency] = [" << outputAttrs.size() << ", " << remainingPositionCount << ", " << currentIntervals.size() << "," << removedFrequencySum << "]\r" << std::flush;
 #else
-        if (counter % 100 == 0){
-            std::cout << "\r"
-                      << "Computing Greedy Attractors : [" << currentIntervals.size() << "/" << minimalSubstringCount << "], ("; 
-                      std::cout << remainingPositionCount << ", " << currentIntervals.size() << ", " << removedFrequencySum << ")"<< std::flush;
-        }
-#endif
-            //std::cout << "+" << std::flush;
-            std::pair<uint64_t, uint64_t> p = updateNextVecAndGetMostWeightedPosition(positionWeights, nextVec, startPosition);
-            //std::cout << "-" << std::flush;
-
-            startPosition = p.first;
-            uint64_t maximalCoveredPos = p.second;
-            //std::cout << "start: " << startPosition << "/" << maximalCoveredPos << std::endl;
-            if (startPosition == UINT64_MAX)
+            if (counter % 100 == 0)
             {
-                break;
+                std::cout << "\r"
+                          << "Computing Greedy Attractors : [" << currentIntervals.size() << "/" << minimalSubstringCount << "], (";
+                std::cout << remainingPositionCount << ", " << currentIntervals.size() << ", " << removedFrequencySum << ")" << "[" << elapsed1 << "/" << elapsed2 << "]" << std::flush;
+            }
+#endif
+            auto maxFreqSet = freqRankMap[maxFreq];
+            if (maxFreqSet.size() == 0)
+            {
+                if (maxFreq == 0)
+                {
+                    break;
+                }
+                else
+                {
+                    --maxFreq;
+                }
             }
             else
             {
-                outputAttrs.push_back(maximalCoveredPos);
-                //std::cout << maximalCoveredPos << std::endl;
+                uint64_t maximalCoveredPos = *(maxFreqSet.begin());
+                    outputAttrs.push_back(maximalCoveredPos);
+
+                auto start1 = std::chrono::system_clock::now();
                 std::vector<LCPInterval<uint64_t>> coveringIntervals = getCoveringIntervals(maximalCoveredPos, currentIntervals, sa);
-                //std::cout << "*" << std::flush;
+                auto end1 = std::chrono::system_clock::now();
+                elapsed1 = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start1).count();
+
                 removedFrequencySum = 0;
+
+                auto start2 = std::chrono::system_clock::now();
                 for (auto &coveringInterval : coveringIntervals)
                 {
-                    std::pair<uint64_t, uint64_t> info = decrementCounts(coveringInterval, positionWeights, sa);
+                    std::pair<uint64_t, uint64_t> info = decrementCounts(coveringInterval, positionWeights, freqRankMap, sa);
                     remainingPositionCount -= info.first;
                     removedFrequencySum += info.second;
                     currentIntervals.erase(coveringInterval);
                 }
-                //std::cout << "/" << std::flush;
+                auto end2 = std::chrono::system_clock::now();
+                elapsed2 = std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count();
+                
+                /*
+                //std::cout << "+" << std::flush;
+                std::pair<uint64_t, uint64_t> p = updateNextVecAndGetMostWeightedPosition(positionWeights, nextVec, startPosition);
+                //std::cout << "-" << std::flush;
+
+                startPosition = p.first;
+                uint64_t maximalCoveredPos = p.second;
+                //std::cout << "start: " << startPosition << "/" << maximalCoveredPos << std::endl;
+                if (startPosition == UINT64_MAX)
+                {
+                    break;
+                }
+                else
+                {
+                    outputAttrs.push_back(maximalCoveredPos);
+                    //std::cout << maximalCoveredPos << std::endl;
+                    std::vector<LCPInterval<uint64_t>> coveringIntervals = getCoveringIntervals(maximalCoveredPos, currentIntervals, sa);
+                    //std::cout << "*" << std::flush;
+                    removedFrequencySum = 0;
+                    for (auto &coveringInterval : coveringIntervals)
+                    {
+                        std::pair<uint64_t, uint64_t> info = decrementCounts(coveringInterval, positionWeights, sa);
+                        remainingPositionCount -= info.first;
+                        removedFrequencySum += info.second;
+                        currentIntervals.erase(coveringInterval);
+                    }
+                    //std::cout << "/" << std::flush;
+                }
+                */
             }
+
             counter++;
         }
         std::cout << std::endl;
