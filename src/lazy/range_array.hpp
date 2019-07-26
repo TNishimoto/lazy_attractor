@@ -1,5 +1,5 @@
 #pragma once
-#include "io.h"
+//#include "io.h"
 #include <stack>
 #include "uftree.hpp"
 #include "stool/src/sa_bwt_lcp.hpp"

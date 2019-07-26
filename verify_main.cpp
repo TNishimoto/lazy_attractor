@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <set>
 #include "stool/src/cmdline.h"
-#include "io.h"
+#include "stool/src/io.h"
 #include "stool/src/sa_bwt_lcp.hpp"
 #include "verification_attractor.hpp"
 //#include "minimal_substrings.hpp"
@@ -218,12 +218,13 @@ int main(int argc, char *argv[])
     }
     else
     {
-        /*
+        
         string log = "\"";
         for (uint64_t j = 0; j < freeIntervalIndexes.size(); j++)
         {
             LCPInterval<INDEX> interval = mstree.nodes[freeIntervalIndexes[j]];
-            string mstr = text.substr(sa[interval.i], interval.lcp);
+            string mstr(sa.begin()+interval.i, sa.begin()+interval.i + interval.lcp -1);
+            //string mstr = text.substr(sa[interval.i], interval.lcp);
             log.append(mstr);
             log.append("\" occs:");
 
@@ -249,7 +250,7 @@ int main(int argc, char *argv[])
             }
         }
         IO::write(outputFile, log);
-        */
+        
     }
 
     std::cout << "\033[36m";

@@ -4,13 +4,13 @@
 #include <algorithm>
 #include <set>
 #include "stool/src/cmdline.h"
-#include "io.h"
 #include "stool/src/io.hpp"
+#include "stool/src/io.h"
 #include "stool/src/sa_bwt_lcp.hpp"
 //#include "mstree.hpp"
 //#include "greedy_attractor.hpp"
 #include "lazy_uftree.hpp"
-#include "print.hpp"
+#include "stool/src/print.hpp"
 #include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
 
 using namespace std;

@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <set>
 #include "cmdline.h"
-#include "io.h"
+#include "stool/src/io.h"
 #include "sa_lcp.hpp"
 #include "verification_attractor.hpp"
 

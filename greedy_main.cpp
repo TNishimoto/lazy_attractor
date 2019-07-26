@@ -3,7 +3,7 @@
 #include <random>
 #include <algorithm>
 #include <set>
-#include "io.h"
+#include "stool/src/io.h"
 #include "stool/src/io.hpp"
 #include "stool/src/cmdline.h"
 

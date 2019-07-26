@@ -33,8 +33,13 @@ uint64_t LazyUFTree::getLongestLCPIntervalID(SINDEX pos)
             uint64_t parent = this->uftree.getParent(id);
             if (this->checkRemovedInterval(parent))
             {
+
+                #ifdef DEBUG
                 uint64_t p = this->uftree.unionParent(id);
                 assert(p != UINT64_MAX);
+                #else
+                this->uftree.unionParent(id);
+                #endif
             }
             else
             {
