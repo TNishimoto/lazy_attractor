@@ -22,12 +22,12 @@ DynamicIntervalTree::DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_in
 uint64_t DynamicIntervalTree::getTreeNodeID(SINDEX pos)
 {
     //uint64_t x = this->isa[pos];
-    return this->rangeArray.getParentMSIntervalID(pos);
+    return this->rangeArray.getLeafID(pos);
 }
 */
 uint64_t DynamicIntervalTree::getLongestLCPIntervalID(SINDEX pos)
 {
-    uint64_t id = this->rangeArray.getParentMSIntervalID(pos);
+    uint64_t id = this->rangeArray.getLeafID(pos);
     while (!this->uftree.isRoot(id))
     {
         if (this->checkRemovedInterval(id))
@@ -61,7 +61,7 @@ uint64_t DynamicIntervalTree::getLongestLCPIntervalID(SINDEX pos)
 
 bool DynamicIntervalTree::removeLongestLCPInterval(SINDEX pos)
 {
-    uint64_t id = this->rangeArray.getParentMSIntervalID(pos);
+    uint64_t id = this->rangeArray.getLeafID(pos);
     if (this->removeVec[id])
     {
         uint64_t result = this->uftree.unionParent(id);

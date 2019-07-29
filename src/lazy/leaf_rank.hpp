@@ -32,7 +32,7 @@ public:
 
   void construct(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, uint64_t textSize);
   // Return the leaf ID containing pos in minimal substring tree.
-  uint64_t getParentMSIntervalID(SINDEX pos)
+  uint64_t getLeafID(SINDEX pos)
   {
     return this->idVec[bv_rank(pos + 1) - 1];
   }
