@@ -9,7 +9,7 @@
 #include "stool/src/sa_bwt_lcp.hpp"
 //#include "mstree.hpp"
 //#include "greedy_attractor.hpp"
-#include "lazy_uftree.hpp"
+#include "lazy_attractor.hpp"
 #include "stool/src/print.hpp"
 #include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
 
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 
     auto start = std::chrono::system_clock::now();
     //LazyAttractorAlgorithm algo(text, intervals, parents);
-    LazyUFTree::computeAttractors(text, mstree.nodes, mstree.parents, attrs);
+    LazyAttractor::computeAttractors(text, mstree.nodes, mstree.parents, attrs);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 

@@ -1,11 +1,12 @@
 #include <stack>
 #include "stool/src/sa_bwt_lcp.hpp"
-#include "lazy_uftree.hpp"
+#include "dynamic_interval_tree.hpp"
+
 namespace stool
 {
 namespace lazy
 {
-LazyUFTree::LazyUFTree(vector<LCPInterval<uint64_t>> &_intervals, vector<uint64_t> &_parents, uint64_t textSize) : intervals(_intervals), parents(_parents)
+DynamicIntervalTree::DynamicIntervalTree(vector<LCPInterval<uint64_t>> &_intervals, vector<uint64_t> &_parents, uint64_t textSize) : intervals(_intervals), parents(_parents)
 {
 
     std::cout << "construct rangeArray" << std::endl;
@@ -17,15 +18,16 @@ LazyUFTree::LazyUFTree(vector<LCPInterval<uint64_t>> &_intervals, vector<uint64_
     this->uftree.initialize(_parents);
     std::cout << "[END]" << std::endl;
 }
-
-uint64_t LazyUFTree::getTreeNodeID(SINDEX pos)
+/*
+uint64_t DynamicIntervalTree::getTreeNodeID(SINDEX pos)
 {
     //uint64_t x = this->isa[pos];
     return this->rangeArray.getParentMSIntervalID(pos);
 }
-uint64_t LazyUFTree::getLongestLCPIntervalID(SINDEX pos)
+*/
+uint64_t DynamicIntervalTree::getLongestLCPIntervalID(SINDEX pos)
 {
-    uint64_t id = this->getTreeNodeID(pos);
+    uint64_t id = this->rangeArray.getParentMSIntervalID(pos);
     while (!this->uftree.isRoot(id))
     {
         if (this->checkRemovedInterval(id))
@@ -57,9 +59,9 @@ uint64_t LazyUFTree::getLongestLCPIntervalID(SINDEX pos)
     //return UINT64_MAX;
 }
 
-bool LazyUFTree::removeLongestLCPInterval(SINDEX pos)
+bool DynamicIntervalTree::removeLongestLCPInterval(SINDEX pos)
 {
-    uint64_t id = this->getTreeNodeID(pos);
+    uint64_t id = this->rangeArray.getParentMSIntervalID(pos);
     if (this->removeVec[id])
     {
         uint64_t result = this->uftree.unionParent(id);
@@ -76,11 +78,12 @@ bool LazyUFTree::removeLongestLCPInterval(SINDEX pos)
         return true;
     }
 }
-bool LazyUFTree::checkRemovedInterval(uint64_t intervalID)
+bool DynamicIntervalTree::checkRemovedInterval(uint64_t intervalID)
 {
     return this->removeVec[intervalID] || this->uftree.checkMerge(intervalID);
 }
-uint64_t LazyUFTree::removeMSIntervals(TINDEX pos, vector<uint64_t> &isa, TINDEX lastAttractor)
+/*
+uint64_t DynamicIntervalTree::removeMSIntervals(TINDEX pos, vector<uint64_t> &isa, TINDEX lastAttractor)
 {
     while (true)
     {
@@ -104,8 +107,9 @@ uint64_t LazyUFTree::removeMSIntervals(TINDEX pos, vector<uint64_t> &isa, TINDEX
     }
     return UINT64_MAX;
 }
+*/
 
-std::stack<MinimalSubstringInfo> LazyUFTree::constructSortedMinimumSubstrings(vector<uint64_t> &sa)
+std::stack<MinimalSubstringInfo> DynamicIntervalTree::constructSortedMinimumSubstrings(vector<uint64_t> &sa)
 {
     stack<MinimalSubstringInfo> outputSortedMinimumSubstrings;
     //vec.resize(intervals.size(), UINT64_MAX);
@@ -152,70 +156,6 @@ std::stack<MinimalSubstringInfo> LazyUFTree::constructSortedMinimumSubstrings(ve
     }
     return outputSortedMinimumSubstrings;
 }
-void LazyUFTree::computeAttractors(vector<uint8_t> &text, vector<LCPInterval<uint64_t>> &_intervals, vector<uint64_t> &_parents, vector<uint64_t> &outputAttrs)
-{
-    vector<uint64_t> sa = constructSA(text);
-    vector<uint64_t> isa = constructISA(text, sa);
 
-    LazyUFTree lufTree(_intervals, _parents, text.size());
-    //lufTree.initialize;
-    stack<MinimalSubstringInfo> sortedMinimumSubstrings = lufTree.constructSortedMinimumSubstrings(sa);
-    
-    while(sortedMinimumSubstrings.size() > 0){
-        auto top = sortedMinimumSubstrings.top();
-        if(outputAttrs.size() > 0){
-            assert(outputAttrs[outputAttrs.size()-1] != top.minOcc);
-        }
-
-        outputAttrs.push_back(top.minOcc);
-        //std::cout << top.minOcc << std::endl;
-        assert(lufTree.getLongestLCPIntervalID(isa[top.minOcc]) != UINT64_MAX);        
-        lufTree.removeMSIntervalsCapturedByTheLastAttractor(isa, top.minOcc, sortedMinimumSubstrings);
-    }
-    
-    /*
-    uint64_t n = sa.size();
-    uint64_t prevAttractorPosition = UINT64_MAX;
-    for (int64_t i = n - 1; i >= 0; i--)
-    {
-        //assert(i >= n-1);
-        if (i % 100000 == 0)
-            std::cout << "\r"
-                      << "Computing lazy attractors... : [" << (n - i) << "/" << n << "]" << std::flush;
-        lufTree.removeMSIntervals(i, isa, prevAttractorPosition);
-        
-
-        while (sortedMinimumSubstrings.size() > 0)
-        {
-            auto top = sortedMinimumSubstrings.top();
-            if ((int64_t)top.minOcc == i)
-            {
-                if (!lufTree.checkRemovedInterval(top.id))
-                {
-                    #ifdef DEBUG_PRINT
-                    std::cout << "attr: " << top.minOcc << std::endl;
-                    #endif
-                    outputAttrs.push_back(i);
-                    prevAttractorPosition = i;
-                    lufTree.removeMSIntervals(i, isa, prevAttractorPosition);
-
-                    //this->addAttractor(i, outputAttrs);
-                }
-                assert(lufTree.checkRemovedInterval(top.id));
-
-                sortedMinimumSubstrings.pop();
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-    */
-    
-    std::cout << std::endl;
-
-    sort(outputAttrs.begin(), outputAttrs.end());
-}
 } // namespace lazy
 } // namespace stool

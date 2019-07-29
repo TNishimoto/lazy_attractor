@@ -16,7 +16,7 @@ namespace stool
 class LazyAttractorAlgorithm
 {
   /*
-  LazyUFTree lufTree;
+  DynamicIntervalTree lufTree;
   stack<std::pair<uint64_t, uint64_t>> sortedMinimumSubstrings;
   vector<uint64_t> sa;
   vector<uint64_t> isa;
