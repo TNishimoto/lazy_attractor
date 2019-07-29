@@ -48,11 +48,13 @@ uint64_t LazyUFTree::getLongestLCPIntervalID(SINDEX pos)
             }
         }
         else
-        {
+        {            
             return id;
         }
     }
-    return UINT64_MAX;
+    assert(!this->checkRemovedInterval(id));
+    return id;
+    //return UINT64_MAX;
 }
 
 bool LazyUFTree::removeLongestLCPInterval(SINDEX pos)
@@ -123,15 +125,15 @@ std::stack<MinimalSubstringInfo> LazyUFTree::constructSortedMinimumSubstrings(ve
         }
     }
 
-    vector<MinimalSubstringInfo> vec2;
-    vec2.resize(minimalOccurrenceVec.size());
+    vector<MinimalSubstringInfo> sortedMinimumSubstringVec;
+    sortedMinimumSubstringVec.resize(minimalOccurrenceVec.size());
 
     for (uint64_t i = 0; i < minimalOccurrenceVec.size(); i++)
     {
-        vec2[i] = MinimalSubstringInfo(i, minimalOccurrenceVec[i]);
+        sortedMinimumSubstringVec[i] = MinimalSubstringInfo(i, minimalOccurrenceVec[i]);
     }
 
-    sort(vec2.begin(), vec2.end(), [&](const MinimalSubstringInfo &x, const MinimalSubstringInfo &y) {
+    sort(sortedMinimumSubstringVec.begin(), sortedMinimumSubstringVec.end(), [&](const MinimalSubstringInfo &x, const MinimalSubstringInfo &y) {
         if (x.minOcc == y.minOcc)
         {
             return intervals[x.id].lcp > intervals[y.id].lcp;
@@ -142,9 +144,11 @@ std::stack<MinimalSubstringInfo> LazyUFTree::constructSortedMinimumSubstrings(ve
         }
     });
 
-    for (uint64_t i = 0; i < vec2.size(); i++)
+    for (uint64_t i = 0; i < sortedMinimumSubstringVec.size(); i++)
     {
-        outputSortedMinimumSubstrings.push(vec2[i]);
+        if(intervals[sortedMinimumSubstringVec[i].id].lcp != 0){
+            outputSortedMinimumSubstrings.push(sortedMinimumSubstringVec[i]);
+        }
     }
     return outputSortedMinimumSubstrings;
 }
@@ -156,16 +160,30 @@ void LazyUFTree::computeAttractors(vector<uint8_t> &text, vector<LCPInterval<uin
     LazyUFTree lufTree(_intervals, _parents, text.size());
     //lufTree.initialize;
     stack<MinimalSubstringInfo> sortedMinimumSubstrings = lufTree.constructSortedMinimumSubstrings(sa);
+    
+    while(sortedMinimumSubstrings.size() > 0){
+        auto top = sortedMinimumSubstrings.top();
+        if(outputAttrs.size() > 0){
+            assert(outputAttrs[outputAttrs.size()-1] != top.minOcc);
+        }
 
+        outputAttrs.push_back(top.minOcc);
+        //std::cout << top.minOcc << std::endl;
+        assert(lufTree.getLongestLCPIntervalID(isa[top.minOcc]) != UINT64_MAX);        
+        lufTree.removeMSIntervalsCapturedByTheLastAttractor(isa, top.minOcc, sortedMinimumSubstrings);
+    }
+    
+    /*
     uint64_t n = sa.size();
     uint64_t prevAttractorPosition = UINT64_MAX;
     for (int64_t i = n - 1; i >= 0; i--)
     {
-
+        //assert(i >= n-1);
         if (i % 100000 == 0)
             std::cout << "\r"
                       << "Computing lazy attractors... : [" << (n - i) << "/" << n << "]" << std::flush;
         lufTree.removeMSIntervals(i, isa, prevAttractorPosition);
+        
 
         while (sortedMinimumSubstrings.size() > 0)
         {
@@ -174,12 +192,16 @@ void LazyUFTree::computeAttractors(vector<uint8_t> &text, vector<LCPInterval<uin
             {
                 if (!lufTree.checkRemovedInterval(top.id))
                 {
+                    #ifdef DEBUG_PRINT
+                    std::cout << "attr: " << top.minOcc << std::endl;
+                    #endif
                     outputAttrs.push_back(i);
                     prevAttractorPosition = i;
                     lufTree.removeMSIntervals(i, isa, prevAttractorPosition);
 
                     //this->addAttractor(i, outputAttrs);
                 }
+                assert(lufTree.checkRemovedInterval(top.id));
 
                 sortedMinimumSubstrings.pop();
             }
@@ -189,6 +211,8 @@ void LazyUFTree::computeAttractors(vector<uint8_t> &text, vector<LCPInterval<uin
             }
         }
     }
+    */
+    
     std::cout << std::endl;
 
     sort(outputAttrs.begin(), outputAttrs.end());

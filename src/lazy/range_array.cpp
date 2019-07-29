@@ -103,6 +103,7 @@ void SAPositionToMSLeaf::construct(vector<LCPInterval<uint64_t>> &intervals, vec
     vector<std::pair<uint64_t, uint64_t>> startingPositionVec;
     for (uint64_t i = 0; i < intervals.size(); i++)
     {
+
         auto &interval = intervals[i];
         uint64_t left = interval.i;
         for (uint64_t x = 0; x < childrens[i].size(); x++)
