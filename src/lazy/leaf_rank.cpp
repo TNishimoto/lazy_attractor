@@ -1,5 +1,5 @@
 #include <stack>
-#include "range_array.hpp"
+#include "leaf_rank.hpp"
 using namespace std;
 using namespace sdsl;
 
@@ -7,7 +7,7 @@ namespace stool
 {
 namespace lazy
 {
-void SAPositionToMSLeaf::checkRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents)
+void LeafRankDataStructure::checkRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents)
 {
     uint64_t size = intervals.size();
     for (uint64_t i = 0; i < size; i++)
@@ -40,7 +40,7 @@ void SAPositionToMSLeaf::checkRangeArray(vector<LCPInterval<uint64_t>> &interval
                       << "checking RangeArray... : [" << i << "/" << (size) << "]" << std::flush;
     }
 }
-void SAPositionToMSLeaf::constructRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t textSize)
+void LeafRankDataStructure::constructRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t textSize)
 {
     vector<vector<uint64_t>> childrens;
     childrens.resize(intervals.size());
@@ -81,7 +81,7 @@ void SAPositionToMSLeaf::constructRangeArray(vector<LCPInterval<uint64_t>> &inte
     //checkRangeArray(intervals, parents);
 }
 
-void SAPositionToMSLeaf::construct(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t textSize)
+void LeafRankDataStructure::construct(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t textSize)
 {
     vector<vector<uint64_t>> childrens;
     childrens.resize(intervals.size());

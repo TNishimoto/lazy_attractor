@@ -1,9 +1,9 @@
 #pragma once
 //#include "stool/src/io.h"
 #include <stack>
-#include "uftree.hpp"
+#include "union_find_tree.hpp"
 #include "stool/src/sa_bwt_lcp.hpp"
-#include "range_array.hpp"
+#include "leaf_rank.hpp"
 using namespace sdsl;
 
 namespace stool
@@ -26,11 +26,11 @@ struct MinimalSubstringInfo
 class DynamicIntervalTree
 {
 private:
-  UFTree uftree;
+  UnionFindTree uftree;
   std::vector<bool> removeVec;
   std::vector<LCPInterval<uint64_t>> &intervals;
   std::vector<uint64_t> &parents;
-  SAPositionToMSLeaf rangeArray;
+  LeafRankDataStructure rangeArray;
 public:
 
   DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize);

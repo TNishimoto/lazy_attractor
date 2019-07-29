@@ -2,22 +2,23 @@
 //#include "io.h"
 #include <stack>
 #include "union_find.hpp"
-using namespace std;
+#include <vector>
+//using namespace std;
 
 namespace stool
 {
 namespace lazy
 {
 // Union-Find Tree
-class UFTree
+class UnionFindTree
 {
 public:
   using CINDEX = uint64_t;
 
 private:
-  vector<CINDEX> clusterRootIDVec;
-  vector<bool> mergeVec;
-  vector<uint64_t> *parentVec;
+  std::vector<CINDEX> clusterRootIDVec;
+  std::vector<bool> mergeVec;
+  std::vector<uint64_t> *parentVec;
 
   UnionFind uf;
 
@@ -30,7 +31,7 @@ public:
     }
     */
 
-  void initialize(vector<uint64_t> &_parentVec);
+  void initialize(std::vector<uint64_t> &_parentVec);
   /*
    Return the cluster id of the given node id i.
    */

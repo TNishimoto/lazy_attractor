@@ -2,6 +2,8 @@
 //#include "io.h"
 #include <stack>
 #include <vector>
+#include <cstdint>
+#include <string>
 
 namespace stool
 {

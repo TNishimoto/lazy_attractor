@@ -1,5 +1,5 @@
 #include <cassert>
-#include "uftree.hpp"
+#include "union_find_tree.hpp"
 
 using namespace std;
 
@@ -7,12 +7,12 @@ namespace stool
 {
 namespace lazy
 {
-uint64_t UFTree::size()
+uint64_t UnionFindTree::size()
 {
     return this->parentVec->size();
 }
 
-void UFTree::initialize(vector<uint64_t> &_parentVec)
+void UnionFindTree::initialize(vector<uint64_t> &_parentVec)
 {
     this->parentVec = &_parentVec;
     //this->parentVec.swap(_parentVec);
@@ -27,7 +27,7 @@ void UFTree::initialize(vector<uint64_t> &_parentVec)
     this->mergeVec.resize(this->size(), false);
 }
 
-UFTree::CINDEX UFTree::getClusterID(UnionFind::GINDEX node)
+UnionFindTree::CINDEX UnionFindTree::getClusterID(UnionFind::GINDEX node)
 {
     UnionFind::GINDEX id = uf.find(node);
     CINDEX clusterID = clusterRootIDVec[id];
@@ -35,7 +35,7 @@ UFTree::CINDEX UFTree::getClusterID(UnionFind::GINDEX node)
 
     return clusterID;
 }
-UFTree::CINDEX UFTree::getParent(UnionFind::GINDEX i)
+UnionFindTree::CINDEX UnionFindTree::getParent(UnionFind::GINDEX i)
 {
     CINDEX clusterID = this->getClusterID(i);
     UnionFind::GINDEX parentID = (*this->parentVec)[clusterID];
@@ -47,7 +47,7 @@ UFTree::CINDEX UFTree::getParent(UnionFind::GINDEX i)
 
     return clusterParentID;
 }
-UFTree::CINDEX UFTree::unionParent(UnionFind::GINDEX i)
+UnionFindTree::CINDEX UnionFindTree::unionParent(UnionFind::GINDEX i)
 {
     CINDEX clusterID = this->getClusterID(i);
     CINDEX parentID = this->getParent(i);
@@ -65,13 +65,13 @@ UFTree::CINDEX UFTree::unionParent(UnionFind::GINDEX i)
 
     return parentID;
 }
-bool UFTree::isRoot(UnionFind::GINDEX i)
+bool UnionFindTree::isRoot(UnionFind::GINDEX i)
 {
     uint64_t parentID = this->getParent(i);
     return parentID == UINT64_MAX;
 }
 
-bool UFTree::checkMerge(UnionFind::GINDEX i)
+bool UnionFindTree::checkMerge(UnionFind::GINDEX i)
 {
     uint64_t clusterID = this->getClusterID(i);
     return this->mergeVec[clusterID];

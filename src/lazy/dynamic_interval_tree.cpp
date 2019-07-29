@@ -6,7 +6,7 @@ namespace stool
 {
 namespace lazy
 {
-DynamicIntervalTree::DynamicIntervalTree(vector<LCPInterval<uint64_t>> &_intervals, vector<uint64_t> &_parents, uint64_t textSize) : intervals(_intervals), parents(_parents)
+DynamicIntervalTree::DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize) : intervals(_intervals), parents(_parents)
 {
 
     std::cout << "construct rangeArray" << std::endl;
@@ -14,7 +14,7 @@ DynamicIntervalTree::DynamicIntervalTree(vector<LCPInterval<uint64_t>> &_interva
 
     this->removeVec.resize(_intervals.size() - 1, false);
 
-    std::cout << "Constructing UFTree..." << std::flush;
+    std::cout << "Constructing UnionFindTree..." << std::flush;
     this->uftree.initialize(_parents);
     std::cout << "[END]" << std::endl;
 }
@@ -109,13 +109,13 @@ uint64_t DynamicIntervalTree::removeMSIntervals(TINDEX pos, vector<uint64_t> &is
 }
 */
 
-std::stack<MinimalSubstringInfo> DynamicIntervalTree::constructSortedMinimumSubstrings(vector<uint64_t> &sa)
+std::stack<MinimalSubstringInfo> DynamicIntervalTree::constructSortedMinimumSubstrings(std::vector<uint64_t> &sa)
 {
-    stack<MinimalSubstringInfo> outputSortedMinimumSubstrings;
+    std::stack<MinimalSubstringInfo> outputSortedMinimumSubstrings;
     //vec.resize(intervals.size(), UINT64_MAX);
-    vector<uint64_t> &parents = this->parents;
+    std::vector<uint64_t> &parents = this->parents;
 
-    vector<uint64_t> minimalOccurrenceVec = this->rangeArray.constructMinimalOccurrenceVec(sa, intervals.size());
+    std::vector<uint64_t> minimalOccurrenceVec = this->rangeArray.constructMinimalOccurrenceVec(sa, intervals.size());
 
     for (int64_t i = this->intervals.size() - 1; i >= 0; i--)
     {
@@ -129,7 +129,7 @@ std::stack<MinimalSubstringInfo> DynamicIntervalTree::constructSortedMinimumSubs
         }
     }
 
-    vector<MinimalSubstringInfo> sortedMinimumSubstringVec;
+    std::vector<MinimalSubstringInfo> sortedMinimumSubstringVec;
     sortedMinimumSubstringVec.resize(minimalOccurrenceVec.size());
 
     for (uint64_t i = 0; i < minimalOccurrenceVec.size(); i++)

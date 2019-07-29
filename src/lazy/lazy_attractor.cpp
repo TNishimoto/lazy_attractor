@@ -4,7 +4,7 @@ namespace stool
 {
 namespace lazy
 {
-bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttractor, std::vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &isa, DynamicIntervalTree &tree, stack<MinimalSubstringInfo> &sortedMinimumSubstrings)
+bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttractor, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &isa, DynamicIntervalTree &tree, std::stack<MinimalSubstringInfo> &sortedMinimumSubstrings)
 {
     int64_t currentPos = (int64_t)lastAttractor;
     while (sortedMinimumSubstrings.size() > 0)
@@ -58,14 +58,14 @@ bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttra
     }
     return false;
 }
-void LazyAttractor::computeAttractors(vector<uint8_t> &text, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, std::vector<uint64_t> &outputAttrs)
+void LazyAttractor::computeAttractors(std::vector<uint8_t> &text, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, std::vector<uint64_t> &outputAttrs)
 {
-    vector<uint64_t> sa = constructSA(text);
-    vector<uint64_t> isa = constructISA(text, sa);
+    std::vector<uint64_t> sa = constructSA(text);
+    std::vector<uint64_t> isa = constructISA(text, sa);
 
     DynamicIntervalTree lufTree(_intervals, _parents, text.size());
     //lufTree.initialize;
-    stack<MinimalSubstringInfo> sortedMinimumSubstrings = lufTree.constructSortedMinimumSubstrings(sa);
+   std::stack<MinimalSubstringInfo> sortedMinimumSubstrings = lufTree.constructSortedMinimumSubstrings(sa);
 
     while (sortedMinimumSubstrings.size() > 0)
     {
@@ -83,7 +83,7 @@ void LazyAttractor::computeAttractors(vector<uint8_t> &text, std::vector<LCPInte
 
     std::cout << std::endl;
 
-    sort(outputAttrs.begin(), outputAttrs.end());
+    std::sort(outputAttrs.begin(), outputAttrs.end());
 }
 } // namespace lazy
 } // namespace stool

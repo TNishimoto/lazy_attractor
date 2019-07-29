@@ -23,7 +23,7 @@ class LazyAttractorAlgorithm
   */
   //uint64_t getTextSize();
   //static void constructSortedMinimumSubstrings(vector<LCPInterval> &intervals, vector<uint64_t> &sa,stack<std::pair<uint64_t, uint64_t>> &outputSortedMinimumSubstrings);
-  //static void constructSortedMinimumSubstrings(vector<LCPInterval> &intervals, vector<uint64_t> &parents, vector<uint64_t> &sa, RangeArrayForUFTree &rangeArray,stack<std::pair<uint64_t, uint64_t>> &outputSortedMinimumSubstrings);
+  //static void constructSortedMinimumSubstrings(vector<LCPInterval> &intervals, vector<uint64_t> &parents, vector<uint64_t> &sa, RangeArrayForUnionFindTree &rangeArray,stack<std::pair<uint64_t, uint64_t>> &outputSortedMinimumSubstrings);
 
 public:
 

@@ -16,7 +16,7 @@ using TINDEX = uint64_t;
 
 // This data structure supports the function which
 // receives a position i on suffix array and returns the leaf ID containing i in minimal substring tree.
-class SAPositionToMSLeaf
+class LeafRankDataStructure
 {
   std::vector<uint64_t> idVec;
   bit_vector startingPositions;
@@ -26,7 +26,7 @@ class SAPositionToMSLeaf
   static void constructRangeArray(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, uint64_t textSize);
 
 public:
-  SAPositionToMSLeaf()
+  LeafRankDataStructure()
   {
   }
 

@@ -7,6 +7,8 @@
 #include "stool/src/io.hpp"
 #include "stool/src/sa_bwt_lcp.hpp"
 #include <set>
+#include <chrono>
+
 //using namespace std;
 
 namespace std
