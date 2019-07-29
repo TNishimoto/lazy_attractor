@@ -1,7 +1,7 @@
 #pragma once
 //#include "io.h"
 #include <stack>
-#include "uftree.hpp"
+//#include "uftree.hpp"
 #include "stool/src/sa_bwt_lcp.hpp"
 #include <sdsl/bit_vectors.hpp>
 #include <sdsl/int_vector.hpp>
@@ -37,8 +37,9 @@ public:
     return this->idVec[bv_rank(pos + 1) - 1];
   }
   // Construct the array such that outputVec[i] stores the leftmost occurrence of the $i$-th minimal substring.
-  void constructMinimalOccurrenceVec(std::vector<uint64_t> &sa, uint64_t intervalCount, std::vector<uint64_t> &outputVec)
+  std::vector<uint64_t> constructMinimalOccurrenceVec(std::vector<uint64_t> &sa, uint64_t intervalCount)
   {
+    std::vector<uint64_t> outputVec;
     outputVec.resize(intervalCount, UINT64_MAX);
     int64_t p = -1;
     for (int64_t i = 0; i < (int64_t)this->startingPositions.size(); i++)
@@ -53,6 +54,7 @@ public:
         outputVec[this->idVec[p]] = index;
       }
     }
+    return outputVec;
   }
 };
 } // namespace lazy

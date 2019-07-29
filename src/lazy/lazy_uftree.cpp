@@ -103,57 +103,42 @@ uint64_t LazyUFTree::removeMSIntervals(TINDEX pos, vector<uint64_t> &isa, TINDEX
     return UINT64_MAX;
 }
 
-void LazyUFTree::constructSortedMinimumSubstrings(vector<uint64_t> &sa, stack<std::pair<uint64_t, uint64_t>> &outputSortedMinimumSubstrings)
+std::stack<MinimalSubstringInfo> LazyUFTree::constructSortedMinimumSubstrings(vector<uint64_t> &sa)
 {
-    vector<uint64_t> vec;
+    stack<MinimalSubstringInfo> outputSortedMinimumSubstrings;
     //vec.resize(intervals.size(), UINT64_MAX);
     vector<uint64_t> &parents = this->parents;
 
-    this->rangeArray.constructMinimalOccurrenceVec(sa, intervals.size(), vec);
-    /*
-    int64_t p = -1;
-    for (int64_t i = 0; i < this->rangeArray.startingPositions.size(); i++)
-    {
-        if (this->rangeArray.startingPositions[i] == 1)
-        {
-            p++;
-        }
-        uint64_t index = sa[i];
-        if (index < vec[this->rangeArray.idVec[p]])
-        {
-            vec[this->rangeArray.idVec[p]] = index;
-        }
-    }
-    */
+    vector<uint64_t> minimalOccurrenceVec = this->rangeArray.constructMinimalOccurrenceVec(sa, intervals.size());
 
     for (int64_t i = this->intervals.size() - 1; i >= 0; i--)
     {
-        assert(vec[i] != UINT64_MAX);
+        assert(minimalOccurrenceVec[i] != UINT64_MAX);
         if (parents[i] != UINT64_MAX)
         {
-            if (vec[i] < vec[parents[i]])
+            if (minimalOccurrenceVec[i] < minimalOccurrenceVec[parents[i]])
             {
-                vec[parents[i]] = vec[i];
+                minimalOccurrenceVec[parents[i]] = minimalOccurrenceVec[i];
             }
         }
     }
 
-    vector<std::pair<uint64_t, uint64_t>> vec2;
-    vec2.resize(vec.size());
+    vector<MinimalSubstringInfo> vec2;
+    vec2.resize(minimalOccurrenceVec.size());
 
-    for (uint64_t i = 0; i < vec.size(); i++)
+    for (uint64_t i = 0; i < minimalOccurrenceVec.size(); i++)
     {
-        vec2[i] = std::pair<uint64_t, uint64_t>(i, vec[i]);
+        vec2[i] = MinimalSubstringInfo(i, minimalOccurrenceVec[i]);
     }
 
-    sort(vec2.begin(), vec2.end(), [&](const std::pair<uint64_t, uint64_t> &x, const std::pair<uint64_t, uint64_t> &y) {
-        if (x.second == y.second)
+    sort(vec2.begin(), vec2.end(), [&](const MinimalSubstringInfo &x, const MinimalSubstringInfo &y) {
+        if (x.minOcc == y.minOcc)
         {
-            return intervals[x.first].lcp > intervals[y.first].lcp;
+            return intervals[x.id].lcp > intervals[y.id].lcp;
         }
         else
         {
-            return x.second < y.second;
+            return x.minOcc < y.minOcc;
         }
     });
 
@@ -161,16 +146,16 @@ void LazyUFTree::constructSortedMinimumSubstrings(vector<uint64_t> &sa, stack<st
     {
         outputSortedMinimumSubstrings.push(vec2[i]);
     }
+    return outputSortedMinimumSubstrings;
 }
 void LazyUFTree::computeAttractors(vector<uint8_t> &text, vector<LCPInterval<uint64_t>> &_intervals, vector<uint64_t> &_parents, vector<uint64_t> &outputAttrs)
 {
-    stack<std::pair<uint64_t, uint64_t>> sortedMinimumSubstrings;
     vector<uint64_t> sa = constructSA(text);
     vector<uint64_t> isa = constructISA(text, sa);
 
     LazyUFTree lufTree(_intervals, _parents, text.size());
     //lufTree.initialize;
-    lufTree.constructSortedMinimumSubstrings(sa, sortedMinimumSubstrings);
+    stack<MinimalSubstringInfo> sortedMinimumSubstrings = lufTree.constructSortedMinimumSubstrings(sa);
 
     uint64_t n = sa.size();
     uint64_t prevAttractorPosition = UINT64_MAX;
@@ -185,9 +170,9 @@ void LazyUFTree::computeAttractors(vector<uint8_t> &text, vector<LCPInterval<uin
         while (sortedMinimumSubstrings.size() > 0)
         {
             auto top = sortedMinimumSubstrings.top();
-            if ((int64_t)top.second == i)
+            if ((int64_t)top.minOcc == i)
             {
-                if (!lufTree.checkRemovedInterval(top.first))
+                if (!lufTree.checkRemovedInterval(top.id))
                 {
                     outputAttrs.push_back(i);
                     prevAttractorPosition = i;
