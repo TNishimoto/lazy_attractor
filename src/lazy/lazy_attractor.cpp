@@ -62,15 +62,15 @@ std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> 
 {
     std::vector<uint64_t> sa = constructSA(text);
     std::vector<uint64_t> isa = constructISA(text, sa);
-    return computeLazyAttractors(text,sa,isa,_intervals,_parents);
-
+    return computeLazyAttractors(text, sa, isa, _intervals, _parents);
 }
 
-std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> &text, std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents){
+std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> &text, std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents)
+{
     std::vector<uint64_t> outputAttrs;
     DynamicIntervalTree lufTree(_intervals, _parents, text.size());
     //lufTree.initialize;
-   std::stack<MinimalSubstringInfo> sortedMinimumSubstrings = lufTree.constructSortedMinimumSubstrings(sa);
+    std::stack<MinimalSubstringInfo> sortedMinimumSubstrings = lufTree.constructSortedMinimumSubstrings(sa);
 
     while (sortedMinimumSubstrings.size() > 0)
     {
@@ -88,6 +88,71 @@ std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> 
 
     std::cout << std::endl;
 
+    std::sort(outputAttrs.begin(), outputAttrs.end());
+    return outputAttrs;
+}
+
+std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<uint8_t> &text, std::vector<LCPInterval<uint64_t>> &intervals)
+{
+    std::vector<uint64_t> sa = constructSA(text);
+    std::vector<uint64_t> minOccVec;
+    minOccVec.resize(intervals.size(), UINT64_MAX);
+
+    std::unordered_set<uint64_t> currentIntervals;
+    for (uint64_t i = 0; i < intervals.size(); i++)
+    {
+        if (intervals[i].lcp != 0)
+        {
+            currentIntervals.insert(i);
+            LCPInterval<uint64_t> &interval = intervals[i];
+
+            for (uint64_t x = interval.i; x <= interval.j; x++)
+            {
+                if (minOccVec[i] > sa[x])
+                {
+                    minOccVec[i] = sa[x];
+                }
+            }
+        }
+    }
+    std::vector<uint64_t> outputAttrs;
+    uint64_t counter = 0;
+    while (currentIntervals.size() > 0)
+    {
+        if (counter++ % 100 == 0)
+        {
+            std::cout << "\r"
+                      << "Computing Lazy Attractors : [" << currentIntervals.size() << "/" << intervals.size() << "]\r" << std::flush;
+        }
+        uint64_t max_occ = 0;
+        for (auto &it : currentIntervals)
+        {
+            if (minOccVec[it] > max_occ)
+            {
+                max_occ = minOccVec[it];
+            }
+        }
+        outputAttrs.push_back(max_occ);
+        //std::cout << max_occ << ", " << std::flush;
+        std::vector<uint64_t> tmp;
+        for (auto &it : currentIntervals)
+        {
+            LCPInterval<uint64_t> &interval = intervals[it];
+            for (uint64_t x = interval.i; x <= interval.j; x++)
+            {
+                if (sa[x] <= max_occ && max_occ <= sa[x] + interval.lcp - 1)
+                {
+                    tmp.push_back(it);
+                    break;
+                }
+            }
+        }
+        for (auto &it : tmp)
+        {
+            currentIntervals.erase(it);
+        }
+    }
+    std::cout << std::endl;
     std::sort(outputAttrs.begin(), outputAttrs.end());
     return outputAttrs;
 }

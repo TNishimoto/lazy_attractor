@@ -130,7 +130,7 @@ public:
             while (true)
             {
                 uint64_t id = this->tree.getLowestLCPIntervalID(sa_index);
-                if (intervals[id].lcp > i)
+                if ((int64_t)intervals[id].lcp > i)
                 {
                     r.push_back(id);
                     std::cout << "add id " << id << std::endl;

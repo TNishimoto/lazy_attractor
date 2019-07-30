@@ -96,7 +96,7 @@ public:
         */
         std::cout << "Initialize Greedy Data Structures[END]" << std::endl;
 
-        double elapsed1, elapsed2, elapsed3;
+        double elapsed1, elapsed2;
 
         //uint64_t startPosition = 0;
         uint64_t remainingPositionCount = sa.size();
