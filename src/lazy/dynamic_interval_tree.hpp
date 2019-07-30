@@ -39,6 +39,21 @@ public:
   bool removeLowestLCPInterval(SINDEX sa_index);
   bool checkRemovedInterval(uint64_t intervalID);
   std::stack<MinimalSubstringInfo> constructSortedMinimumSubstrings(std::vector<uint64_t> &sa);
+
+  
+  std::vector<uint64_t> constructLeafIDVec(uint64_t textSize){
+    
+    std::vector<uint64_t> r;
+    r.resize(textSize, UINT64_MAX);
+    for (uint64_t i = 0; i < textSize; i++)
+    {
+      r[i] = this->getLowestLCPIntervalID(i);
+     // if(r[i] == UINT64_MAX){
+      //  r[i] = 0;
+      //}
+    }
+    return r;
+  }
 };
 
 } // namespace lazy

@@ -15,12 +15,13 @@ namespace lazy
 {
 class FasterGreedyAttractor
 {
-    static std::vector<LCPInterval<uint64_t>> getCoveringIntervals(uint64_t pos, std::unordered_set<LCPInterval<uint64_t>> &currentIntervals, std::vector<uint64_t> &sa)
+    static std::vector<uint64_t> getCoveringIntervals(uint64_t pos, std::unordered_set<uint64_t> &currentIntervals, std::vector<LCPInterval<uint64_t>> &info, std::vector<uint64_t> &sa)
     {
-        std::vector<LCPInterval<uint64_t>> r;
+        std::vector<uint64_t> r;
         for (auto &it : currentIntervals)
         {
-            if (it.containsPosition(sa, pos))
+            LCPInterval<uint64_t> &interval = info[it];
+            if (interval.containsPosition(sa, pos))
             {
                 r.push_back(it);
             }
@@ -42,8 +43,9 @@ class FasterGreedyAttractor
                 {
                     uint64_t count = countVec[y];
                     freqRankMap[count].erase(y);
-                    if(count > 1){
-                        freqRankMap[count-1].insert(y);
+                    if (count > 1)
+                    {
+                        freqRankMap[count - 1].insert(y);
                     }
 
                     --countVec[y];
@@ -59,6 +61,7 @@ class FasterGreedyAttractor
 
         //std::cout << "b" << std::flush;
     }
+
 public:
     static void computeGreedyAttractors2(std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &outputAttrs)
     {
@@ -67,10 +70,11 @@ public:
 
         //Initialize
         std::cout << "Initialize Greedy Data Structures" << std::endl;
-        std::unordered_set<LCPInterval<uint64_t>> currentIntervals;
-        for (auto &it : intervals)
-        {
-            if(it.lcp != 0)currentIntervals.insert(it);
+        std::unordered_set<uint64_t> currentIntervals;
+        for (uint64_t i=0;i<intervals.size();i++)
+        {            
+            if (intervals[i].lcp != 0)
+                currentIntervals.insert(i);
         }
         std::vector<uint64_t> positionWeights = GreedyAttractorAlgorithm::computePositionWeights(sa, intervals);
         uint64_t maxFreq = *std::max_element(positionWeights.begin(), positionWeights.end());
@@ -130,50 +134,84 @@ public:
             }
             else
             {
+                //g.debug(currentIntervals, intervals, sa.size());
+
                 uint64_t maximalCoveredPos = *(maxFreqSet.begin());
                 outputAttrs.push_back(maximalCoveredPos);
 
                 auto start1 = std::chrono::system_clock::now();
-                std::vector<LCPInterval<uint64_t>> coveringIntervals = getCoveringIntervals(maximalCoveredPos, currentIntervals, sa);
+                //std::vector<uint64_t> coveringIntervals = getCoveringIntervals(maximalCoveredPos, currentIntervals,intervals, sa);
+                std::vector<uint64_t> coveringIntervals = g.getLCPIntervals(isa[maximalCoveredPos]);
                 auto end1 = std::chrono::system_clock::now();
                 elapsed1 = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start1).count();
 
-                std::vector<uint64_t> xx1 =  g.getLCPIntervals(isa[maximalCoveredPos]);
+                /*
                 std::vector<LCPInterval<uint64_t>> xx2;
-                for(uint64_t i=0;i<xx1.size();i++){
+                for (uint64_t i = 0; i < xx1.size(); i++)
+                {
                     xx2.push_back(intervals[xx1[i]]);
                 }
 
-                std::sort(coveringIntervals.begin(), coveringIntervals.end(), stool::esaxx::LCPIntervalComp<uint64_t>() );
-                std::sort(xx2.begin(), xx2.end(), stool::esaxx::LCPIntervalComp<uint64_t>() );
+                //std::sort(coveringIntervals.begin(), coveringIntervals.end(), stool::esaxx::LCPIntervalComp<uint64_t>());
 
-                std::cout << xx2.size() << "/" << coveringIntervals.size() << std::endl;
-                
-                std::cout << std::endl;
-                for(auto & it : coveringIntervals){
+                std::sort(coveringIntervals.begin(), coveringIntervals.end(), [&](uint64_t xi, uint64_t yi) {
+                    LCPInterval<uint64_t> &x = intervals[xi];
+                    LCPInterval<uint64_t> &y = intervals[yi];
+
+                    if (x.i == y.i)
+                    {
+                        if (x.j == y.j)
+                        {
+                            return x.lcp < y.lcp;
+                        }
+                        else
+                        {
+                            return x.j > y.j;
+                        }
+                    }
+                    else
+                    {
+                        return x.i < y.i;
+                    }
+                });
+
+                std::sort(xx2.begin(), xx2.end(), stool::esaxx::LCPIntervalComp<uint64_t>());
+                */
+
+                //std::cout << xx2.size() << "/" << coveringIntervals.size() << std::endl;
+
+                //std::cout << std::endl;
+                /* 
+                for (auto &it : coveringIntervals)
+                {
                     std::cout << it.to_string();
                 }
                 std::cout << std::endl;
-                for(auto & it : xx2){
+                for (auto &it : xx2)
+                {
                     std::cout << it.to_string();
                 }
                 std::cout << std::endl;
+                */
 
-                assert(xx2.size() == coveringIntervals.size());
+                //assert(xx2.size() == coveringIntervals.size());
 
-                std::cout << "counter: " << counter << std::endl;
-                if(counter > 100) throw -1;
-                
+                //std::cout << "counter: " << counter << std::endl;
+                /*
+                if (counter > 100)
+                    throw - 1;
+                */
 
                 removedFrequencySum = 0;
 
                 auto start2 = std::chrono::system_clock::now();
-                for (auto &coveringInterval : coveringIntervals)
+                for (auto &intervalID : coveringIntervals)
                 {
-                    std::pair<uint64_t, uint64_t> info = decrementCounts(coveringInterval, positionWeights, freqRankMap, sa);
+                    LCPInterval<uint64_t> interval = intervals[intervalID];
+                    std::pair<uint64_t, uint64_t> info = decrementCounts(interval, positionWeights, freqRankMap, sa);
                     remainingPositionCount -= info.first;
                     removedFrequencySum += info.second;
-                    currentIntervals.erase(coveringInterval);
+                    currentIntervals.erase(intervalID);
                 }
                 auto end2 = std::chrono::system_clock::now();
                 elapsed2 = std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count();
@@ -207,9 +245,8 @@ public:
                     //std::cout << "/" << std::flush;
                 }
                 */
-            counter++;
+                counter++;
             }
-
         }
         std::cout << std::endl;
         std::sort(outputAttrs.begin(), outputAttrs.end());

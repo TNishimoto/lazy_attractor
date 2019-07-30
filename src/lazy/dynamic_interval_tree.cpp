@@ -12,7 +12,7 @@ DynamicIntervalTree::DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_in
     std::cout << "construct rangeArray" << std::endl;
     rangeArray.construct(_intervals, _parents, textSize);
 
-    this->removeVec.resize(_intervals.size() - 1, false);
+    this->removeVec.resize(_intervals.size(), false);
 
     std::cout << "Constructing UnionFindTree..." << std::flush;
     this->uftree.initialize(_parents);
@@ -28,9 +28,16 @@ uint64_t DynamicIntervalTree::getTreeNodeID(SINDEX pos)
 uint64_t DynamicIntervalTree::getLowestLCPIntervalID(SINDEX sa_index)
 {
     uint64_t id = this->rangeArray.getLeafID(sa_index);
+    uint64_t clusterRootID = this->uftree.getClusterID(id);
+    return clusterRootID;
+    /*
+    uint64_t id = this->rangeArray.getLeafID(sa_index);
+
+    //std::cout << "af id " << id << std::endl;
     //uint64_t id = this->uftree.getClusterID(this->rangeArray.getLeafID(sa_index));
     while (!this->uftree.isRoot(id))
     {
+
         if (this->checkRemovedInterval(id))
         {
             //id = this->uftree.getParent(id);
@@ -52,19 +59,32 @@ uint64_t DynamicIntervalTree::getLowestLCPIntervalID(SINDEX sa_index)
         }
         else
         {
+
             return id;
         }
     }
-    assert(!this->checkRemovedInterval(id));
-    return id;
+    */
+    //assert(this->removeVec[id]);
+    //assert(!this->uftree.checkMerge(id));
+    //assert(!this->checkRemovedInterval(id));
+    //return id;
     //return UINT64_MAX;
 }
 
 bool DynamicIntervalTree::removeLowestLCPInterval(SINDEX sa_index)
 {
+    uint64_t leafID = this->getLowestLCPIntervalID(sa_index);
+    assert(!this->removeVec[leafID]);
+    uint64_t result = this->uftree.unionParent(leafID);
+    bool b = result != UINT64_MAX;
+
+    if (b)
+    {
+        this->removeVec[leafID] = true;
+    }
+    return b;
+    /*
     uint64_t id = this->rangeArray.getLeafID(sa_index);
-    //uint64_t id = this->uftree.getClusterID(this->rangeArray.getLeafID(sa_index));
-    //std::cout << this->removeVec[id] << std::endl;
     if (this->removeVec[id])
     {
         uint64_t result = this->uftree.unionParent(id);
@@ -80,9 +100,10 @@ bool DynamicIntervalTree::removeLowestLCPInterval(SINDEX sa_index)
     else
     {
         this->removeVec[id] = true;
-        //std::cout << "removed " << id << std::endl;
+        std::cout << "removed " << id << std::endl;
         return true;
     }
+    */
 }
 bool DynamicIntervalTree::checkRemovedInterval(uint64_t intervalID)
 {

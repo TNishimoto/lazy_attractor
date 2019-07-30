@@ -56,6 +56,45 @@ public:
     }
     return outputVec;
   }
+  static std::vector<uint64_t> constructLeafIDVec(std::unordered_set<uint64_t> &currentIntervals,std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize)
+  {
+    std::vector<uint64_t> r;
+    r.resize(textSize, UINT64_MAX);
+    std::vector<uint64_t> tmp;
+    for (auto &it : currentIntervals)
+    {
+      tmp.push_back(it);
+    }
+    std::sort(tmp.begin(), tmp.end(), [&](uint64_t xi, uint64_t yi) {
+      LCPInterval<uint64_t> &x = intervals[xi];
+      LCPInterval<uint64_t> &y = intervals[yi];
+
+      if (x.i == y.i)
+      {
+        if (x.j == y.j)
+        {
+          return x.lcp < y.lcp;
+        }
+        else
+        {
+          return x.j > y.j;
+        }
+      }
+      else
+      {
+        return x.i < y.i;
+      }
+    });
+    for (auto &it : tmp)
+    {
+      LCPInterval<uint64_t> &interval = intervals[it];
+      for (uint64_t x = interval.i; x <= interval.j; x++)
+      {
+        r[x] = it;
+      }
+    }
+    return r;
+  }
 };
 } // namespace lazy
 } // namespace stool

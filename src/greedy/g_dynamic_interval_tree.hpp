@@ -133,10 +133,10 @@ public:
                 if ((int64_t)intervals[id].lcp > i)
                 {
                     r.push_back(id);
-                    std::cout << "add id " << id << std::endl;
-                    assert(!this->tree.checkRemovedInterval(id));                    
+                    //std::cout << "add id " << id << std::endl;
+                    //assert(!this->tree.checkRemovedInterval(id));                    
                     this->tree.removeLowestLCPInterval(sa_index);
-                    assert(this->tree.checkRemovedInterval(id));
+                    //assert(this->tree.checkRemovedInterval(id));
                     
                     
                 }
@@ -160,6 +160,33 @@ public:
         }
 
         return r;
+    }
+    void debug(std::unordered_set<uint64_t> &currentIntervals, std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize){
+        std::vector<uint64_t> r1 = stool::lazy::LeafRankDataStructure::constructLeafIDVec(currentIntervals,intervals,textSize);
+        std::vector<uint64_t> r2 = this->tree.constructLeafIDVec(textSize);
+
+        for(uint64_t i=0;i<r1.size();i++){
+            if(r1[i] == UINT64_MAX){
+                r1[i] = 0;
+            }
+        }
+
+        assert(r1.size() == r2.size());
+        /*
+        for(uint64_t i=0;i<r1.size();i++){
+            std::cout << r1[i] << ", ";
+        }
+        std::cout << std::endl;
+
+        for(uint64_t i=0;i<r2.size();i++){
+            std::cout << r2[i] << ", ";
+        }
+        std::cout << std::endl;
+        */
+
+        for(uint64_t i=0;i<r1.size();i++){
+            assert(r1[i] == r2[i]);
+        }
     }
 };
 } // namespace lazy
