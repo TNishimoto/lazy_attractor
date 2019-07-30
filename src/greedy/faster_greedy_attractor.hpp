@@ -63,7 +63,7 @@ class FasterGreedyAttractor
     }
 
 public:
-    static void computeGreedyAttractors2(std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &outputAttrs)
+    static void computeGreedyAttractors(std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &outputAttrs)
     {
         std::vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructMSIntervalParents(intervals);
         GDynamicIntervalTree g(sa, isa, intervals, parents, sa.size());

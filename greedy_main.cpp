@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
     {
         //GreedyAttractorAlgorithm::computeGreedyAttractors(sa, mstree.nodes, blockSize, attrs);
     std::vector<INDEX> isa = stool::constructISA<CHAR, INDEX>(text, sa);
-        FasterGreedyAttractor::computeGreedyAttractors2(sa, isa, minimalSubstrings, attrs);
+        FasterGreedyAttractor::computeGreedyAttractors(sa, isa, minimalSubstrings, attrs);
         auto end = std::chrono::system_clock::now();
         double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 

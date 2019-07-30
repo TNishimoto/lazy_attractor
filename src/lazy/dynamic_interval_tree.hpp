@@ -23,6 +23,11 @@ struct MinimalSubstringInfo
   }
 };
 
+/*
+  This class stores LCP intervals as a tree and supports the following two operations.
+  (1) removeLowestLCPInterval : Remove the longest LCP interval containing the given sa-index. 
+  (2) getLowestLCPIntervalID : Return the longest LCP interval containing the given sa-index. 
+ */
 class DynamicIntervalTree
 {
 private:
@@ -35,9 +40,20 @@ public:
 
   DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize);
 
+  /*
+  Return the longest LCP interval containing the given sa-index in the interval tree. 
+  */
   uint64_t getLowestLCPIntervalID(SINDEX sa_index);
+  /*
+  Remove the longest LCP interval containing the given sa-index from the interval tree, and return true.
+  It returns false when such LCP interval does not exist.
+  */
   bool removeLowestLCPInterval(SINDEX sa_index);
   bool checkRemovedInterval(uint64_t intervalID);
+
+  /*
+  Return minimal substrings on the given suffix array. The minimal substrings are sorted in the order of the their minimal occrrences.
+   */
   std::stack<MinimalSubstringInfo> constructSortedMinimumSubstrings(std::vector<uint64_t> &sa);
 
   
@@ -48,9 +64,6 @@ public:
     for (uint64_t i = 0; i < textSize; i++)
     {
       r[i] = this->getLowestLCPIntervalID(i);
-     // if(r[i] == UINT64_MAX){
-      //  r[i] = 0;
-      //}
     }
     return r;
   }
