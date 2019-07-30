@@ -18,6 +18,8 @@ using namespace stool::lazy;
 
 int main(int argc, char *argv[])
 {
+    using CHAR = uint8_t;
+    using INDEX = uint64_t;
 #ifdef DEBUG
     std::cout << "\033[41m";
     std::cout << "DEBUG MODE!";
@@ -28,12 +30,12 @@ int main(int argc, char *argv[])
     p.add<std::string>("input_file", 'i', "Input text file name", true);
     p.add<std::string>("output_file", 'o', "(option) Output attractor file name(the default output name is 'input_file.greedy.attrs')", false, "");
     p.add<std::string>("output_type", 't', "(option) Output mode(binary or text)", false, "binary");
-    p.add<std::string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
+    //p.add<std::string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
     p.add<uint>("block_size", 'b', "(option) block size", false, 1000);
 
     p.parse_check(argc, argv);
     std::string inputFile = p.get<std::string>("input_file");
-    std::string mSubstrFile = p.get<std::string>("msubstr_file");
+    //std::string mSubstrFile = p.get<std::string>("msubstr_file");
     std::string outputFile = p.get<std::string>("output_file");
     std::string outputMode = p.get<std::string>("output_type");
     uint blockSize = p.get<uint>("block_size");
@@ -65,22 +67,40 @@ int main(int argc, char *argv[])
     std::vector<uint8_t> text = stool::load_text_from_file(inputFile, true); // input text
 
     // Loading Minimal Substrings
+    /*
     if (mSubstrFile.size() == 0)
     {
         mSubstrFile = inputFile + ".msub";
     }
-    stool::esaxx::MinimalSubstringTree<uint8_t, uint64_t> mstree;
-    mstree.loadOrConstruct(mSubstrFile, &text);
+    */
 
-    uint64_t mSubstrCount = mstree.nodes.size();
+    std::cout << "Constructing Suffix Array" << std::endl;
+    std::vector<INDEX> sa = stool::constructSA<CHAR, INDEX>(text);
+    std::cout << "Constructing LCP Array" << std::endl;
+    std::vector<INDEX> lcpArray = stool::constructLCP<CHAR, INDEX>(text, sa);
+    std::cout << "Constructing BWT" << std::endl;
+    std::vector<CHAR> bwt = stool::constructBWT<CHAR, INDEX>(text, sa);
+
+    std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructSortedMinimalSubstrings(bwt, sa, lcpArray);
+
+
+    lcpArray.resize(0);
+    lcpArray.shrink_to_fit();
+    bwt.resize(0);
+    bwt.shrink_to_fit();
+
+    //stool::esaxx::MinimalSubstringTree<uint8_t, uint64_t> mstree;
+    //mstree.loadOrConstruct(mSubstrFile, &text);
+
+    uint64_t mSubstrCount = minimalSubstrings.size();
 
     std::vector<uint64_t> attrs;
     auto start = std::chrono::system_clock::now();
-    std::vector<uint64_t> sa = stool::constructSA<uint8_t, uint64_t>(text);
+    //std::vector<uint64_t> sa = stool::constructSA<uint8_t, uint64_t>(text);
 
     if (outputMode == "weight")
     {
-        std::vector<uint64_t> weights = GreedyAttractorAlgorithm::computePositionWeights(sa, mstree.nodes);
+        std::vector<uint64_t> weights = GreedyAttractorAlgorithm::computePositionWeights(sa, minimalSubstrings);
         uint64_t sum = std::accumulate(weights.begin(), weights.end(), (uint64_t)0);
         auto end = std::chrono::system_clock::now();
         double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
@@ -101,7 +121,7 @@ int main(int argc, char *argv[])
     else
     {
         //GreedyAttractorAlgorithm::computeGreedyAttractors(sa, mstree.nodes, blockSize, attrs);
-        GreedyAttractorAlgorithm::computeGreedyAttractors2(sa, mstree.nodes, attrs);
+        GreedyAttractorAlgorithm::computeGreedyAttractors2(sa, minimalSubstrings, attrs);
         auto end = std::chrono::system_clock::now();
         double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 

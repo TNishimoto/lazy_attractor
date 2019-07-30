@@ -42,6 +42,18 @@ bool checkAttractorTextFile(string &text)
     }
     return true;
 }
+std::string substr(std::vector<uint8_t> &text, uint64_t i, uint64_t len){
+    std::string str;
+    str.resize(len);
+    for(uint64_t x=0;x<len;x++){
+        if(x+i >= text.size()){
+            throw -1;
+        }
+        str[x] = (char)text[x+i];
+    }
+    return str;
+}
+
 template <typename List>
 void split(const std::string &s, const std::string &delim, List &result)
 {
@@ -101,7 +113,7 @@ void loadAttractorFile(string attractorFile, string type, vector<uint64_t> &attr
     }
     else
     {
-        IO::load<uint64_t>(attractorFile, attractors, UINT64_MAX-1);
+        stool::load_vector(attractorFile, attractors);
     }
     sort(attractors.begin(), attractors.end());
 }
@@ -189,8 +201,7 @@ int main(int argc, char *argv[])
         std::cout << inputFile << " cannot open." << std::endl;
         return -1;
     }
-    //string text;
-    //IO::load(inputFile, text);
+
     vector<CHAR> text = stool::load_text_from_file(inputFile, true);
 
     // Loading Attractor File
@@ -202,15 +213,14 @@ int main(int argc, char *argv[])
     {
         mSubstrFile = inputFile + ".msub";
     }
-    stool::esaxx::MinimalSubstringTree<uint8_t, uint64_t> mstree;
-    //mstree.loadOrConstruct(text, mSubstrFile);
-    mstree.loadOrConstruct(mSubstrFile, &text);
+    std::vector<LCPInterval<INDEX>> minimalSubstrings;
+    stool::load_vector(mSubstrFile,minimalSubstrings);
 
-    vector<uint64_t> freeIntervalIndexes;
+
     auto start = std::chrono::system_clock::now();
     vector<uint64_t> sa = stool::constructSA(text);
     vector<uint64_t> isa = stool::constructISA(text, sa);
-    lazy::VerificationAttractor::getFreeIntervals(sa, isa, mstree.nodes, attractors, freeIntervalIndexes);
+     vector<uint64_t> freeIntervalIndexes = lazy::VerificationAttractor::getFreeIntervals(sa, isa, minimalSubstrings, attractors);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
@@ -219,16 +229,18 @@ int main(int argc, char *argv[])
     }
     else
     {
-        
         string log = "\"";
         for (uint64_t j = 0; j < freeIntervalIndexes.size(); j++)
         {
-            LCPInterval<INDEX> interval = mstree.nodes[freeIntervalIndexes[j]];
-            string mstr(sa.begin()+interval.i, sa.begin()+interval.i + interval.lcp -1);
+            LCPInterval<INDEX> interval = minimalSubstrings[freeIntervalIndexes[j]];
+            //uint64_t spos = *(sa.begin()+interval.i);
+            //string mstr(text.begin() + spos, text.begin()+ spos + interval.lcp -1);
+            string mstr = substr(text, sa[interval.i], interval.lcp);
             //string mstr = text.substr(sa[interval.i], interval.lcp);
             log.append(mstr);
-            log.append("\" occs:");
+            log.append("\" occs: ");
 
+            
             for (uint64_t x = interval.i; x <= interval.j; x++)
             {
                 uint64_t pos = sa[x];
@@ -249,6 +261,7 @@ int main(int argc, char *argv[])
                 log.append(", and so on");
                 break;
             }
+            
         }
         IO::write(outputFile, log);
         
@@ -260,7 +273,7 @@ int main(int argc, char *argv[])
     std::cout << "Attractor File : " << attractorFile << std::endl;
     std::cout << "The length of the input text (with last special marker) : " << text.size() << std::endl;
     double charperms = (double)text.size() / elapsed;
-    std::cout << "The number of minimal substrings : " << mstree.nodes.size() << std::endl;
+    std::cout << "The number of minimal substrings : " << minimalSubstrings.size() << std::endl;
     std::cout << "The number of attractors : " << attractors.size() << std::endl;
     std::cout << "Excecution time : " << ((uint64_t)elapsed) << "ms";
     std::cout << "[" << charperms << "chars/ms]" << std::endl;

@@ -17,18 +17,12 @@ namespace lazy
 class VerificationAttractor
 {
 public:
-    static void getFreeIntervals(std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &attractors, std::vector<uint64_t> &outputFreeIntervalIndexes)
+    static std::vector<uint64_t> getFreeIntervals(std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &attractors)
     {
+        std::vector<uint64_t> outputFreeIntervalIndexes;
+
         uint64_t n = sa.size();
-        //std::vector<uint64_t> isa, nearArr;
         int_vector<> v(n, INT64_MAX);
-        /*
-        isa.resize(n);
-        for (uint64_t i = 0; i < n; ++i)
-        {
-            isa[sa[i]] = i;
-        }
-        */
 
         uint64_t m = 0;
         for (uint64_t i = 0; i < n; i++)
@@ -47,6 +41,7 @@ public:
 
         for (uint64_t i = 0; i < intervals.size(); i++)
         {
+            if(intervals[i].lcp == 0) continue;
             uint64_t p = rmq(intervals[i].i, intervals[i].j);
             if (v[p] + 1 > intervals[i].lcp)
             {
@@ -57,6 +52,8 @@ public:
                           << "Checking attractors... : [" << i << "/" << intervals.size() << "]" << std::flush;
         }
         std::cout << std::endl;
+
+        return outputFreeIntervalIndexes;
     }
 };
 } // namespace lazy
