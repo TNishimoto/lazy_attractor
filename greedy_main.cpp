@@ -9,7 +9,8 @@
 
 #include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
 //#include "sa.hpp"
-#include "greedy_attractor.hpp"
+#include "greedy/greedy_attractor.hpp"
+#include "greedy/faster_greedy_attractor.hpp"
 
 //using namespace std;
 //using namespace sdsl;
@@ -121,7 +122,8 @@ int main(int argc, char *argv[])
     else
     {
         //GreedyAttractorAlgorithm::computeGreedyAttractors(sa, mstree.nodes, blockSize, attrs);
-        GreedyAttractorAlgorithm::computeGreedyAttractors2(sa, minimalSubstrings, attrs);
+    std::vector<INDEX> isa = stool::constructISA<CHAR, INDEX>(text, sa);
+        FasterGreedyAttractor::computeGreedyAttractors2(sa, isa, minimalSubstrings, attrs);
         auto end = std::chrono::system_clock::now();
         double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 

@@ -28,6 +28,7 @@ uint64_t DynamicIntervalTree::getTreeNodeID(SINDEX pos)
 uint64_t DynamicIntervalTree::getLowestLCPIntervalID(SINDEX sa_index)
 {
     uint64_t id = this->rangeArray.getLeafID(sa_index);
+    //uint64_t id = this->uftree.getClusterID(this->rangeArray.getLeafID(sa_index));
     while (!this->uftree.isRoot(id))
     {
         if (this->checkRemovedInterval(id))
@@ -50,7 +51,7 @@ uint64_t DynamicIntervalTree::getLowestLCPIntervalID(SINDEX sa_index)
             }
         }
         else
-        {            
+        {
             return id;
         }
     }
@@ -62,10 +63,14 @@ uint64_t DynamicIntervalTree::getLowestLCPIntervalID(SINDEX sa_index)
 bool DynamicIntervalTree::removeLowestLCPInterval(SINDEX sa_index)
 {
     uint64_t id = this->rangeArray.getLeafID(sa_index);
+    //uint64_t id = this->uftree.getClusterID(this->rangeArray.getLeafID(sa_index));
+    std::cout << this->removeVec[id] << std::endl;
     if (this->removeVec[id])
     {
         uint64_t result = this->uftree.unionParent(id);
         bool b = result != UINT64_MAX;
+        std::cout << b << std::endl;
+
         if (b)
         {
             this->removeVec[id] = true;
@@ -75,12 +80,14 @@ bool DynamicIntervalTree::removeLowestLCPInterval(SINDEX sa_index)
     else
     {
         this->removeVec[id] = true;
+        std::cout << "removed " << id << std::endl;
         return true;
     }
 }
 bool DynamicIntervalTree::checkRemovedInterval(uint64_t intervalID)
 {
     return this->removeVec[intervalID] || this->uftree.checkMerge(intervalID);
+    //return this->removeVec[intervalID];
 }
 /*
 uint64_t DynamicIntervalTree::removeMSIntervals(TINDEX pos, vector<uint64_t> &isa, TINDEX lastAttractor)
@@ -150,7 +157,8 @@ std::stack<MinimalSubstringInfo> DynamicIntervalTree::constructSortedMinimumSubs
 
     for (uint64_t i = 0; i < sortedMinimumSubstringVec.size(); i++)
     {
-        if(intervals[sortedMinimumSubstringVec[i].id].lcp != 0){
+        if (intervals[sortedMinimumSubstringVec[i].id].lcp != 0)
+        {
             outputSortedMinimumSubstrings.push(sortedMinimumSubstringVec[i]);
         }
     }

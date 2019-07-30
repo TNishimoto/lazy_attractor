@@ -4,50 +4,29 @@
 #include <memory>
 #include <map>
 #include <unordered_set>
-#include "stool/src/io.hpp"
-#include "stool/src/sa_bwt_lcp.hpp"
 #include <set>
 #include <chrono>
+#include "greedy_attractor.hpp"
+#include "g_dynamic_interval_tree.hpp"
 
-//using namespace std;
-
-namespace std
-{
-template <>
-struct hash<stool::LCPInterval<uint64_t>>
-{
-    std::size_t operator()(stool::LCPInterval<uint64_t> const &key) const
-    {
-        return ((1234567891234ull) * key.i) ^ ((789000001234ull) * key.j) ^ key.lcp;
-    }
-};
-} // namespace std
 namespace stool
 {
 namespace lazy
 {
-class GreedyAttractorAlgorithm
+class FasterGreedyAttractor
 {
-    std::vector<bool> changedVec;
-    std::vector<uint64_t> maxPosVec;
-
-    std::vector<uint64_t> countVec;
-    std::vector<uint64_t> &sa;
-    std::unordered_set<LCPInterval<uint64_t>> currentIntervals;
-    uint64_t blockSize = 1000;
-
-    uint64_t blockNum;
-
-    void addCount(LCPInterval<uint64_t> &interval, int64_t addValue);
-
-    /* 
-    Compute the position covered by most minimal substrings.
-    */
-    uint64_t computeMaximalCoveredPosition();
-    void getContainingIntervals(uint64_t pos, std::vector<LCPInterval<uint64_t>> &outputIntervals);
-    void addAttractor(uint64_t pos);
-    //void updateMaxPosVec();
-
+    static std::vector<LCPInterval<uint64_t>> getCoveringIntervals(uint64_t pos, std::unordered_set<LCPInterval<uint64_t>> &currentIntervals, std::vector<uint64_t> &sa)
+    {
+        std::vector<LCPInterval<uint64_t>> r;
+        for (auto &it : currentIntervals)
+        {
+            if (it.containsPosition(sa, pos))
+            {
+                r.push_back(it);
+            }
+        }
+        return r;
+    }
     static std::pair<uint64_t, uint64_t> decrementCounts(LCPInterval<uint64_t> &removedInterval, std::vector<uint64_t> &countVec, std::unordered_map<uint64_t, std::set<uint64_t>> &freqRankMap, std::vector<uint64_t> &sa)
     {
         std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = GreedyAttractorAlgorithm::getSortedCoveredPositions(sa, removedInterval);
@@ -80,98 +59,25 @@ class GreedyAttractorAlgorithm
 
         //std::cout << "b" << std::flush;
     }
-    static std::vector<LCPInterval<uint64_t>> getCoveringIntervals(uint64_t pos, std::unordered_set<LCPInterval<uint64_t>> &currentIntervals, std::vector<uint64_t> &sa)
-    {
-        std::vector<LCPInterval<uint64_t>> r;
-        for (auto &it : currentIntervals)
-        {
-            if (it.containsPosition(sa, pos))
-            {
-                r.push_back(it);
-            }
-        }
-        return r;
-    }
-    static uint64_t computeMaximalCoveredPosition(std::vector<uint64_t> &positionWeights, std::vector<uint64_t> &nextVec, uint64_t startPosition)
-    {
-        uint64_t max = 0;
-        uint64_t maxPos = UINT64_MAX;
-        uint64_t i = startPosition;
-        while (i != UINT64_MAX)
-        {
-            if (positionWeights[i] > max)
-            {
-                max = positionWeights[i];
-                maxPos = i;
-            }
-            i = nextVec[i];
-        }
-        return maxPos;
-    }
-    static std::pair<uint64_t, uint64_t> updateNextVecAndGetMostWeightedPosition(std::vector<uint64_t> &positionWeights, std::vector<uint64_t> &nextVec, uint64_t startPosition)
-    {
-        uint64_t max = 0;
-        uint64_t maxPos = UINT64_MAX;
-        uint64_t i = startPosition;
-        uint64_t previousNonZeroPosition = UINT64_MAX;
-        startPosition = UINT64_MAX;
-        while (i != UINT64_MAX)
-        {
-            uint64_t weight = positionWeights[i];
-            uint64_t next_i = nextVec[i];
-            if (weight == 0)
-            {
-                nextVec[i] = UINT64_MAX - 1;
-            }
-            else
-            {
-                if (previousNonZeroPosition != UINT64_MAX)
-                {
-                    if (nextVec[previousNonZeroPosition] != i)
-                        nextVec[previousNonZeroPosition] = i;
-                }
-                else
-                {
-                    startPosition = i;
-                }
-                previousNonZeroPosition = i;
-            }
-
-            if (weight > max)
-            {
-                max = weight;
-                maxPos = i;
-            }
-            assert(i < next_i);
-            i = next_i;
-
-            //std::cout << ", i: " << i << std::flush;
-        }
-        //std::cout  << std::endl;
-
-        return std::pair<uint64_t, uint64_t>(startPosition, maxPos);
-    }
-
 public:
-    GreedyAttractorAlgorithm(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> *_sa, uint64_t _blockSize);
-
-    static void computeGreedyAttractors(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals, uint64_t _blockSize, std::vector<uint64_t> &outputAttrs);
-    static std::vector<uint64_t> computePositionWeights(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
-    static std::vector<std::pair<uint64_t, uint64_t>> getSortedCoveredPositions(std::vector<uint64_t> &sa, LCPInterval<uint64_t> &interval);
-
-    static void computeGreedyAttractors2(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &outputAttrs)
+    static void computeGreedyAttractors2(std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &outputAttrs)
     {
+        std::vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructMSIntervalParents(intervals);
+        GDynamicIntervalTree g(sa, isa, intervals, parents, sa.size());
+
         //Initialize
         std::cout << "Initialize Greedy Data Structures" << std::endl;
         std::unordered_set<LCPInterval<uint64_t>> currentIntervals;
         for (auto &it : intervals)
         {
-            currentIntervals.insert(it);
+            if(it.lcp != 0)currentIntervals.insert(it);
         }
-        std::vector<uint64_t> positionWeights = computePositionWeights(sa, intervals);
-        uint64_t maxFreq = *std::max_element(positionWeights.begin(), positionWeights.end());;
+        std::vector<uint64_t> positionWeights = GreedyAttractorAlgorithm::computePositionWeights(sa, intervals);
+        uint64_t maxFreq = *std::max_element(positionWeights.begin(), positionWeights.end());
+        ;
         std::unordered_map<uint64_t, std::set<uint64_t>> freqRankMap;
-        for(uint64_t i=0;i<= maxFreq ;i++){
+        for (uint64_t i = 0; i <= maxFreq; i++)
+        {
             freqRankMap[i] = (std::set<uint64_t>());
         }
 
@@ -206,7 +112,8 @@ public:
             {
                 std::cout << "\r"
                           << "Computing Greedy Attractors : [" << currentIntervals.size() << "/" << minimalSubstringCount << "], (";
-                std::cout << remainingPositionCount << ", " << currentIntervals.size() << ", " << removedFrequencySum << ")" << "[" << elapsed1 << "/" << elapsed2 << "]" << std::flush;
+                std::cout << remainingPositionCount << ", " << currentIntervals.size() << ", " << removedFrequencySum << ")"
+                          << "[" << elapsed1 << "/" << elapsed2 << "]" << std::flush;
             }
 #endif
             auto maxFreqSet = freqRankMap[maxFreq];
@@ -224,12 +131,39 @@ public:
             else
             {
                 uint64_t maximalCoveredPos = *(maxFreqSet.begin());
-                    outputAttrs.push_back(maximalCoveredPos);
+                outputAttrs.push_back(maximalCoveredPos);
 
                 auto start1 = std::chrono::system_clock::now();
                 std::vector<LCPInterval<uint64_t>> coveringIntervals = getCoveringIntervals(maximalCoveredPos, currentIntervals, sa);
                 auto end1 = std::chrono::system_clock::now();
                 elapsed1 = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start1).count();
+
+                std::vector<uint64_t> xx1 =  g.getLCPIntervals(isa[maximalCoveredPos]);
+                std::vector<LCPInterval<uint64_t>> xx2;
+                for(uint64_t i=0;i<xx1.size();i++){
+                    xx2.push_back(intervals[xx1[i]]);
+                }
+
+                std::sort(coveringIntervals.begin(), coveringIntervals.end(), stool::esaxx::LCPIntervalComp<uint64_t>() );
+                std::sort(xx2.begin(), xx2.end(), stool::esaxx::LCPIntervalComp<uint64_t>() );
+
+                std::cout << xx2.size() << "/" << coveringIntervals.size() << std::endl;
+                
+                std::cout << std::endl;
+                for(auto & it : coveringIntervals){
+                    std::cout << it.to_string();
+                }
+                std::cout << std::endl;
+                for(auto & it : xx2){
+                    std::cout << it.to_string();
+                }
+                std::cout << std::endl;
+
+                assert(xx2.size() == coveringIntervals.size());
+
+                std::cout << "counter: " << counter << std::endl;
+                if(counter > 100) throw -1;
+                
 
                 removedFrequencySum = 0;
 
@@ -243,7 +177,7 @@ public:
                 }
                 auto end2 = std::chrono::system_clock::now();
                 elapsed2 = std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count();
-                
+
                 /*
                 //std::cout << "+" << std::flush;
                 std::pair<uint64_t, uint64_t> p = updateNextVecAndGetMostWeightedPosition(positionWeights, nextVec, startPosition);
@@ -273,9 +207,9 @@ public:
                     //std::cout << "/" << std::flush;
                 }
                 */
+            counter++;
             }
 
-            counter++;
         }
         std::cout << std::endl;
         std::sort(outputAttrs.begin(), outputAttrs.end());

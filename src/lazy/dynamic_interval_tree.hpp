@@ -34,6 +34,7 @@ private:
 public:
 
   DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize);
+
   uint64_t getLowestLCPIntervalID(SINDEX sa_index);
   bool removeLowestLCPInterval(SINDEX sa_index);
   bool checkRemovedInterval(uint64_t intervalID);

@@ -203,6 +203,7 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computePositionWeights(std::vect
     uint64_t counter = 0;
     for (LCPInterval<uint64_t> &interval : intervals)
     {
+        if(interval.lcp == 0) continue;
         if (counter % 10000 == 0)
             std::cout << "\r"
                       << "Computing Position Weights : [" << counter << "/" << intervals.size() << "]" << std::flush;

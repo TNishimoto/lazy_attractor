@@ -54,7 +54,7 @@ INCLUDE_DIRECTORIES(module)
 #set(MS "module/esaxx/src/minimal_substrings/minimal_substring_tree.hpp")
 #target_link_libraries(fn sdsl divsufsort divsufsort64)
 
-FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp)
+FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp src/greedy/*.cpp)
 add_library(fn STATIC ${SOURCES} ${ESAXX_SOURCES} ${STOOL_SOURCES})
 target_link_libraries(fn sdsl divsufsort divsufsort64)
 
