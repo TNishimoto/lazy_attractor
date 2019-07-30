@@ -18,6 +18,32 @@ using namespace sdsl;
 using namespace stool;
 using namespace stool::lazy;
 
+/*
+void load_minimal_substrings(string filename, vector<stool::LCPInterval<uint64_t>> &output)
+{
+    std::ifstream file;
+    file.open(filename, std::ios::binary);
+
+    if (!file)
+    {
+        std::cerr << "error reading file " << std::endl;
+        return false;
+    }
+    else
+    {
+        file.seekg(0, std::ios::end);
+        uint64_t n = (unsigned long)file.tellg();
+        file.seekg(0, std::ios::beg);
+
+        output.resize(n / sizeof(stool::LCPInterval<uint64_t>));
+
+        file.read((char *)&(output)[0], n);
+        file.close();
+        file.clear();
+    }
+}
+*/
+
 int main(int argc, char *argv[])
 {
     using CHAR = uint8_t;
@@ -60,8 +86,6 @@ int main(int argc, char *argv[])
         std::cout << inputFile << " cannot open." << std::endl;
         return -1;
     }
-    //string text;
-    //IO::load(inputFile, text);
     std::vector<uint8_t> text = stool::load_text_from_file(inputFile, true); // input text
 
     // Loading Minimal Substrings
@@ -69,21 +93,33 @@ int main(int argc, char *argv[])
     {
         mSubstrFile = inputFile + ".msub";
     }
-    stool::esaxx::MinimalSubstringTree<CHAR,INDEX> mstree;    
-    //mstree.loadOrConstruct(text, mSubstrFile);
 
-    //text.push_back(0);
-    //mstree.loadOrConstruct(mSubstrFile, &text);
 
-    stool::esaxx::MinimalSubstringTree<uint8_t, uint64_t>::construct(text, mstree.nodes, mstree.parents);
-    //text.pop_back();
+    std::cout << "Constructing Suffix Array" << std::endl;
+    std::vector<INDEX> sa = stool::constructSA<CHAR, INDEX>(text);
+    std::cout << "Constructing LCP Array" << std::endl;
+    std::vector<INDEX> lcpArray = stool::constructLCP<CHAR, INDEX>(text, sa);
+    std::cout << "Constructing BWT" << std::endl;
+    std::vector<CHAR> bwt = stool::constructBWT<CHAR, INDEX>(text, sa);
 
-    uint64_t mSubstrCount = mstree.nodes.size();
-    vector<uint64_t> attrs;
+    vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, vector<uint64_t>>::constructSortedMinimalSubstrings(bwt, sa, lcpArray);
+
+    lcpArray.resize(0);
+    lcpArray.shrink_to_fit();
+    bwt.resize(0);
+    bwt.shrink_to_fit();
+
+    vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, vector<uint64_t>>::constructMSIntervalParents(minimalSubstrings);
+    stool::write_vector(mSubstrFile, minimalSubstrings);
+
+    //Loader
+    uint64_t mSubstrCount = minimalSubstrings.size();
+    //vector<uint64_t> attrs;
 
     auto start = std::chrono::system_clock::now();
     //LazyAttractorAlgorithm algo(text, intervals, parents);
-    LazyAttractor::computeAttractors(text, mstree.nodes, mstree.parents, attrs);
+
+    vector<uint64_t> attrs = LazyAttractor::computeLazyAttractors(text, minimalSubstrings, parents);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
@@ -100,7 +136,9 @@ int main(int argc, char *argv[])
     }
     else
     {
-        IO::write(outputFile, attrs, UINT64_MAX-1);
+        stool::write_vector(outputFile, attrs);
+
+        //IO::write(outputFile, attrs, UINT64_MAX - 1);
     }
 
     std::cout << "\033[36m";

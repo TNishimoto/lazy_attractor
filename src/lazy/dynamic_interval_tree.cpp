@@ -25,9 +25,9 @@ uint64_t DynamicIntervalTree::getTreeNodeID(SINDEX pos)
     return this->rangeArray.getLeafID(pos);
 }
 */
-uint64_t DynamicIntervalTree::getLongestLCPIntervalID(SINDEX pos)
+uint64_t DynamicIntervalTree::getLowestLCPIntervalID(SINDEX sa_index)
 {
-    uint64_t id = this->rangeArray.getLeafID(pos);
+    uint64_t id = this->rangeArray.getLeafID(sa_index);
     while (!this->uftree.isRoot(id))
     {
         if (this->checkRemovedInterval(id))
@@ -59,9 +59,9 @@ uint64_t DynamicIntervalTree::getLongestLCPIntervalID(SINDEX pos)
     //return UINT64_MAX;
 }
 
-bool DynamicIntervalTree::removeLongestLCPInterval(SINDEX pos)
+bool DynamicIntervalTree::removeLowestLCPInterval(SINDEX sa_index)
 {
-    uint64_t id = this->rangeArray.getLeafID(pos);
+    uint64_t id = this->rangeArray.getLeafID(sa_index);
     if (this->removeVec[id])
     {
         uint64_t result = this->uftree.unionParent(id);
@@ -87,7 +87,7 @@ uint64_t DynamicIntervalTree::removeMSIntervals(TINDEX pos, vector<uint64_t> &is
 {
     while (true)
     {
-        uint64_t id = getLongestLCPIntervalID(isa[pos]);
+        uint64_t id = getLowestLCPIntervalID(isa[pos]);
         if (id == UINT64_MAX)
         {
             return id;
@@ -97,7 +97,7 @@ uint64_t DynamicIntervalTree::removeMSIntervals(TINDEX pos, vector<uint64_t> &is
             uint64_t longestIntervalLength = intervals[id].lcp;
             if (pos + longestIntervalLength - 1 >= lastAttractor)
             {
-                this->removeLongestLCPInterval(isa[pos]);
+                this->removeLowestLCPInterval(isa[pos]);
             }
             else
             {
