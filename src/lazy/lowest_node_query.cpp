@@ -40,91 +40,58 @@ void LowestNodeQuery::checkRangeArray(vector<LCPInterval<uint64_t>> &intervals, 
                       << "checking RangeArray... : [" << i << "/" << (size) << "]" << std::flush;
     }
 }
-void LowestNodeQuery::constructRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t textSize)
+std::vector<LowestNodeInfo> LowestNodeQuery::constructLowestNodeInfoVec(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents)
 {
-    vector<vector<uint64_t>> childrens;
-    childrens.resize(intervals.size());
-    for (uint64_t i = 0; i < intervals.size(); i++)
+  std::vector<LowestNodeInfo> startingPositionVec;
+  vector<vector<uint64_t>> childrens;
+  childrens.resize(intervals.size());
+  for (uint64_t i = 0; i < intervals.size(); i++)
+  {
+    if (parents[i] != UINT64_MAX)
     {
-        if (parents[i] != UINT64_MAX)
-        {
-            childrens[parents[i]].push_back(i);
-        }
+      childrens[parents[i]].push_back(i);
     }
-    for (uint64_t i = 0; i < intervals.size(); i++)
-    {
-        sort(childrens[i].begin(), childrens[i].end(), [&](const uint64_t &x, const uint64_t &y) {
-            return intervals[x].i < intervals[y].i;
-        });
-    }
+  }
 
-    parents.resize(parents.size() + textSize, UINT64_MAX);
-    uint64_t size = intervals.size();
-    for (uint64_t i = 0; i < intervals.size(); i++)
+  for (uint64_t i = 0; i < intervals.size(); i++)
+  {
+    sort(childrens[i].begin(), childrens[i].end(), [&](const uint64_t &x, const uint64_t &y) {
+      return intervals[x].i < intervals[y].i;
+    });
+  }
+
+  //vector<std::pair<uint64_t, uint64_t>> startingPositionVec;
+  for (uint64_t i = 0; i < intervals.size(); i++)
+  {
+
+    auto &interval = intervals[i];
+    uint64_t left = interval.i;
+    for (uint64_t x = 0; x < childrens[i].size(); x++)
     {
-        auto &interval = intervals[i];
-        uint64_t left = interval.i;
-        for (uint64_t x = 0; x < childrens[i].size(); x++)
-        {
-            auto &child = intervals[childrens[i][x]];
-            for (uint64_t z = left; z < child.i; z++)
-            {
-                parents[z + size] = i;
-            }
-            left = child.j + 1;
-        }
-        for (uint64_t z = left; z <= interval.j; z++)
-        {
-            parents[z + size] = i;
-        }
+      auto &child = intervals[childrens[i][x]];
+      if (left < child.i)
+      {
+        startingPositionVec.push_back(LowestNodeInfo(i,left));
+      }
+      left = child.j + 1;
     }
-    //checkRangeArray(intervals, parents);
+    if (left <= interval.j)
+    {
+      startingPositionVec.push_back(LowestNodeInfo(i,left));
+    }
+  }
+
+  sort(startingPositionVec.begin(), startingPositionVec.end(), [&](const LowestNodeInfo &x, const LowestNodeInfo &y) {
+    return x.rangeStartPosition < y.rangeStartPosition;
+  });
+
+  return startingPositionVec;
 }
 
 void LowestNodeQuery::construct(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t _textSize)
 {
     this->textSize = _textSize;
-    vector<vector<uint64_t>> childrens;
-    childrens.resize(intervals.size());
-    for (uint64_t i = 0; i < intervals.size(); i++)
-    {
-        if (parents[i] != UINT64_MAX)
-        {
-            childrens[parents[i]].push_back(i);
-        }
-    }
-
-    for (uint64_t i = 0; i < intervals.size(); i++)
-    {
-        sort(childrens[i].begin(), childrens[i].end(), [&](const uint64_t &x, const uint64_t &y) {
-            return intervals[x].i < intervals[y].i;
-        });
-    }
-
-    vector<std::pair<uint64_t, uint64_t>> startingPositionVec;
-    for (uint64_t i = 0; i < intervals.size(); i++)
-    {
-
-        auto &interval = intervals[i];
-        uint64_t left = interval.i;
-        for (uint64_t x = 0; x < childrens[i].size(); x++)
-        {
-            auto &child = intervals[childrens[i][x]];
-            if (left < child.i)
-            {
-                startingPositionVec.push_back(std::pair<uint64_t, uint64_t>(left, i));
-            }
-            left = child.j + 1;
-        }
-        if (left <= interval.j)
-        {
-            startingPositionVec.push_back(std::pair<uint64_t, uint64_t>(left, i));
-        }
-    }
-
-    sort(startingPositionVec.begin(), startingPositionVec.end(), [&](const std::pair<uint64_t, uint64_t> &x, const std::pair<uint64_t, uint64_t> &y) {
-        return x.first < y.first;
-    });
+    std::vector<LowestNodeInfo> startingPositionVec = constructLowestNodeInfoVec(intervals,parents);
 
     uint64_t m = startingPositionVec.size();
     this->idVec.resize(m);
@@ -137,19 +104,13 @@ void LowestNodeQuery::construct(vector<LCPInterval<uint64_t>> &intervals, vector
 
     for (uint64_t i = 0; i < m; i++)
     {
-        this->idVec[i] = startingPositionVec[i].second;
-        this->startingPositions[startingPositionVec[i].first] = 1;
+        this->idVec[i] = startingPositionVec[i].id;
+        this->startingPositions[startingPositionVec[i].rangeStartPosition] = 1;
     }
     rank_support_v<1> _bv_rank(&this->startingPositions);
     this->bv_rank.set_vector(&this->startingPositions);
     _bv_rank.swap(this->bv_rank);
 
-    /*
-    for (uint64_t i = 0; i < textSize; i++)
-    {
-        std::cout << i << "/" << this->bv_rank(i) << std::endl;
-    }
-    */
 }
 
 std::vector<uint64_t> LowestNodeQuery::constructLeafIDVec(std::unordered_set<uint64_t> &currentIntervals,std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize)

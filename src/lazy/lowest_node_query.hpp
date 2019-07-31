@@ -13,6 +13,18 @@ namespace lazy
 {
 using SINDEX = uint64_t;
 using TINDEX = uint64_t;
+struct LowestNodeInfo{
+  uint64_t id;
+  uint64_t rangeStartPosition;
+  LowestNodeInfo(){
+
+  }
+  LowestNodeInfo(uint64_t _id,  uint64_t _rangeStartPosition) : id(_id), rangeStartPosition(_rangeStartPosition){
+    
+  }
+
+};
+
 
 // This data structure supports the function which
 // receives a position i on suffix array and returns the leaf ID containing i in minimal substring tree.
@@ -24,7 +36,7 @@ class LowestNodeQuery
   uint64_t textSize;
 
   static void checkRangeArray(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents);
-  static void constructRangeArray(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, uint64_t textSize);
+  static std::vector<LowestNodeInfo> constructLowestNodeInfoVec(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents);
 
 public:
   LowestNodeQuery()
