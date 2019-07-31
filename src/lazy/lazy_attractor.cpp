@@ -13,53 +13,32 @@ bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttra
     while (sortedMinimumSubstrings.size() > 0)
     {
 
+        /*
+        Remove minimal substrings captured by the last attractor from the interval tree.       
+        */
         uint64_t id = tree.getLowestLCPIntervalID(isa[currentPos]);
-        bool noMSIntervalCapturedByTheLastAttractorOnTheCurrentPos = false;
-        assert(id != UINT64_MAX);
         uint64_t longestIntervalLength = intervals[id].lcp;
-        if (longestIntervalLength > 0 && currentPos + longestIntervalLength - 1 >= lastAttractor)
+        while (bool isCapturedInterval = (longestIntervalLength > 0 && currentPos + longestIntervalLength - 1 >= lastAttractor))
         {
-#ifdef DEBUG
-            bool xb = tree.removeLowestLCPInterval(isa[currentPos]);
-            assert(xb);
-#else
             tree.removeLowestLCPInterval(isa[currentPos]);
-#endif
+            id = tree.getLowestLCPIntervalID(isa[currentPos]);
+            longestIntervalLength = intervals[id].lcp;
         }
-        else
-        {
-            noMSIntervalCapturedByTheLastAttractorOnTheCurrentPos = true;
-        }
-
         /*
        Remove minimal substrings starting at positioin the current pos from the stack.       
        */
-        if (noMSIntervalCapturedByTheLastAttractorOnTheCurrentPos)
+        while (sortedMinimumSubstrings.size() > 0 && !tree.hasInterval(sortedMinimumSubstrings.top().id))
         {
-            while (sortedMinimumSubstrings.size() > 0)
-            {
-                auto top = sortedMinimumSubstrings.top();
-                if (top.minOcc == (uint64_t)currentPos)
-                {
+            sortedMinimumSubstrings.pop();
+        }
 
-                    if (tree.hasInterval(top.id))
-                    {
-
-                        assert(sortedMinimumSubstringsSize != sortedMinimumSubstrings.size());
-                        return true;
-                    }
-                    else
-                    {
-                        //std::cout << "Remove : " << intervals[top.id].to_string() << std::endl;
-                        sortedMinimumSubstrings.pop();
-                    }
-                }
-                else
-                {
-                    --currentPos;
-                    break;
-                }
-            }
+        if (sortedMinimumSubstrings.size() > 0 && sortedMinimumSubstrings.top().minOcc == (uint64_t)currentPos)
+        {
+            break;
+        }
+        else
+        {
+            --currentPos;
         }
     }
     return false;
