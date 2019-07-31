@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
 
     if (outputMode == "weight")
     {
-        std::vector<uint64_t> weights = GreedyAttractorAlgorithm::computePositionWeights(sa, minimalSubstrings);
+        std::vector<uint64_t> weights = GreedyAttractorAlgorithm::computeFrequencyVector(sa, minimalSubstrings);
         uint64_t sum = std::accumulate(weights.begin(), weights.end(), (uint64_t)0);
         auto end = std::chrono::system_clock::now();
         double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();

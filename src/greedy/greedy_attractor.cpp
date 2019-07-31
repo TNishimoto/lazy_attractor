@@ -12,7 +12,7 @@ namespace stool
 {
 namespace lazy
 {
-std::vector<uint64_t> GreedyAttractorAlgorithm::computePositionWeights(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
+std::vector<uint64_t> GreedyAttractorAlgorithm::computeFrequencyVector(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
 {
     std::vector<uint64_t> r;
     r.resize(sa.size(), 0);
@@ -80,7 +80,7 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::removeCapturedIntervals(uint64_t
         }
         return r;
     }
-void GreedyAttractorAlgorithm::decrementWeights(LCPInterval<uint64_t> &removedInterval, std::unordered_map<uint64_t, uint64_t> &currentWeights, std::vector<uint64_t> &sa)
+void GreedyAttractorAlgorithm::decrementFrequencies(LCPInterval<uint64_t> &removedInterval, std::unordered_map<uint64_t, uint64_t> &currentFrequencies, std::vector<uint64_t> &sa)
     {
         std::unordered_set<uint64_t> decrementedPositions;
         for (uint64_t x = removedInterval.i; x <= removedInterval.j; x++)
@@ -90,14 +90,14 @@ void GreedyAttractorAlgorithm::decrementWeights(LCPInterval<uint64_t> &removedIn
                 uint64_t p = sa[x] + y;
                 if (decrementedPositions.find(p) == decrementedPositions.end())
                 {
-                    uint64_t w = currentWeights[p];
+                    uint64_t w = currentFrequencies[p];
                     if (w != 1)
                     {
-                        currentWeights[p] = w - 1;
+                        currentFrequencies[p] = w - 1;
                     }
                     else
                     {
-                        currentWeights.erase(p);
+                        currentFrequencies.erase(p);
                     }
 
                     decrementedPositions.insert(p);
@@ -109,11 +109,11 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeGreedyAttractors(vector<u
 {
     std::vector<uint64_t> outputAttrs;
 
-    std::vector<uint64_t> weightVec = computePositionWeights(sa, intervals);
-    std::unordered_map<uint64_t, uint64_t> currentWeights;
-    for (uint64_t i = 0; i < weightVec.size(); i++)
+    std::vector<uint64_t> frequencyVec = computeFrequencyVector(sa, intervals);
+    std::unordered_map<uint64_t, uint64_t> currentFrequencies;
+    for (uint64_t i = 0; i < frequencyVec.size(); i++)
     {
-        currentWeights[i] = weightVec[i];
+        currentFrequencies[i] = frequencyVec[i];
     }
 
     std::unordered_set<uint64_t> currentIntervals;
@@ -137,7 +137,7 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeGreedyAttractors(vector<u
 
 
 
-        for(auto& it : currentWeights){
+        for(auto& it : currentFrequencies){
             //std::cout << "[" << it.first << "/" << it.second << "]";
             if(it.second > maxWeight){
                 nextAttr = it.first;
@@ -154,7 +154,7 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeGreedyAttractors(vector<u
         for(auto &it : capturedIntervals){
             //std::cout << intervals[it].to_string() << ", ";
             LCPInterval<uint64_t> &interval = intervals[it];
-            decrementWeights(interval, currentWeights,sa);
+            decrementFrequencies(interval, currentFrequencies,sa);
         }
         //std::cout << std::endl;
         

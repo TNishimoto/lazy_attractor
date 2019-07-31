@@ -18,7 +18,7 @@ std::vector<uint64_t> FasterGreedyAttractor::getCoveringIntervals(uint64_t pos, 
     }
     return r;
 }
-std::pair<uint64_t, uint64_t> FasterGreedyAttractor::decrementCounts(LCPInterval<uint64_t> &removedInterval, std::vector<uint64_t> &countVec, std::unordered_map<uint64_t, std::set<uint64_t>> &freqRankMap, std::vector<uint64_t> &sa)
+std::pair<uint64_t, uint64_t> FasterGreedyAttractor::decrementFrequencies(LCPInterval<uint64_t> &removedInterval, std::vector<uint64_t> &countVec, std::unordered_map<uint64_t, std::set<uint64_t>> &freqRankMap, std::vector<uint64_t> &sa)
 {
     std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = GreedyAttractorAlgorithm::getSortedCoveredPositions(sa, removedInterval);
     //std::cout << "a" << std::flush;
@@ -66,7 +66,7 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
         if (intervals[i].lcp != 0)
             currentIntervals.insert(i);
     }
-    std::vector<uint64_t> positionWeights = GreedyAttractorAlgorithm::computePositionWeights(sa, intervals);
+    std::vector<uint64_t> positionWeights = GreedyAttractorAlgorithm::computeFrequencyVector(sa, intervals);
     uint64_t maxFreq = *std::max_element(positionWeights.begin(), positionWeights.end());
     ;
     std::unordered_map<uint64_t, std::set<uint64_t>> freqRankMap;
@@ -125,7 +125,7 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
             for (auto &intervalID : coveringIntervals)
             {
                 LCPInterval<uint64_t> interval = intervals[intervalID];
-                std::pair<uint64_t, uint64_t> info = decrementCounts(interval, positionWeights, freqRankMap, sa);
+                std::pair<uint64_t, uint64_t> info = decrementFrequencies(interval, positionWeights, freqRankMap, sa);
                 remainingPositionCount -= info.first;
                 removedFrequencySum += info.second;
                 currentIntervals.erase(intervalID);

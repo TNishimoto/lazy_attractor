@@ -30,11 +30,11 @@ class GreedyAttractorAlgorithm
 {
 private:
     static std::vector<uint64_t> removeCapturedIntervals(uint64_t attractor, std::unordered_set<uint64_t> &currentIntervals, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &sa);
-    static void decrementWeights(LCPInterval<uint64_t> &removedInterval, std::unordered_map<uint64_t, uint64_t> &currentWeights, std::vector<uint64_t> &sa);
+    static void decrementFrequencies(LCPInterval<uint64_t> &removedInterval, std::unordered_map<uint64_t, uint64_t> &currentFrequencies, std::vector<uint64_t> &sa);
 public:
 
     static std::vector<uint64_t> computeGreedyAttractors(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
-    static std::vector<uint64_t> computePositionWeights(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
+    static std::vector<uint64_t> computeFrequencyVector(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
     static std::vector<std::pair<uint64_t, uint64_t>> getSortedCoveredPositions(std::vector<uint64_t> &sa, LCPInterval<uint64_t> &interval);
 
 };
