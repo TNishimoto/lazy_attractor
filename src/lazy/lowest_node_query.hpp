@@ -36,7 +36,6 @@ class LowestNodeQuery
   uint64_t textSize;
 
   static void checkRangeArray(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents);
-  static std::vector<LowestNodeInfo> constructLowestNodeInfoVec(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents);
 
 public:
   LowestNodeQuery()
@@ -52,9 +51,8 @@ public:
   {
     return this->idVec[bv_rank(pos + 1) - 1];
   }
-  // Construct the array such that outputVec[i] stores the leftmost occurrence of the $i$-th minimal substring.
-  std::vector<uint64_t> constructMinimalOccurrenceVec(std::vector<uint64_t> &sa, uint64_t intervalCount);
   static std::vector<uint64_t> constructLeafIDVec(std::unordered_set<uint64_t> &currentIntervals,std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize);
+  static std::vector<LowestNodeInfo> constructLowestNodeInfoVec(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents);
 };
 } // namespace lazy
 } // namespace stool

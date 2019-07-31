@@ -54,10 +54,7 @@ public:
   */
   bool hasInterval(uint64_t intervalID);
 
-  /*
-  Return minimal substrings on the given suffix array. The minimal substrings are sorted in the order of the their minimal occrrences.
-   */
-  std::stack<MinimalSubstringInfo> constructSortedMinimumSubstrings(std::vector<uint64_t> &sa);
+  
 
   
   std::vector<uint64_t> constructLeafIDVec(uint64_t textSize);

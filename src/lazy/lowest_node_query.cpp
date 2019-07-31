@@ -152,25 +152,6 @@ std::vector<uint64_t> LowestNodeQuery::constructLeafIDVec(std::unordered_set<uin
     }
     return r;
   }
-  std::vector<uint64_t> LowestNodeQuery::constructMinimalOccurrenceVec(std::vector<uint64_t> &sa, uint64_t intervalCount)
-  {
-    std::vector<uint64_t> outputVec;
-    outputVec.resize(intervalCount, UINT64_MAX);
-    int64_t p = -1;
-    for (int64_t i = 0; i < (int64_t)this->startingPositions.size(); i++)
-    {
-      if (this->startingPositions[i] == 1)
-      {
-        p++;
-      }
-      uint64_t index = sa[i];
-      if (index < outputVec[this->idVec[p]])
-      {
-        outputVec[this->idVec[p]] = index;
-      }
-    }
-    return outputVec;
-  }
 
 } // namespace lazy
 } // namespace stool

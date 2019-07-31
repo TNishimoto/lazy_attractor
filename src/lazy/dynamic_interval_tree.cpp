@@ -10,12 +10,12 @@ DynamicIntervalTree::DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_in
 {
 
     std::cout << "construct rangeArray" << std::endl;
-    rangeArray.construct(_intervals, _parents, textSize);
+    rangeArray.construct(intervals, parents, textSize);
 
     //this->removeVec.resize(_intervals.size(), false);
 
     std::cout << "Constructing UnionFindTree..." << std::flush;
-    this->uftree.initialize(_parents);
+    this->uftree.initialize(parents);
     std::cout << "[END]" << std::endl;
 }
 uint64_t DynamicIntervalTree::getLowestLCPIntervalID(SINDEX sa_index)
@@ -48,54 +48,6 @@ bool DynamicIntervalTree::hasInterval(uint64_t intervalID)
     //return this->removeVec[intervalID];
 }
 
-std::stack<MinimalSubstringInfo> DynamicIntervalTree::constructSortedMinimumSubstrings(std::vector<uint64_t> &sa)
-{
-    std::stack<MinimalSubstringInfo> outputSortedMinimumSubstrings;
-    //vec.resize(intervals.size(), UINT64_MAX);
-    std::vector<uint64_t> &parents = this->parents;
-
-    std::vector<uint64_t> minimalOccurrenceVec = this->rangeArray.constructMinimalOccurrenceVec(sa, intervals.size());
-
-    for (int64_t i = this->intervals.size() - 1; i >= 0; i--)
-    {
-        assert(minimalOccurrenceVec[i] != UINT64_MAX);
-        if (parents[i] != UINT64_MAX)
-        {
-            if (minimalOccurrenceVec[i] < minimalOccurrenceVec[parents[i]])
-            {
-                minimalOccurrenceVec[parents[i]] = minimalOccurrenceVec[i];
-            }
-        }
-    }
-
-    std::vector<MinimalSubstringInfo> sortedMinimumSubstringVec;
-    sortedMinimumSubstringVec.resize(minimalOccurrenceVec.size());
-
-    for (uint64_t i = 0; i < minimalOccurrenceVec.size(); i++)
-    {
-        sortedMinimumSubstringVec[i] = MinimalSubstringInfo(i, minimalOccurrenceVec[i]);
-    }
-
-    sort(sortedMinimumSubstringVec.begin(), sortedMinimumSubstringVec.end(), [&](const MinimalSubstringInfo &x, const MinimalSubstringInfo &y) {
-        if (x.minOcc == y.minOcc)
-        {
-            return intervals[x.id].lcp > intervals[y.id].lcp;
-        }
-        else
-        {
-            return x.minOcc < y.minOcc;
-        }
-    });
-
-    for (uint64_t i = 0; i < sortedMinimumSubstringVec.size(); i++)
-    {
-        if (intervals[sortedMinimumSubstringVec[i].id].lcp != 0)
-        {
-            outputSortedMinimumSubstrings.push(sortedMinimumSubstringVec[i]);
-        }
-    }
-    return outputSortedMinimumSubstrings;
-}
 std::vector<uint64_t> DynamicIntervalTree::constructLeafIDVec(uint64_t textSize){
     
     std::vector<uint64_t> r;
