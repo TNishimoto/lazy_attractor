@@ -162,7 +162,7 @@ public:
         return r;
     }
     void debug(std::unordered_set<uint64_t> &currentIntervals, std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize){
-        std::vector<uint64_t> r1 = stool::lazy::LeafRankDataStructure::constructLeafIDVec(currentIntervals,intervals,textSize);
+        std::vector<uint64_t> r1 = stool::lazy::LowestNodeQuery::constructLeafIDVec(currentIntervals,intervals,textSize);
         std::vector<uint64_t> r2 = this->tree.constructLeafIDVec(textSize);
 
         for(uint64_t i=0;i<r1.size();i++){

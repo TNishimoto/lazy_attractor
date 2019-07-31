@@ -16,7 +16,7 @@ using TINDEX = uint64_t;
 
 // This data structure supports the function which
 // receives a position i on suffix array and returns the leaf ID containing i in minimal substring tree.
-class LeafRankDataStructure
+class LowestNodeQuery
 {
   std::vector<uint64_t> idVec;
   bit_vector startingPositions;
@@ -27,7 +27,7 @@ class LeafRankDataStructure
   static void constructRangeArray(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, uint64_t textSize);
 
 public:
-  LeafRankDataStructure()
+  LowestNodeQuery()
   {
   }
   uint64_t getTextSize(){
@@ -36,7 +36,7 @@ public:
 
   void construct(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, uint64_t _textSize);
   // Return the leaf ID containing pos in minimal substring tree.
-  uint64_t getLeafID(SINDEX pos)
+  uint64_t getLowestNodeID(SINDEX pos)
   {
     return this->idVec[bv_rank(pos + 1) - 1];
   }

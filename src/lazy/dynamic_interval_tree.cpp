@@ -20,7 +20,7 @@ DynamicIntervalTree::DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_in
 }
 uint64_t DynamicIntervalTree::getLowestLCPIntervalID(SINDEX sa_index)
 {
-    uint64_t id = this->rangeArray.getLeafID(sa_index);
+    uint64_t id = this->rangeArray.getLowestNodeID(sa_index);
     uint64_t clusterRootID = this->uftree.getClusterID(id);
     return clusterRootID;
 }

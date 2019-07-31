@@ -1,5 +1,5 @@
 #include <stack>
-#include "leaf_rank.hpp"
+#include "lowest_node_query.hpp"
 using namespace std;
 using namespace sdsl;
 
@@ -7,7 +7,7 @@ namespace stool
 {
 namespace lazy
 {
-void LeafRankDataStructure::checkRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents)
+void LowestNodeQuery::checkRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents)
 {
     uint64_t size = intervals.size();
     for (uint64_t i = 0; i < size; i++)
@@ -40,7 +40,7 @@ void LeafRankDataStructure::checkRangeArray(vector<LCPInterval<uint64_t>> &inter
                       << "checking RangeArray... : [" << i << "/" << (size) << "]" << std::flush;
     }
 }
-void LeafRankDataStructure::constructRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t textSize)
+void LowestNodeQuery::constructRangeArray(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t textSize)
 {
     vector<vector<uint64_t>> childrens;
     childrens.resize(intervals.size());
@@ -81,7 +81,7 @@ void LeafRankDataStructure::constructRangeArray(vector<LCPInterval<uint64_t>> &i
     //checkRangeArray(intervals, parents);
 }
 
-void LeafRankDataStructure::construct(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t _textSize)
+void LowestNodeQuery::construct(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t _textSize)
 {
     this->textSize = _textSize;
     vector<vector<uint64_t>> childrens;
@@ -152,7 +152,7 @@ void LeafRankDataStructure::construct(vector<LCPInterval<uint64_t>> &intervals, 
     */
 }
 
-std::vector<uint64_t> LeafRankDataStructure::constructLeafIDVec(std::unordered_set<uint64_t> &currentIntervals,std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize)
+std::vector<uint64_t> LowestNodeQuery::constructLeafIDVec(std::unordered_set<uint64_t> &currentIntervals,std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize)
   {
     std::vector<uint64_t> r;
     r.resize(textSize, UINT64_MAX);
@@ -191,7 +191,7 @@ std::vector<uint64_t> LeafRankDataStructure::constructLeafIDVec(std::unordered_s
     }
     return r;
   }
-  std::vector<uint64_t> LeafRankDataStructure::constructMinimalOccurrenceVec(std::vector<uint64_t> &sa, uint64_t intervalCount)
+  std::vector<uint64_t> LowestNodeQuery::constructMinimalOccurrenceVec(std::vector<uint64_t> &sa, uint64_t intervalCount)
   {
     std::vector<uint64_t> outputVec;
     outputVec.resize(intervalCount, UINT64_MAX);

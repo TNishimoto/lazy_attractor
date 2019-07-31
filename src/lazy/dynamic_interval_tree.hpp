@@ -3,7 +3,7 @@
 #include <stack>
 #include "union_find_tree.hpp"
 #include "stool/src/sa_bwt_lcp.hpp"
-#include "leaf_rank.hpp"
+#include "lowest_node_query.hpp"
 using namespace sdsl;
 
 namespace stool
@@ -35,7 +35,7 @@ private:
   //std::vector<bool> removeVec;
   std::vector<LCPInterval<uint64_t>> &intervals;
   std::vector<uint64_t> &parents;
-  LeafRankDataStructure rangeArray;
+  LowestNodeQuery rangeArray;
 public:
 
   DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize);
@@ -49,6 +49,9 @@ public:
   It returns false when such LCP interval does not exist.
   */
   bool removeLowestLCPInterval(SINDEX sa_index);
+  /*
+  Return true iff the tree has the interval of the given ID. 
+  */
   bool hasInterval(uint64_t intervalID);
 
   /*
