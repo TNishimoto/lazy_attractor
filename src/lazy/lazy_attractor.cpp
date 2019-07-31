@@ -39,12 +39,13 @@ bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttra
                 if (top.minOcc == (uint64_t)currentPos)
                 {
 
-                    if (!tree.checkRemovedInterval(top.id))
+                    if (tree.hasInterval(top.id))
                     {
                         return true;
                     }
                     else
                     {
+                        //std::cout << "Remove : " << intervals[top.id].to_string() << std::endl;
                         sortedMinimumSubstrings.pop();
                     }
                 }
@@ -74,6 +75,7 @@ std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> 
 
     while (sortedMinimumSubstrings.size() > 0)
     {
+        //lufTree.print();
         auto top = sortedMinimumSubstrings.top();
         if (outputAttrs.size() > 0)
         {
@@ -81,9 +83,12 @@ std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> 
         }
 
         outputAttrs.push_back(top.minOcc);
+        //std::cout << top.minOcc << "/" << isa[top.minOcc] << std::endl;
         //std::cout << top.minOcc << std::endl;
         assert(lufTree.getLowestLCPIntervalID(isa[top.minOcc]) != UINT64_MAX);
         removeMSIntervalsCapturedByTheLastAttractor(top.minOcc, _intervals, isa, lufTree, sortedMinimumSubstrings);
+        //lufTree.print();
+
     }
 
     std::cout << std::endl;

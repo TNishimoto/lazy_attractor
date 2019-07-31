@@ -81,8 +81,9 @@ void LeafRankDataStructure::constructRangeArray(vector<LCPInterval<uint64_t>> &i
     //checkRangeArray(intervals, parents);
 }
 
-void LeafRankDataStructure::construct(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t textSize)
+void LeafRankDataStructure::construct(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t _textSize)
 {
+    this->textSize = _textSize;
     vector<vector<uint64_t>> childrens;
     childrens.resize(intervals.size());
     for (uint64_t i = 0; i < intervals.size(); i++)
@@ -150,5 +151,65 @@ void LeafRankDataStructure::construct(vector<LCPInterval<uint64_t>> &intervals, 
     }
     */
 }
+
+std::vector<uint64_t> LeafRankDataStructure::constructLeafIDVec(std::unordered_set<uint64_t> &currentIntervals,std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize)
+  {
+    std::vector<uint64_t> r;
+    r.resize(textSize, UINT64_MAX);
+    std::vector<uint64_t> tmp;
+    for (auto &it : currentIntervals)
+    {
+      tmp.push_back(it);
+    }
+    std::sort(tmp.begin(), tmp.end(), [&](uint64_t xi, uint64_t yi) {
+      LCPInterval<uint64_t> &x = intervals[xi];
+      LCPInterval<uint64_t> &y = intervals[yi];
+
+      if (x.i == y.i)
+      {
+        if (x.j == y.j)
+        {
+          return x.lcp < y.lcp;
+        }
+        else
+        {
+          return x.j > y.j;
+        }
+      }
+      else
+      {
+        return x.i < y.i;
+      }
+    });
+    for (auto &it : tmp)
+    {
+      LCPInterval<uint64_t> &interval = intervals[it];
+      for (uint64_t x = interval.i; x <= interval.j; x++)
+      {
+        r[x] = it;
+      }
+    }
+    return r;
+  }
+  std::vector<uint64_t> LeafRankDataStructure::constructMinimalOccurrenceVec(std::vector<uint64_t> &sa, uint64_t intervalCount)
+  {
+    std::vector<uint64_t> outputVec;
+    outputVec.resize(intervalCount, UINT64_MAX);
+    int64_t p = -1;
+    for (int64_t i = 0; i < (int64_t)this->startingPositions.size(); i++)
+    {
+      if (this->startingPositions[i] == 1)
+      {
+        p++;
+      }
+      uint64_t index = sa[i];
+      if (index < outputVec[this->idVec[p]])
+      {
+        outputVec[this->idVec[p]] = index;
+      }
+    }
+    return outputVec;
+  }
+
 } // namespace lazy
 } // namespace stool

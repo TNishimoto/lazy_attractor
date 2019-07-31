@@ -12,130 +12,41 @@ DynamicIntervalTree::DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_in
     std::cout << "construct rangeArray" << std::endl;
     rangeArray.construct(_intervals, _parents, textSize);
 
-    this->removeVec.resize(_intervals.size(), false);
+    //this->removeVec.resize(_intervals.size(), false);
 
     std::cout << "Constructing UnionFindTree..." << std::flush;
     this->uftree.initialize(_parents);
     std::cout << "[END]" << std::endl;
 }
-/*
-uint64_t DynamicIntervalTree::getTreeNodeID(SINDEX pos)
-{
-    //uint64_t x = this->isa[pos];
-    return this->rangeArray.getLeafID(pos);
-}
-*/
 uint64_t DynamicIntervalTree::getLowestLCPIntervalID(SINDEX sa_index)
 {
     uint64_t id = this->rangeArray.getLeafID(sa_index);
     uint64_t clusterRootID = this->uftree.getClusterID(id);
     return clusterRootID;
-    /*
-    uint64_t id = this->rangeArray.getLeafID(sa_index);
-
-    //std::cout << "af id " << id << std::endl;
-    //uint64_t id = this->uftree.getClusterID(this->rangeArray.getLeafID(sa_index));
-    while (!this->uftree.isRoot(id))
-    {
-
-        if (this->checkRemovedInterval(id))
-        {
-            //id = this->uftree.getParent(id);
-            uint64_t parent = this->uftree.getParent(id);
-            if (this->checkRemovedInterval(parent))
-            {
-
-#ifdef DEBUG
-                uint64_t p = this->uftree.unionParent(id);
-                assert(p != UINT64_MAX);
-#else
-                this->uftree.unionParent(id);
-#endif
-            }
-            else
-            {
-                return parent;
-            }
-        }
-        else
-        {
-
-            return id;
-        }
-    }
-    */
-    //assert(this->removeVec[id]);
-    //assert(!this->uftree.checkMerge(id));
-    //assert(!this->checkRemovedInterval(id));
-    //return id;
-    //return UINT64_MAX;
 }
 
 bool DynamicIntervalTree::removeLowestLCPInterval(SINDEX sa_index)
 {
     uint64_t leafID = this->getLowestLCPIntervalID(sa_index);
-    assert(!this->removeVec[leafID]);
+    //assert(!this->removeVec[leafID]);
     uint64_t result = this->uftree.unionParent(leafID);
     bool b = result != UINT64_MAX;
 
+    /*
     if (b)
     {
         this->removeVec[leafID] = true;
     }
-    return b;
-    /*
-    uint64_t id = this->rangeArray.getLeafID(sa_index);
-    if (this->removeVec[id])
-    {
-        uint64_t result = this->uftree.unionParent(id);
-        bool b = result != UINT64_MAX;
-        //std::cout << b << std::endl;
-
-        if (b)
-        {
-            this->removeVec[id] = true;
-        }
-        return b;
-    }
-    else
-    {
-        this->removeVec[id] = true;
-        std::cout << "removed " << id << std::endl;
-        return true;
-    }
     */
+    return b;
 }
-bool DynamicIntervalTree::checkRemovedInterval(uint64_t intervalID)
+bool DynamicIntervalTree::hasInterval(uint64_t intervalID)
 {
-    return this->removeVec[intervalID] || this->uftree.checkMerge(intervalID);
+    uint64_t clusterID = this->uftree.getClusterID(intervalID);
+    return clusterID != intervalID;
+    //return this->removeVec[intervalID] || this->uftree.checkMerge(intervalID);
     //return this->removeVec[intervalID];
 }
-/*
-uint64_t DynamicIntervalTree::removeMSIntervals(TINDEX pos, vector<uint64_t> &isa, TINDEX lastAttractor)
-{
-    while (true)
-    {
-        uint64_t id = getLowestLCPIntervalID(isa[pos]);
-        if (id == UINT64_MAX)
-        {
-            return id;
-        }
-        else
-        {
-            uint64_t longestIntervalLength = intervals[id].lcp;
-            if (pos + longestIntervalLength - 1 >= lastAttractor)
-            {
-                this->removeLowestLCPInterval(isa[pos]);
-            }
-            else
-            {
-                return id;
-            }
-        }
-    }
-    return UINT64_MAX;
-}
-*/
 
 std::stack<MinimalSubstringInfo> DynamicIntervalTree::constructSortedMinimumSubstrings(std::vector<uint64_t> &sa)
 {
@@ -185,6 +96,15 @@ std::stack<MinimalSubstringInfo> DynamicIntervalTree::constructSortedMinimumSubs
     }
     return outputSortedMinimumSubstrings;
 }
-
+std::vector<uint64_t> DynamicIntervalTree::constructLeafIDVec(uint64_t textSize){
+    
+    std::vector<uint64_t> r;
+    r.resize(textSize, UINT64_MAX);
+    for (uint64_t i = 0; i < textSize; i++)
+    {
+      r[i] = this->getLowestLCPIntervalID(i);
+    }
+    return r;
+  }
 } // namespace lazy
 } // namespace stool

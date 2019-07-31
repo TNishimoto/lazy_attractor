@@ -7,6 +7,8 @@
 #include "stool/src/io.hpp"
 #include "stool/src/io.h"
 #include "stool/src/sa_bwt_lcp.hpp"
+#include "stool/src/print.hpp"
+
 //#include "mstree.hpp"
 //#include "greedy_attractor.hpp"
 #include "lazy_attractor.hpp"
@@ -126,6 +128,10 @@ int main(int argc, char *argv[])
     #ifdef DEBUG
     std::cout << "check lazy attractors..." << std::endl;
     vector<uint64_t> correctAttrs = LazyAttractor::naiveComputeLazyAttractors(text, minimalSubstrings);
+    if(attrs.size() != correctAttrs.size()){
+        stool::Printer::print("Lazy        ", attrs);
+        stool::Printer::print("Correct Lazy", correctAttrs);
+    }
     assert(attrs.size() == correctAttrs.size());
     std::cout << "OK!" << std::endl;
 

@@ -32,7 +32,7 @@ class DynamicIntervalTree
 {
 private:
   UnionFindTree uftree;
-  std::vector<bool> removeVec;
+  //std::vector<bool> removeVec;
   std::vector<LCPInterval<uint64_t>> &intervals;
   std::vector<uint64_t> &parents;
   LeafRankDataStructure rangeArray;
@@ -49,7 +49,7 @@ public:
   It returns false when such LCP interval does not exist.
   */
   bool removeLowestLCPInterval(SINDEX sa_index);
-  bool checkRemovedInterval(uint64_t intervalID);
+  bool hasInterval(uint64_t intervalID);
 
   /*
   Return minimal substrings on the given suffix array. The minimal substrings are sorted in the order of the their minimal occrrences.
@@ -57,15 +57,15 @@ public:
   std::stack<MinimalSubstringInfo> constructSortedMinimumSubstrings(std::vector<uint64_t> &sa);
 
   
-  std::vector<uint64_t> constructLeafIDVec(uint64_t textSize){
-    
-    std::vector<uint64_t> r;
-    r.resize(textSize, UINT64_MAX);
-    for (uint64_t i = 0; i < textSize; i++)
-    {
-      r[i] = this->getLowestLCPIntervalID(i);
-    }
-    return r;
+  std::vector<uint64_t> constructLeafIDVec(uint64_t textSize);
+
+  void print(){
+    std::vector<uint64_t> r = this->uftree.getClusterRoots();
+    std::sort(r.begin(), r.end());
+    for(auto &it : r){
+      std::cout << this->intervals[it].to_string();
+    } 
+    std::cout << std::endl;
   }
 };
 
