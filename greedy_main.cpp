@@ -5,6 +5,8 @@
 #include <set>
 #include "stool/src/io.h"
 #include "stool/src/io.hpp"
+#include "stool/src/print.hpp"
+
 #include "stool/src/cmdline.h"
 
 #include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
@@ -32,16 +34,13 @@ int main(int argc, char *argv[])
     p.add<std::string>("output_file", 'o', "(option) Output attractor file name(the default output name is 'input_file.greedy.attrs')", false, "");
     p.add<std::string>("output_type", 't', "(option) Output mode(binary or text)", false, "binary");
     //p.add<std::string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
-    p.add<uint>("block_size", 'b', "(option) block size", false, 1000);
-
+    
     p.parse_check(argc, argv);
     std::string inputFile = p.get<std::string>("input_file");
     //std::string mSubstrFile = p.get<std::string>("msubstr_file");
     std::string outputFile = p.get<std::string>("output_file");
     std::string outputMode = p.get<std::string>("output_type");
-    uint blockSize = p.get<uint>("block_size");
-    if (blockSize < 5)
-        blockSize = 5;
+    
 
     if (outputFile.size() == 0)
     {
@@ -121,9 +120,25 @@ int main(int argc, char *argv[])
     }
     else
     {
-        //GreedyAttractorAlgorithm::computeGreedyAttractors(sa, mstree.nodes, blockSize, attrs);
-    std::vector<INDEX> isa = stool::constructISA<CHAR, INDEX>(text, sa);
-        FasterGreedyAttractor::computeGreedyAttractors(sa, isa, minimalSubstrings, attrs);
+        std::vector<INDEX> isa = stool::constructISA<CHAR, INDEX>(text, sa);
+        std::vector<uint64_t> greedyAttrs = FasterGreedyAttractor::computeGreedyAttractors(sa, isa, minimalSubstrings);
+
+        #ifdef DEBUG
+        std::vector<uint64_t> correctAttrs = GreedyAttractorAlgorithm::computeGreedyAttractors(sa, minimalSubstrings);
+        if(correctAttrs.size() != greedyAttrs.size()){
+            stool::Printer::print("Correct Greedy Attractors", correctAttrs);
+            stool::Printer::print("Greedy Attractors        ", greedyAttrs);
+
+        }
+        assert(correctAttrs.size() == greedyAttrs.size());
+
+        std::cout << "CORRECT!" << std::endl;
+
+        #endif
+
+
+        attrs.swap(greedyAttrs);
+
         auto end = std::chrono::system_clock::now();
         double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
@@ -140,7 +155,8 @@ int main(int argc, char *argv[])
         }
         else
         {
-            IO::write(outputFile, attrs, UINT64_MAX - 1);
+            stool::write_vector(outputFile, attrs);
+            //IO::write(outputFile, attrs, UINT64_MAX - 1);
         }
 
         std::cout << "\033[36m";
@@ -152,7 +168,6 @@ int main(int argc, char *argv[])
         std::cout << "The number of minimal substrings : " << mSubstrCount << std::endl;
 
         std::cout << "The number of attractors : " << attrs.size() << std::endl;
-        std::cout << "Block size : " << blockSize << std::endl;
         std::cout << "Excecution time : " << ((uint64_t)elapsed) << "ms";
         std::cout << "[" << charperms << "chars/ms]" << std::endl;
         std::cout << "==================================" << std::endl;

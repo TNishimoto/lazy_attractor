@@ -121,7 +121,7 @@ public:
         this->msVec[interval_id].resize(0);
         this->msVec.shrink_to_fit();
     }
-    std::vector<uint64_t> getLCPIntervals(uint64_t sa_index)
+    std::vector<uint64_t> getAndRemoveCapturedLCPIntervals(uint64_t sa_index)
     {
         std::vector<uint64_t> r;
         int64_t distance = this->distanceVec[sa_index];
