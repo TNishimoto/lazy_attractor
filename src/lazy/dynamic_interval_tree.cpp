@@ -43,7 +43,7 @@ bool DynamicIntervalTree::removeLowestLCPInterval(SINDEX sa_index)
 bool DynamicIntervalTree::hasInterval(uint64_t intervalID)
 {
     uint64_t clusterID = this->uftree.getClusterID(intervalID);
-    return clusterID != intervalID;
+    return clusterID == intervalID;
     //return this->removeVec[intervalID] || this->uftree.checkMerge(intervalID);
     //return this->removeVec[intervalID];
 }

@@ -7,6 +7,9 @@ namespace lazy
 bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttractor, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &isa, DynamicIntervalTree &tree, std::stack<MinimalSubstringInfo> &sortedMinimumSubstrings)
 {
     int64_t currentPos = (int64_t)lastAttractor;
+    //uint64_t removedIntervalCount = 0;
+    uint64_t sortedMinimumSubstringsSize = sortedMinimumSubstrings.size();
+
     while (sortedMinimumSubstrings.size() > 0)
     {
 
@@ -41,6 +44,8 @@ bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttra
 
                     if (tree.hasInterval(top.id))
                     {
+
+                        assert(sortedMinimumSubstringsSize != sortedMinimumSubstrings.size());
                         return true;
                     }
                     else
@@ -77,18 +82,17 @@ std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> 
     {
         //lufTree.print();
         auto top = sortedMinimumSubstrings.top();
+
+#ifdef DEBUG
         if (outputAttrs.size() > 0)
         {
             assert(outputAttrs[outputAttrs.size() - 1] != top.minOcc);
         }
+        assert(lufTree.getLowestLCPIntervalID(isa[top.minOcc]) != UINT64_MAX);
+#endif
 
         outputAttrs.push_back(top.minOcc);
-        //std::cout << top.minOcc << "/" << isa[top.minOcc] << std::endl;
-        //std::cout << top.minOcc << std::endl;
-        assert(lufTree.getLowestLCPIntervalID(isa[top.minOcc]) != UINT64_MAX);
         removeMSIntervalsCapturedByTheLastAttractor(top.minOcc, _intervals, isa, lufTree, sortedMinimumSubstrings);
-        //lufTree.print();
-
     }
 
     std::cout << std::endl;
