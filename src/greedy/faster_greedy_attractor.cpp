@@ -87,11 +87,11 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
     uint64_t removedFrequencySum = 0;
     uint64_t counter = 0;
     uint64_t minimalSubstringCount = intervals.size();
+    std::cout << "Computing Greedy Attractors..." << std::endl;
     while (true)
     {
 #ifdef DEBUG_PRINT
         std::cout << "[Attrs, RemainingPositions, LCPIntervals, RemovedFrequency] = [" << outputAttrs.size() << ", " << remainingPositionCount << ", " << currentIntervals.size() << "," << removedFrequencySum << "]\r" << std::flush;
-#else
         if (counter % 100 == 0)
         {
             std::cout << "\r"
@@ -134,7 +134,7 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
             counter++;
         }
     }
-    std::cout << std::endl;
+    std::cout << "[END]" << std::endl;
     std::sort(outputAttrs.begin(), outputAttrs.end());
     return outputAttrs;
 }

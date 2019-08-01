@@ -13,38 +13,15 @@
 //#include "greedy_attractor.hpp"
 #include "lazy_attractor.hpp"
 #include "stool/src/print.hpp"
-#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
+#include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
+
+//#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
 
 using namespace std;
 using namespace sdsl;
 using namespace stool;
 using namespace stool::lazy;
 
-/*
-void load_minimal_substrings(string filename, vector<stool::LCPInterval<uint64_t>> &output)
-{
-    std::ifstream file;
-    file.open(filename, std::ios::binary);
-
-    if (!file)
-    {
-        std::cerr << "error reading file " << std::endl;
-        return false;
-    }
-    else
-    {
-        file.seekg(0, std::ios::end);
-        uint64_t n = (unsigned long)file.tellg();
-        file.seekg(0, std::ios::beg);
-
-        output.resize(n / sizeof(stool::LCPInterval<uint64_t>));
-
-        file.read((char *)&(output)[0], n);
-        file.close();
-        file.clear();
-    }
-}
-*/
 
 int main(int argc, char *argv[])
 {

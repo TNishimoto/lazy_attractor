@@ -9,7 +9,7 @@
 
 #include "stool/src/cmdline.h"
 
-#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
+#include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 //#include "sa.hpp"
 #include "greedy/greedy_attractor.hpp"
 #include "greedy/faster_greedy_attractor.hpp"
