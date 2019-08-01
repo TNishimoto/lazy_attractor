@@ -27,18 +27,36 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeFrequencyVector(std::vect
     {
         if (interval.lcp == 0)
             continue;
+        /*
+        std::unordered_set<uint64_t> incrementedPositions;
+        for (uint64_t x = interval.i; x <= interval.j; x++)
+        {
+            for (uint64_t y = 0; y < interval.lcp; y++)
+            {
+                uint64_t p = sa[x]+y;
+                counter.increment();
+                if (incrementedPositions.find(p) == incrementedPositions.end())
+                {
+                    r[p]++;
+
+                    incrementedPositions.insert(p);
+                }
+            }
+        }
+        */
+        
         std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = getSortedCoveredPositions(sa, interval);
         for (std::pair<uint64_t, uint64_t> &it : coveredPositions)
         {
             for (uint64_t x = it.first; x <= it.second; x++)
             {
                 counter.increment();
-
                 ++r[x];
             }
         }
+        
     }
-    std::cout << "[END]"<< std::endl;
+    std::cout << "[END]" << std::endl;
     return r;
 }
 

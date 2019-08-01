@@ -108,14 +108,12 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
     uint64_t removedFrequencySum = 0;
     stool::Counter counter;
     //uint64_t counter = 0;
-    uint64_t minimalSubstringCount = intervals.size();
     std::cout << "Computing Greedy Attractors..." << std::flush;
     while (true)
     {
 #ifdef DEBUG_PRINT
         std::cout << "[Attrs, RemainingPositions, LCPIntervals, RemovedFrequency] = [" << outputAttrs.size() << ", " << remainingPositionCount << ", " << currentIntervals.size() << "," << removedFrequencySum << "]\r" << std::flush;
 #endif
-            //std::cout << "-" << std::flush;
 
         //auto maxFreqSet = freqRankMap[maxFreq];
         if (maxFreqSet.size() == 0)

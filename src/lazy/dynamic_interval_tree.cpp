@@ -9,7 +9,7 @@ namespace lazy
 DynamicIntervalTree::DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize) : intervals(_intervals), parents(_parents)
 {
 
-    std::cout << "construct rangeArray" << std::endl;
+    std::cout << "Constructing the data structure for lowest node queries..." << std::endl;
     rangeArray.construct(intervals, parents, textSize);
 
     //this->removeVec.resize(_intervals.size(), false);

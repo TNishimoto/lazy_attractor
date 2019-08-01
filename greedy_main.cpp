@@ -76,7 +76,6 @@ int main(int argc, char *argv[])
 
     std::cout << "Constructing Suffix Array" << std::endl;
     std::vector<INDEX> sa = stool::constructSA<CHAR, INDEX>(text);
-    std::cout << "Constructing LCP Array" << std::endl;
     std::vector<INDEX> lcpArray = stool::constructLCP<CHAR, INDEX>(text, sa);
     std::cout << "Constructing BWT" << std::endl;
     std::vector<CHAR> bwt = stool::constructBWT<CHAR, INDEX>(text, sa);
