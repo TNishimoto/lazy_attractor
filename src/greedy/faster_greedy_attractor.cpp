@@ -18,7 +18,7 @@ std::vector<uint64_t> FasterGreedyAttractor::getCoveringIntervals(uint64_t pos, 
     }
     return r;
 }
-std::pair<uint64_t, uint64_t> FasterGreedyAttractor::decrementFrequencies(LCPInterval<uint64_t> &removedInterval, std::vector<uint64_t> &countVec, std::unordered_map<uint64_t, std::set<uint64_t>> &freqRankMap, std::vector<uint64_t> &sa)
+std::pair<uint64_t, uint64_t> FasterGreedyAttractor::decrementFrequencies(LCPInterval<uint64_t> &removedInterval, std::vector<uint64_t> &countVec, std::unordered_map<uint64_t, std::unordered_set<uint64_t>> &freqRankMap, std::set<uint64_t> &maxFreqMap, uint64_t maxFreq, std::vector<uint64_t> &sa)
 {
     std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = GreedyAttractorAlgorithm::getSortedCoveredPositions(sa, removedInterval);
     //std::cout << "a" << std::flush;
@@ -32,7 +32,14 @@ std::pair<uint64_t, uint64_t> FasterGreedyAttractor::decrementFrequencies(LCPInt
             if (countVec[y] != UINT64_MAX)
             {
                 uint64_t count = countVec[y];
-                freqRankMap[count].erase(y);
+                if (count == maxFreq)
+                {
+                    maxFreqMap.erase(y);
+                }
+                else
+                {
+                    freqRankMap[count].erase(y);
+                }
                 if (count > 1)
                 {
                     freqRankMap[count - 1].insert(y);
@@ -55,11 +62,12 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
 {
     std::vector<uint64_t> outputAttrs;
 
-    std::vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructMSIntervalParents(intervals);
-    GDynamicIntervalTree g(sa, isa, intervals, parents, sa.size());
-
     //Initialize
     std::cout << "Initialize Greedy Data Structures" << std::endl;
+    std::vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructMSIntervalParents(intervals);
+    GDynamicIntervalTree g(sa, isa, intervals, parents, sa.size());
+    g.construct();
+
     std::unordered_set<uint64_t> currentIntervals;
     for (uint64_t i = 0; i < intervals.size(); i++)
     {
@@ -69,15 +77,23 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
     std::vector<uint64_t> positionWeights = GreedyAttractorAlgorithm::computeFrequencyVector(sa, intervals);
     uint64_t maxFreq = *std::max_element(positionWeights.begin(), positionWeights.end());
     ;
-    std::unordered_map<uint64_t, std::set<uint64_t>> freqRankMap;
+    std::unordered_map<uint64_t, std::unordered_set<uint64_t>> freqRankMap;
+    std::set<uint64_t> maxFreqSet;
     for (uint64_t i = 0; i <= maxFreq; i++)
     {
-        freqRankMap[i] = (std::set<uint64_t>());
+        freqRankMap[i] = (std::unordered_set<uint64_t>());
     }
 
     for (uint64_t i = 0; i < positionWeights.size(); i++)
     {
-        freqRankMap[positionWeights[i]].insert(i);
+        if (maxFreq == positionWeights[i])
+        {
+            maxFreqSet.insert(i);
+        }
+        else
+        {
+            freqRankMap[positionWeights[i]].insert(i);
+        }
     }
 
     std::cout << "Initialize Greedy Data Structures[END]" << std::endl;
@@ -87,18 +103,33 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
     uint64_t removedFrequencySum = 0;
     uint64_t counter = 0;
     uint64_t minimalSubstringCount = intervals.size();
-    std::cout << "Computing Greedy Attractors..." << std::endl;
+    std::cout << "Computing Greedy Attractors..." << std::flush;
     while (true)
     {
 #ifdef DEBUG_PRINT
         std::cout << "[Attrs, RemainingPositions, LCPIntervals, RemovedFrequency] = [" << outputAttrs.size() << ", " << remainingPositionCount << ", " << currentIntervals.size() << "," << removedFrequencySum << "]\r" << std::flush;
+#else
         if (counter % 100 == 0)
         {
-            std::cout << "\r"
-                      << "Computing Greedy Attractors : [" << currentIntervals.size() << "/" << minimalSubstringCount << "]" << std::flush;
+            if (currentIntervals.size() > 100000)
+            {
+                std::cout << "+" << std::flush;
+            }
+            else if (currentIntervals.size() > 10000)
+            {
+                std::cout << "*" << std::flush;
+            }
+            else if (currentIntervals.size() > 1000)
+            {
+                std::cout << "-" << std::flush;
+            }
+            else if (currentIntervals.size() > 100)
+            {
+                std::cout << "#" << std::flush;
+            }
         }
 #endif
-        auto maxFreqSet = freqRankMap[maxFreq];
+        //auto maxFreqSet = freqRankMap[maxFreq];
         if (maxFreqSet.size() == 0)
         {
             if (maxFreq == 0)
@@ -108,6 +139,11 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
             else
             {
                 --maxFreq;
+                for(auto &maxIndex : freqRankMap[maxFreq]){
+                    maxFreqSet.insert(maxIndex);
+                }
+                freqRankMap[maxFreq].clear();
+                
             }
         }
         else
@@ -125,7 +161,7 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
             for (auto &intervalID : coveringIntervals)
             {
                 LCPInterval<uint64_t> interval = intervals[intervalID];
-                std::pair<uint64_t, uint64_t> info = decrementFrequencies(interval, positionWeights, freqRankMap, sa);
+                std::pair<uint64_t, uint64_t> info = decrementFrequencies(interval, positionWeights, freqRankMap,maxFreqSet, maxFreq, sa);
                 remainingPositionCount -= info.first;
                 removedFrequencySum += info.second;
                 currentIntervals.erase(intervalID);

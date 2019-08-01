@@ -35,7 +35,7 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeFrequencyVector(std::vect
         }
         counter++;
     }
-    std::cout << std::endl;
+    std::cout << "[END]"<< std::endl;
     return r;
 }
 
