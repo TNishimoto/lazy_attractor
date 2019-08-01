@@ -19,6 +19,7 @@ include_directories(~/include)
 
 
 #### Modules
+if(NOT USE_OTHER_LIB)
 if(NOT MYMOD_DIR)
   set(MYMOD_DIR 1)
   set(MYMOD_SOURCE_DIR ${CMAKE_SOURCE_DIR}/module)
@@ -26,6 +27,12 @@ if(NOT MYMOD_DIR)
   add_subdirectory(${MYMOD_SOURCE_DIR}/libdivsufsort ${MYMOD_BINARY_DIR}/libdivsufsort)
 endif()
 include_directories(${MYMOD_BINARY_DIR}/libdivsufsort/include)
+else()
+#libdivsufsort directory is here.
+#Please modify it appropriately.
+LINK_DIRECTORIES(./lib)
+INCLUDE_DIRECTORIES(./include)
+endif()
 
 # STOOL submodule
 FILE(GLOB STOOL_SOURCES module/stool/src/*.cpp)
