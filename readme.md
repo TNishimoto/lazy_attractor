@@ -22,7 +22,7 @@ Please edit CMakeLists.txt to set SDSL library and include directory paths.
 
 # preliminaries
 
-hoghoge.
+hoghoge. $O(n)$ time.
 
 # executions
 
