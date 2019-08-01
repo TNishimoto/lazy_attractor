@@ -7,6 +7,7 @@
 #include <set>
 #include <chrono>
 #include "../lazy/dynamic_interval_tree.hpp"
+#include "stool/src/print.hpp"
 namespace stool
 {
 namespace lazy
@@ -54,9 +55,11 @@ public:
         this->distanceVec.resize(sa.size(), 0);
         std::vector<uint64_t> idVec;
         idVec.resize(sa.size(), UINT64_MAX);
+        stool::Counter counter;
 
         for (uint64_t i = 0; i < posVec.size(); i++)
         {
+            counter.increment();
             uint64_t x = posVec[i];
             uint64_t id = this->tree.getLowestLCPIntervalID(x);
             uint64_t x_lcp = intervals[id].lcp;
