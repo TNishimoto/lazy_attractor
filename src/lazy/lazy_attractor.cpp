@@ -127,28 +127,20 @@ std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> 
 {
     std::vector<uint64_t> outputAttrs;
     DynamicIntervalTree lufTree(_intervals, _parents, text.size());
-    //lufTree.initialize;
     std::stack<MinimalSubstringInfo> sortedMinimumSubstrings = constructSortedMinimalOccurrenceStack(sa, _intervals, _parents);
-    //lufTree.constructSortedMinimumSubstrings(sa);
+    stool::Counter printCounter;
 
+    std::cout << "Computing lazy attractors" << std::flush;
     while (sortedMinimumSubstrings.size() > 0)
     {
-        //lufTree.print();
+        printCounter.increment();
         auto top = sortedMinimumSubstrings.top();
-
-#ifdef DEBUG
-        if (outputAttrs.size() > 0)
-        {
-            assert(outputAttrs[outputAttrs.size() - 1] != top.minOcc);
-        }
+        assert(outputAttrs.size() == 0 || outputAttrs[outputAttrs.size() - 1] != top.minOcc);
         assert(lufTree.getLowestLCPIntervalID(isa[top.minOcc]) != UINT64_MAX);
-#endif
-
         outputAttrs.push_back(top.minOcc);
         removeMSIntervalsCapturedByTheLastAttractor(top.minOcc, _intervals, isa, lufTree, sortedMinimumSubstrings);
     }
-
-    std::cout << std::endl;
+    std::cout << "[END]" << std::endl;
 
     std::sort(outputAttrs.begin(), outputAttrs.end());
     return outputAttrs;
