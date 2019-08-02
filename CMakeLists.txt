@@ -43,9 +43,9 @@ FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp src/greedy/*.cpp)
 add_library(fn STATIC ${SOURCES} ${ESAXX_SOURCES} ${STOOL_SOURCES})
 target_link_libraries(fn sdsl divsufsort divsufsort64)
 
-add_executable(greedy.out  greedy_main.cpp)
-add_executable(verify.out verify_main.cpp)
-add_executable(lazy.out lazy_main.cpp)
+add_executable(greedy.out  main/greedy_main.cpp)
+add_executable(verify.out main/verify_main.cpp)
+add_executable(lazy.out main/lazy_main.cpp)
 
 target_link_libraries(greedy.out fn)
 target_link_libraries(verify.out fn)

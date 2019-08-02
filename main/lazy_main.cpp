@@ -8,10 +8,7 @@
 #include "stool/src/io.h"
 #include "stool/src/sa_bwt_lcp.hpp"
 #include "stool/src/print.hpp"
-
-//#include "mstree.hpp"
-//#include "greedy_attractor.hpp"
-#include "lazy_attractor.hpp"
+#include "../src/lazy/lazy_attractor.hpp"
 #include "stool/src/print.hpp"
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 

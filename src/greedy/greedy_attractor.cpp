@@ -22,7 +22,7 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeFrequencyVector(std::vect
     r.resize(sa.size(), 0);
 
     stool::Counter counter;
-    std::cout << "Computing Position Weights..." << std::flush;
+    std::cout << "Computing frequencies on positions..." << std::flush;
     for (LCPInterval<uint64_t> &interval : intervals)
     {
         if (interval.lcp == 0)
@@ -219,7 +219,7 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeGreedyAttractors(vector<u
         if (counter++ % 100 == 0)
         {
             std::cout << "\r"
-                      << "Computing Greedy Attractors : [" << currentIntervals.size() << "/" << intervals.size() << "]" << std::flush;
+                      << "Computing greedy attractors : [" << currentIntervals.size() << "/" << intervals.size() << "]" << std::flush;
         }
 
         uint64_t nextAttr = UINT64_MAX;

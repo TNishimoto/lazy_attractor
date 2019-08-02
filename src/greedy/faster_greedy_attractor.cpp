@@ -63,7 +63,7 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
     std::vector<uint64_t> outputAttrs;
 
     //Initialize
-    std::cout << "Initialize Greedy Data Structures" << std::endl;
+    std::cout << "Initializing greedy data structures" << std::endl;
     std::vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructMSIntervalParents(intervals);
     GDynamicIntervalTree g(sa, isa, intervals, parents, sa.size());
     g.construct();
@@ -101,14 +101,14 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
     }
     std::cout << "[END]"<< std::endl;
 
-    std::cout << "Initialize Greedy Data Structures[END]" << std::endl;
+    std::cout << "Initializing greedy data structures[END]" << std::endl;
 
     //uint64_t startPosition = 0;
     uint64_t remainingPositionCount = sa.size();
     uint64_t removedFrequencySum = 0;
     stool::Counter counter;
     //uint64_t counter = 0;
-    std::cout << "Computing Greedy Attractors..." << std::flush;
+    std::cout << "Computing greedy attractors" << std::flush;
     while (true)
     {
 #ifdef DEBUG_PRINT

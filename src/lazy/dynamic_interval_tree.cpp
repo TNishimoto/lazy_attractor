@@ -10,17 +10,17 @@ DynamicIntervalTree::DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_in
 {
 
     std::cout << "Constructing the data structure for lowest node queries..." << std::endl;
-    rangeArray.construct(intervals, parents, textSize);
+    lowestNodeQuery.construct(intervals, parents, textSize);
 
     //this->removeVec.resize(_intervals.size(), false);
 
-    std::cout << "Constructing UnionFindTree..." << std::flush;
+    std::cout << "Initializing Union-find tree" << std::flush;
     this->uftree.initialize(parents);
     std::cout << "[END]" << std::endl;
 }
 uint64_t DynamicIntervalTree::getLowestLCPIntervalID(SINDEX sa_index)
 {
-    uint64_t id = this->rangeArray.getLowestNodeID(sa_index);
+    uint64_t id = this->lowestNodeQuery.getLowestNodeID(sa_index);
     uint64_t clusterRootID = this->uftree.getClusterID(id);
     return clusterRootID;
 }

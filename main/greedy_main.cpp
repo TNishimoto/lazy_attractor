@@ -11,8 +11,8 @@
 
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 //#include "sa.hpp"
-#include "greedy/greedy_attractor.hpp"
-#include "greedy/faster_greedy_attractor.hpp"
+#include "../src/greedy/greedy_attractor.hpp"
+#include "../src/greedy/faster_greedy_attractor.hpp"
 
 //using namespace std;
 //using namespace sdsl;

@@ -35,7 +35,7 @@ private:
   //std::vector<bool> removeVec;
   std::vector<LCPInterval<uint64_t>> &intervals;
   std::vector<uint64_t> &parents;
-  LowestNodeQuery rangeArray;
+  LowestNodeQuery lowestNodeQuery;
 public:
 
   DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize);

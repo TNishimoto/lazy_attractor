@@ -6,7 +6,7 @@
 #include "stool/src/cmdline.h"
 #include "stool/src/io.h"
 #include "stool/src/sa_bwt_lcp.hpp"
-#include "verification_attractor.hpp"
+#include "../src/verification_attractor.hpp"
 //#include "minimal_substrings.hpp"
 //#include "mstree.hpp"
 //#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
