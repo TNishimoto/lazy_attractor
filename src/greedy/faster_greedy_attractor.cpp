@@ -121,7 +121,7 @@ std::vector<uint64_t> FasterGreedyAttractor::computeHighFrequencyGreedyAttractor
 {
 
     std::vector<uint64_t> outputAttrs;
-    uint64_t currentTotalWeight = UINT64_MAX;
+    uint64_t currentTotalWeight = sa.size() + 1;
     stool::Counter printCounter;
     std::cout << "Computing high frequency greedy attractors" << std::flush;
     while (currentTotalWeight * ratio > sa.size())
@@ -140,7 +140,10 @@ std::vector<uint64_t> FasterGreedyAttractor::computeHighFrequencyGreedyAttractor
 
         outputAttrs.push_back(nextAttr);
 
+            std::cout <<  "a" << std::endl;
         std::vector<uint64_t> coveringIntervals = gtree.getAndRemoveCapturedLCPIntervals(isa[nextAttr]);
+            std::cout <<  "b" << std::endl;
+
         currentTotalWeight = getTotalWeight(coveringIntervals, intervals);
         //std::cout << "high : "<< currentTotalWeight  << "/" << sa.size() << std::endl;
         for (auto &intervalID : coveringIntervals)
@@ -149,6 +152,7 @@ std::vector<uint64_t> FasterGreedyAttractor::computeHighFrequencyGreedyAttractor
 
             LCPInterval<uint64_t> interval = intervals[intervalID];
             std::pair<uint64_t, uint64_t> info = decrementFrequencies(interval, freqVec, sa);
+
             currentIntervals.erase(intervalID);
         }
     }

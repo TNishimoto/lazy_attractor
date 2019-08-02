@@ -108,8 +108,19 @@ public:
         }
         std::cout << "Constructing GDynamicIntervalTree[END]" << std::endl;
     }
+    uint64_t getWorstUpdateCost(uint64_t interval_id){
+        uint64_t k=0;
+        for (auto &sa_index : this->msVec[interval_id]){
+            uint64_t distance = this->distanceVec[sa_index];
+            k += distance;
+        }
+        return k;
+    }
     void update(uint64_t interval_id)
     {
+        std::cout << "Update Cost: " << this->getWorstUpdateCost(interval_id) << "/" <<  this->msVec[interval_id].size()<< std::endl;
+        std::cout << this->intervals[interval_id].to_string() << std::endl;
+
         for (auto &sa_index : this->msVec[interval_id])
         {
             uint64_t distance = this->distanceVec[sa_index];
@@ -141,6 +152,7 @@ public:
         int64_t distance = this->distanceVec[sa_index];
         for (int64_t i = 0; i < distance; i++)
         {
+            if(i % 10000 == 0)std::cout << i << "/" << distance << "]" << std::flush;
             while (true)
             {
                 uint64_t id = this->tree.getLowestLCPIntervalID(sa_index);
@@ -162,16 +174,23 @@ public:
                 sa_index = isa[sa[sa_index] - 1];
             }
         }
+                    std::cout << "/" << r.size() << "//" << std::endl;
+
         for (uint64_t x = 0; x < r.size(); x++)
         {
+
+            std::cout << x << "/" << r.size() << "]" << std::flush;
             this->update(r[x]);
         }
+                    std::cout << "/" << std::flush;
+
         std::sort(r.begin(), r.end());
+        #ifdef DEBUG
         for (uint64_t i = 1; i < r.size(); i++)
         {
             assert(r[i] != r[i - 1]);
         }
-
+        #endif
         return r;
     }
     void debug(std::unordered_set<uint64_t> &currentIntervals, std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize)
