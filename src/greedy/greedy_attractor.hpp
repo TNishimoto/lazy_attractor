@@ -35,6 +35,8 @@ public:
 
     static std::vector<uint64_t> computeGreedyAttractors(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
     static std::vector<uint64_t> computeFrequencyVector(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
+    static std::vector<uint64_t> computeFrequencyVector(std::unordered_set<uint64_t> &currentIntervals, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
+
     static std::vector<std::pair<uint64_t, uint64_t>> getSortedCoveredPositions(std::vector<uint64_t> &sa, LCPInterval<uint64_t> &interval);
 
 };

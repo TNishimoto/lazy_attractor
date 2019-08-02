@@ -44,7 +44,7 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeFrequencyVector(std::vect
             }
         }
         */
-        
+
         std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = getSortedCoveredPositions(sa, interval);
         for (std::pair<uint64_t, uint64_t> &it : coveredPositions)
         {
@@ -54,9 +54,31 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeFrequencyVector(std::vect
                 ++r[x];
             }
         }
-        
     }
     std::cout << "[END]" << std::endl;
+    return r;
+}
+std::vector<uint64_t> GreedyAttractorAlgorithm::computeFrequencyVector(std::unordered_set<uint64_t> &currentIntervals, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
+{
+
+    std::vector<uint64_t> r;
+    r.resize(sa.size(), 0);
+
+    for (auto &intervalID : currentIntervals)
+    {
+        LCPInterval<uint64_t> &interval = intervals[intervalID];
+        if (interval.lcp == 0)
+            continue;
+
+        std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = getSortedCoveredPositions(sa, interval);
+        for (std::pair<uint64_t, uint64_t> &it : coveredPositions)
+        {
+            for (uint64_t x = it.first; x <= it.second; x++)
+            {
+                ++r[x];
+            }
+        }
+    }
     return r;
 }
 
