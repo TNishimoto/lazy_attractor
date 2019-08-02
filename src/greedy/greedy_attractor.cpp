@@ -227,7 +227,6 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeGreedyAttractors(vector<u
 
         for (auto &it : currentFrequencies)
         {
-            //std::cout << "[" << it.first << "/" << it.second << "]";
             if (it.second > maxWeight)
             {
                 nextAttr = it.first;
@@ -238,18 +237,14 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeGreedyAttractors(vector<u
                 nextAttr = it.first;
             }
         }
-        //std::cout << std::endl;
         outputAttrs.push_back(nextAttr);
 
         std::vector<uint64_t> capturedIntervals = removeCapturedIntervals(nextAttr, currentIntervals, intervals, sa);
-        //std::cout << nextAttr << ", Remove: ";
         for (auto &it : capturedIntervals)
         {
-            //std::cout << intervals[it].to_string() << ", ";
             LCPInterval<uint64_t> &interval = intervals[it];
             decrementFrequencies(interval, currentFrequencies, sa);
         }
-        //std::cout << std::endl;
     }
     std::cout << std::endl;
 

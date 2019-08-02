@@ -103,11 +103,9 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
 
     std::cout << "Initializing greedy data structures[END]" << std::endl;
 
-    //uint64_t startPosition = 0;
     uint64_t remainingPositionCount = sa.size();
     uint64_t removedFrequencySum = 0;
     stool::Counter counter;
-    //uint64_t counter = 0;
     std::cout << "Computing greedy attractors" << std::flush;
     while (true)
     {
@@ -115,7 +113,6 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
         std::cout << "[Attrs, RemainingPositions, LCPIntervals, RemovedFrequency] = [" << outputAttrs.size() << ", " << remainingPositionCount << ", " << currentIntervals.size() << "," << removedFrequencySum << "]\r" << std::flush;
 #endif
 
-        //auto maxFreqSet = freqRankMap[maxFreq];
         if (maxFreqSet.size() == 0)
         {
             if (maxFreq == 0)
@@ -134,12 +131,9 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
         }
         else
         {
-            //g.debug(currentIntervals, intervals, sa.size());
-
             uint64_t maximalCoveredPos = *(maxFreqSet.begin());
             outputAttrs.push_back(maximalCoveredPos);
 
-            //std::vector<uint64_t> coveringIntervals = getCoveringIntervals(maximalCoveredPos, currentIntervals,intervals, sa);
             std::vector<uint64_t> coveringIntervals = g.getAndRemoveCapturedLCPIntervals(isa[maximalCoveredPos]);
 
             removedFrequencySum = 0;

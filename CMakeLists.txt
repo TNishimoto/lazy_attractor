@@ -14,6 +14,7 @@ INCLUDE_DIRECTORIES(src)
 INCLUDE_DIRECTORIES(src/lazy)
 
 #SDSL lib and include directory are here
+#Please modify it appropriately.
 LINK_DIRECTORIES(~/lib)
 include_directories(~/include)
 
@@ -30,8 +31,8 @@ include_directories(${MYMOD_BINARY_DIR}/libdivsufsort/include)
 else()
 #libdivsufsort directory is here.
 #Please modify it appropriately.
-LINK_DIRECTORIES(./lib)
-INCLUDE_DIRECTORIES(./include)
+#LINK_DIRECTORIES(./lib)
+#INCLUDE_DIRECTORIES(./include)
 endif()
 
 # STOOL submodule
