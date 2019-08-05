@@ -13,13 +13,18 @@ namespace lazy
 {
 using SINDEX = uint64_t;
 using TINDEX = uint64_t;
-struct LowestNodeInfo{
+/*
+  We call an interval on SA lowest node interval if the lowest nodes on positions in the interval are same.
+  This instance stores a lowst node interval and the id of the lowest node on the interval.
+  However this instance only stores the id and the starting position of the interval.
+ */
+struct LowestNodeInterval{
   uint64_t id;
   uint64_t rangeStartPosition;
-  LowestNodeInfo(){
+  LowestNodeInterval(){
 
   }
-  LowestNodeInfo(uint64_t _id,  uint64_t _rangeStartPosition) : id(_id), rangeStartPosition(_rangeStartPosition){
+  LowestNodeInterval(uint64_t _id,  uint64_t _rangeStartPosition) : id(_id), rangeStartPosition(_rangeStartPosition){
     
   }
 
@@ -46,13 +51,17 @@ public:
   }
 
   void construct(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, uint64_t _textSize);
-  // Return the leaf ID containing pos in minimal substring tree.
+  // Return the lowest node ID containing pos in minimal substring tree.
   uint64_t getLowestNodeID(SINDEX pos)
   {
     return this->idVec[bv_rank(pos + 1) - 1];
   }
-  static std::vector<uint64_t> constructLeafIDVec(std::unordered_set<uint64_t> &currentIntervals,std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize);
-  static std::vector<LowestNodeInfo> constructLowestNodeInfoVec(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents);
+  // Construct the vector X of length n such that X[i] stores the longest LCP interval containing the SA position i in the stored interval tree, 
+  // where n is the given textSize. 
+  static std::vector<uint64_t> constructLowestNodeIDVec(std::unordered_set<uint64_t> &currentIntervals,std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize);
+  // Compute lowest node intervals in the left-to-right order for the interval tree.
+  // See also LowestNodeInterval class.
+  static std::vector<LowestNodeInterval> constructLowestNodeIntervalVec(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents);
 };
 } // namespace lazy
 } // namespace stool

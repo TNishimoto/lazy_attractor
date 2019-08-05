@@ -9,14 +9,14 @@ namespace lazy
 std::vector<uint64_t> LazyAttractor::constructMinimalOccurrenceVec(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents)
 {
     uint64_t textSize = sa.size();
-    std::vector<LowestNodeInfo> lowestNodeInfoVec = LowestNodeQuery::constructLowestNodeInfoVec(intervals, parents);
+    std::vector<LowestNodeInterval> lowestNodeInfoVec = LowestNodeQuery::constructLowestNodeIntervalVec(intervals, parents);
 
     std::vector<uint64_t> minimalOccurrenceVec;
     minimalOccurrenceVec.resize(intervals.size(), UINT64_MAX);
 
     for (uint64_t i = 0; i < lowestNodeInfoVec.size(); i++)
     {
-        LowestNodeInfo &info = lowestNodeInfoVec[i];
+        LowestNodeInterval &info = lowestNodeInfoVec[i];
         uint64_t endPosition = i + 1 < lowestNodeInfoVec.size() ? lowestNodeInfoVec[i+1].rangeStartPosition - 1 : textSize - 1;
         for (uint64_t x = info.rangeStartPosition; x <= endPosition; x++)
         {

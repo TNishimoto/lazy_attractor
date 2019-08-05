@@ -48,7 +48,7 @@ bool DynamicIntervalTree::hasInterval(uint64_t intervalID)
     //return this->removeVec[intervalID];
 }
 
-std::vector<uint64_t> DynamicIntervalTree::constructLeafIDVec(uint64_t textSize){
+std::vector<uint64_t> DynamicIntervalTree::constructLowestNodeIDVec(uint64_t textSize){
     
     std::vector<uint64_t> r;
     r.resize(textSize, UINT64_MAX);

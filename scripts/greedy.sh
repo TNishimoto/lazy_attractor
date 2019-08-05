@@ -6,5 +6,5 @@ filearr=( "fib41" "rs.13" "tm29" "dblp.xml.00001.1" "dblp.xml.00001.2" "dblp.xml
 
 for file in ${filearr[@]}; do
 	echo "Greedy attractor : ${file}"
-    nohup /usr/bin/time -f "# greedy ${file}, %E time, %M KB" ~/lazy_attractor/build/greedy.out -i ${folderpath}/${file} -o ${outputpath}/${file}.greedy.attrs >> ~/output.txt 2>> ~/error.log
+    nohup /usr/bin/time -f "# greedy ${file}, %e time, %M KB" ~/lazy_attractor/build/greedy.out -i ${folderpath}/${file} -o ${outputpath}/${file}.greedy.attrs >> ~/output.txt 2>> ~/error.log
 done

@@ -57,7 +57,7 @@ public:
   
 
   
-  std::vector<uint64_t> constructLeafIDVec(uint64_t textSize);
+  std::vector<uint64_t> constructLowestNodeIDVec(uint64_t textSize);
 
   void print(){
     std::vector<uint64_t> r = this->uftree.getClusterRoots();
