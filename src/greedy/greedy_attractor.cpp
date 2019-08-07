@@ -7,6 +7,9 @@
 #include <queue>
 #include "stool/src/print.hpp"
 
+#include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
+#include "position_frequency_set.hpp"
+
 //#include <unordered_set>
 #include "greedy_attractor.hpp"
 using namespace std;
@@ -16,210 +19,12 @@ namespace stool
 namespace lazy
 {
 
-std::vector<uint64_t> GreedyAttractorAlgorithm::computeFrequencyVector(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
-{
-    std::vector<uint64_t> r;
-    r.resize(sa.size(), 0);
 
-    stool::Counter counter;
-    std::cout << "Computing frequencies on positions..." << std::flush;
-    for (LCPInterval<uint64_t> &interval : intervals)
-    {
-        if (interval.lcp == 0)
-            continue;
-        /*
-        std::unordered_set<uint64_t> incrementedPositions;
-        for (uint64_t x = interval.i; x <= interval.j; x++)
-        {
-            for (uint64_t y = 0; y < interval.lcp; y++)
-            {
-                uint64_t p = sa[x]+y;
-                counter.increment();
-                if (incrementedPositions.find(p) == incrementedPositions.end())
-                {
-                    r[p]++;
-
-                    incrementedPositions.insert(p);
-                }
-            }
-        }
-        */
-
-        std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = getSortedCoveredPositions(sa, interval);
-        for (std::pair<uint64_t, uint64_t> &it : coveredPositions)
-        {
-            for (uint64_t x = it.first; x <= it.second; x++)
-            {
-                counter.increment();
-                ++r[x];
-            }
-        }
-    }
-    std::cout << "[END]" << std::endl;
-    return r;
-}
-std::vector<uint64_t> GreedyAttractorAlgorithm::computeFrequencyVector(std::unordered_set<uint64_t> &currentIntervals, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
-{
-
-    std::vector<uint64_t> r;
-    r.resize(sa.size(), 0);
-
-    for (auto &intervalID : currentIntervals)
-    {
-        LCPInterval<uint64_t> &interval = intervals[intervalID];
-        if (interval.lcp == 0)
-            continue;
-
-        std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = getSortedCoveredPositions(sa, interval);
-        for (std::pair<uint64_t, uint64_t> &it : coveredPositions)
-        {
-            for (uint64_t x = it.first; x <= it.second; x++)
-            {
-                ++r[x];
-            }
-        }
-    }
-    return r;
-}
-
-/*
-std::vector<uint64_t> GreedyAttractorAlgorithm::computeFrequencyVector(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
-{
-    std::vector<uint64_t> r;
-    r.resize(sa.size(), 0);
-
-    uint64_t counter = 10000;
-    std::cout << "Computing Position Weights..." << std::flush;
-    vector<uint64_t> coveredPositionStartVec;
-    vector<uint64_t> coveredPositionEndVec;
-
-    for (uint64_t i = 0; i < intervals.size(); i++)
-    {
-        LCPInterval<uint64_t> &interval = intervals[i];
-        if (interval.lcp == 0)
-            continue;
-        std::vector<std::pair<uint64_t, uint64_t>> coveredPositions = getSortedCoveredPositions(sa, interval);
-
-        if (--counter == 0)
-        {
-            std::cout << "+" << std::flush;
-            counter = 10000;
-        }
-        for (std::pair<uint64_t, uint64_t> &it : coveredPositions)
-        {
-            coveredPositionStartVec.push_back(it.first);
-            coveredPositionEndVec.push_back(it.second);
-        }
-        if (coveredPositionStartVec.size() > sa.size() || i == intervals.size() - 1)
-        {
-            std::cout << "[" << std::flush;
-            std::sort(coveredPositionStartVec.begin(), coveredPositionStartVec.end());
-            std::sort(coveredPositionEndVec.begin(), coveredPositionEndVec.end());
-
-            uint64_t freq = 0;
-            int64_t pos = sa.size() - 1;
-            while (pos >= 0)
-            {
-                bool b = false;
-                if (coveredPositionEndVec.size() > 0 && coveredPositionEndVec[coveredPositionEndVec.size() - 1] == pos)
-                {
-                    ++freq;
-                    coveredPositionEndVec.pop_back();
-                    b = true;
-                }
-                if (coveredPositionStartVec.size() > 0 && coveredPositionStartVec[coveredPositionStartVec.size() - 1] > pos)
-                {
-                    --freq;
-                    coveredPositionStartVec.pop_back();
-                    b = true;
-                }
-                if (!b)
-                {
-                    r[pos] += freq;
-                    --pos;
-                }
-            }
-            coveredPositionStartVec.clear();
-            coveredPositionEndVec.clear();
-            std::cout << "]" << std::flush;
-        }
-    }
-    std::cout << "[END]" << std::endl;
-    return r;
-}
-*/
-
-std::vector<std::pair<uint64_t, uint64_t>> GreedyAttractorAlgorithm::getSortedCoveredPositions(std::vector<uint64_t> &sa, LCPInterval<uint64_t> &interval)
-{
-    std::vector<std::pair<uint64_t, uint64_t>> r;
-
-    std::vector<uint64_t> posArr;
-    for (uint64_t i = interval.i; i <= interval.j; i++)
-    {
-        posArr.push_back(sa[i]);
-    }
-    std::sort(posArr.begin(), posArr.end());
-
-    for (uint64_t x = 0; x < posArr.size(); x++)
-    {
-        uint64_t pos = posArr[x];
-        uint64_t nextPos = x + 1 < posArr.size() ? posArr[x + 1] : UINT64_MAX;
-        uint64_t endPos = pos + interval.lcp - 1 < nextPos ? pos + interval.lcp - 1 : nextPos - 1;
-        r.push_back(std::pair<uint64_t, uint64_t>(pos, endPos));
-    }
-    return r;
-}
-std::vector<uint64_t> GreedyAttractorAlgorithm::removeCapturedIntervals(uint64_t attractor, std::unordered_set<uint64_t> &currentIntervals, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &sa)
-{
-    std::vector<uint64_t> r;
-    for (auto &it : currentIntervals)
-    {
-        LCPInterval<uint64_t> &interval = intervals[it];
-        for (uint64_t x = interval.i; x <= interval.j; x++)
-        {
-            if (sa[x] <= attractor && attractor <= sa[x] + interval.lcp - 1)
-            {
-                r.push_back(it);
-                break;
-            }
-        }
-    }
-    for (auto &it : r)
-    {
-        currentIntervals.erase(it);
-    }
-    return r;
-}
-void GreedyAttractorAlgorithm::decrementFrequencies(LCPInterval<uint64_t> &removedInterval, std::unordered_map<uint64_t, uint64_t> &currentFrequencies, std::vector<uint64_t> &sa)
-{
-    std::unordered_set<uint64_t> decrementedPositions;
-    for (uint64_t x = removedInterval.i; x <= removedInterval.j; x++)
-    {
-        for (uint64_t y = 0; y < removedInterval.lcp; y++)
-        {
-            uint64_t p = sa[x] + y;
-            if (decrementedPositions.find(p) == decrementedPositions.end())
-            {
-                uint64_t w = currentFrequencies[p];
-                if (w != 1)
-                {
-                    currentFrequencies[p] = w - 1;
-                }
-                else
-                {
-                    currentFrequencies.erase(p);
-                }
-
-                decrementedPositions.insert(p);
-            }
-        }
-    }
-}
 std::vector<uint64_t> GreedyAttractorAlgorithm::computeGreedyAttractors(vector<uint64_t> &sa, vector<LCPInterval<uint64_t>> &intervals)
 {
     std::vector<uint64_t> outputAttrs;
 
-    std::vector<uint64_t> frequencyVec = computeFrequencyVector(sa, intervals);
+    std::vector<uint64_t> frequencyVec = PositionFrequencySet::computeFrequencyVector(sa, intervals);
     std::unordered_map<uint64_t, uint64_t> currentFrequencies;
     for (uint64_t i = 0; i < frequencyVec.size(); i++)
     {
@@ -261,15 +66,163 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeGreedyAttractors(vector<u
         }
         outputAttrs.push_back(nextAttr);
 
-        std::vector<uint64_t> capturedIntervals = removeCapturedIntervals(nextAttr, currentIntervals, intervals, sa);
+        std::vector<uint64_t> capturedIntervals = GDynamicIntervalTree::removeCapturedIntervals(nextAttr, currentIntervals, intervals, sa);
         for (auto &it : capturedIntervals)
         {
             LCPInterval<uint64_t> &interval = intervals[it];
-            decrementFrequencies(interval, currentFrequencies, sa);
+            PositionFrequencySet::decrementFrequenciesInFreqMap(interval, currentFrequencies, sa);
         }
     }
     std::cout << std::endl;
 
+    std::sort(outputAttrs.begin(), outputAttrs.end());
+    return outputAttrs;
+}
+
+uint64_t GreedyAttractorAlgorithm::getSpeedParameter(uint64_t element_size)
+{
+    auto start1 = std::chrono::system_clock::now();
+    std::vector<uint64_t> pvec;
+    pvec.resize(element_size, 0);
+
+    for (uint64_t x = 0; x < 100; x++)
+    {
+        for (uint64_t i = 0; i < element_size; i++)
+        {
+            ++pvec[i];
+        }
+    }
+    auto end1 = std::chrono::system_clock::now();
+    double elapsed1 = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start1).count();
+    pvec.resize(0);
+    pvec.shrink_to_fit();
+
+    auto start2 = std::chrono::system_clock::now();
+    std::unordered_set<uint64_t> pset;
+    for (uint64_t x = 0; x < 100; x++)
+    {
+        for (uint64_t i = 0; i < element_size; i++)
+        {
+            if (x % 2 == 0)
+            {
+                pset.erase(i);
+            }
+            else
+            {
+                pset.insert(i);
+            }
+        }
+    }
+
+    auto end2 = std::chrono::system_clock::now();
+    double elapsed2 = std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count();
+
+    uint64_t ratio = (elapsed2 + elapsed1) / elapsed1;
+    return ratio;
+}
+
+std::vector<uint64_t> GreedyAttractorAlgorithm::computeHighFrequencyGreedyAttractors(std::unordered_set<uint64_t> &currentIntervals, GDynamicIntervalTree &gtree, std::vector<uint64_t> &freqVec, uint64_t ratio, std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals)
+{
+
+    std::vector<uint64_t> outputAttrs;
+    uint64_t currentTotalWeight = sa.size() + 1;
+    stool::Counter printCounter;
+    std::cout << "Computing high frequency greedy attractors" << std::flush;
+    while (currentTotalWeight * ratio > sa.size())
+    {
+        uint64_t nextAttr = UINT64_MAX;
+        uint64_t maxWeight = 0;
+
+        for (uint64_t i = 0; i < freqVec.size(); i++)
+        {
+            if (freqVec[i] > maxWeight)
+            {
+                nextAttr = i;
+                maxWeight = freqVec[i];
+            }
+        }
+
+        outputAttrs.push_back(nextAttr);
+
+        std::vector<uint64_t> coveringIntervals = gtree.getAndRemoveCapturedLCPIntervals(isa[nextAttr]);
+
+        currentTotalWeight = getTotalWeight(coveringIntervals, intervals);
+        //std::cout << "high : "<< currentTotalWeight  << "/" << sa.size() << std::endl;
+        for (auto &intervalID : coveringIntervals)
+        {
+            printCounter.increment();
+
+            LCPInterval<uint64_t> interval = intervals[intervalID];
+            std::pair<uint64_t, uint64_t> info = PositionFrequencySet::decrementFrequenciesInFreqVec(interval, freqVec, sa);
+
+            currentIntervals.erase(intervalID);
+        }
+    }
+    std::cout << "[END]" << std::endl;
+    return outputAttrs;
+}
+
+std::vector<uint64_t> GreedyAttractorAlgorithm::computeFasterGreedyAttractors(std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals)
+{
+    uint64_t ratio = GreedyAttractorAlgorithm::getSpeedParameter(100000);
+
+    //Initialize
+    std::cout << "Initializing greedy data structures" << std::endl;
+    std::vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructMSIntervalParents(intervals);
+    GDynamicIntervalTree g(sa, isa, intervals, parents, sa.size());
+    g.construct();
+
+    std::unordered_set<uint64_t> currentIntervals;
+    for (uint64_t i = 0; i < intervals.size(); i++)
+    {
+        if (intervals[i].lcp != 0)
+            currentIntervals.insert(i);
+    }
+    std::vector<uint64_t> positionWeights = PositionFrequencySet::computeFrequencyVector(sa, intervals);
+
+    //uint64_t ratio = 1;
+
+    std::vector<uint64_t> outputAttrs = GreedyAttractorAlgorithm::computeHighFrequencyGreedyAttractors(currentIntervals, g, positionWeights, ratio, sa, isa, intervals);
+    PositionFrequencySet pfs;
+    pfs.construct(positionWeights);
+
+    std::cout << "Initializing greedy data structures[END]" << std::endl;
+    uint64_t remainingPositionCount = sa.size();
+    uint64_t removedFrequencySum = 0;
+    stool::Counter counter;
+    std::cout << "Computing greedy attractors" << std::flush;
+    uint64_t maximalCoveredPos = pfs.getMostFrequentPosition();
+    while (maximalCoveredPos != UINT64_MAX)
+    {
+        outputAttrs.push_back(maximalCoveredPos);
+
+        std::vector<uint64_t> coveringIntervals = g.getAndRemoveCapturedLCPIntervals(isa[maximalCoveredPos]);
+
+        removedFrequencySum = 0;
+        uint64_t totalWeight = getTotalWeight(coveringIntervals, intervals);
+        //std::cout << "standard : " << maxFreq << "/" << totalWeight << "/" << sa.size() << std::endl;
+        uint64_t k = 0;
+
+        for (auto &intervalID : coveringIntervals)
+        {
+#ifdef DEBUG_PRINT
+            std::cout << "[Attrs, RemainingPositions, LCPIntervals, RemovedFrequency, coveringIntervals] = [" << outputAttrs.size() << ", " << remainingPositionCount << ", " << currentIntervals.size() << "," << removedFrequencySum << "," << coveringIntervals.size() << "," << k << "]\r" << std::flush;
+#else
+            counter.increment();
+#endif
+
+            LCPInterval<uint64_t> interval = intervals[intervalID];
+            std::pair<uint64_t, uint64_t> info = pfs.decrementFrequencies(interval, positionWeights, sa);
+
+            remainingPositionCount -= info.first;
+            removedFrequencySum += info.second;
+            currentIntervals.erase(intervalID);
+            k++;
+
+            maximalCoveredPos = pfs.getMostFrequentPosition();
+        }
+    }
+    std::cout << "[END]" << std::endl;
     std::sort(outputAttrs.begin(), outputAttrs.end());
     return outputAttrs;
 }

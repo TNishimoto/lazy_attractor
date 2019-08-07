@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include "stool/src/io.hpp"
 #include "stool/src/sa_bwt_lcp.hpp"
+#include "g_dynamic_interval_tree.hpp"
 #include <set>
 #include <chrono>
 
@@ -29,15 +30,26 @@ namespace lazy
 class GreedyAttractorAlgorithm
 {
 private:
-    static std::vector<uint64_t> removeCapturedIntervals(uint64_t attractor, std::unordered_set<uint64_t> &currentIntervals, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &sa);
-    static void decrementFrequencies(LCPInterval<uint64_t> &removedInterval, std::unordered_map<uint64_t, uint64_t> &currentFrequencies, std::vector<uint64_t> &sa);
+
+    static uint64_t getTotalWeight(std::vector<uint64_t> &currentIntervals, std::vector<LCPInterval<uint64_t>> &intervals)
+    {
+        uint64_t w = 0;
+        for (auto &it : currentIntervals)
+        {
+            LCPInterval<uint64_t> &interval = intervals[it];
+            w += (interval.j - interval.i + 1) * interval.lcp;
+        }
+        return w;
+    }
+        static uint64_t getSpeedParameter(uint64_t element_size);
+
+    static std::vector<uint64_t> computeHighFrequencyGreedyAttractors(std::unordered_set<uint64_t> &currentIntervals, GDynamicIntervalTree &gtree, std::vector<uint64_t> &freqVec, uint64_t ratio, std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals);
+
 public:
 
     static std::vector<uint64_t> computeGreedyAttractors(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
-    static std::vector<uint64_t> computeFrequencyVector(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
-    static std::vector<uint64_t> computeFrequencyVector(std::unordered_set<uint64_t> &currentIntervals, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
+    static std::vector<uint64_t> computeFasterGreedyAttractors(std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals);
 
-    static std::vector<std::pair<uint64_t, uint64_t>> getSortedCoveredPositions(std::vector<uint64_t> &sa, LCPInterval<uint64_t> &interval);
 
 };
 

@@ -12,7 +12,7 @@
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 //#include "sa.hpp"
 #include "../src/greedy/greedy_attractor.hpp"
-#include "../src/greedy/faster_greedy_attractor.hpp"
+#include "../src/greedy/position_frequency_set.hpp"
 
 //using namespace std;
 //using namespace sdsl;
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 
     if (outputMode == "weight")
     {
-        std::vector<uint64_t> weights = GreedyAttractorAlgorithm::computeFrequencyVector(sa, minimalSubstrings);
+        std::vector<uint64_t> weights = stool::lazy::PositionFrequencySet::computeFrequencyVector(sa, minimalSubstrings);
         uint64_t sum = std::accumulate(weights.begin(), weights.end(), (uint64_t)0);
         auto end = std::chrono::system_clock::now();
         double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
     else
     {
         std::vector<INDEX> isa = stool::constructISA<CHAR, INDEX>(text, sa);
-        std::vector<uint64_t> greedyAttrs = FasterGreedyAttractor::computeGreedyAttractors(sa, isa, minimalSubstrings);
+        std::vector<uint64_t> greedyAttrs = GreedyAttractorAlgorithm::computeFasterGreedyAttractors(sa, isa, minimalSubstrings);
 
         #ifdef DEBUG
         std::vector<uint64_t> correctAttrs = GreedyAttractorAlgorithm::computeGreedyAttractors(sa, minimalSubstrings);
