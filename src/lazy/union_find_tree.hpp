@@ -10,7 +10,15 @@ namespace stool
 {
 namespace lazy
 {
-// Union-Find Tree
+
+/*
+ Union-Find Tree is a rooted tree such that every node belongs to a cluster.
+ In the initial state, every node belongs to a distinct cluster, i.e., the size of every cluster is 1.
+ The tree supports follongs operations:
+ (1) getClusterID: Return the cluster id of the given node id.
+ (2) getParent: Return the cluster parent id of the cluster of the given node id. 
+ (3) unionParent: Union the cluster of the given node id and the parent of the cluster, and return the new cluster id.  
+*/
 class UnionFindTree
 {
 public:
@@ -26,27 +34,24 @@ private:
 public:
   uint64_t size();
 
-  /*
-    vector<uint64_t>& getParentVecReference(){
-      return *this->parentVec;
-    }
-    */
-
   void initialize(std::vector<uint64_t> &_parentVec);
   /*
-   Return the cluster id of the given node id i.
+   Return the cluster id of the given node id.
    */
-  CINDEX getClusterID(UnionFind::GINDEX node);
+  CINDEX getClusterID(UnionFind::GINDEX nodeID);
   /*
-   Return the cluster parent id of the cluster of the given node id i.
+   Return the cluster parent id of the cluster of the given node id.
    */
-  CINDEX getParent(UnionFind::GINDEX i);
+  CINDEX getParentClusterID(UnionFind::GINDEX nodeID);
   /*
-   Union the given cluster of i and the parent of the cluster, and return the new cluster id.  
+   Union the cluster of the given node id and the parent of the cluster, and return the new cluster id.  
    */
-  CINDEX unionParent(UnionFind::GINDEX i);
-  bool isRoot(UnionFind::GINDEX i);
-  bool checkMerge(UnionFind::GINDEX i);
+  CINDEX unionParent(UnionFind::GINDEX nodeID);
+  /*
+    Return true iff the cluster of the given node id is the root cluster.
+   */
+  bool isRootCluster(UnionFind::GINDEX nodeID);
+  bool checkMerge(UnionFind::GINDEX nodeID);
 
   std::vector<uint64_t> getClusterRoots(){
     std::unordered_set<uint64_t> r;

@@ -6,7 +6,7 @@ namespace stool
 namespace lazy
 {
 
-std::vector<uint64_t> LazyAttractor::constructMinimalOccurrenceVec(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents)
+std::vector<uint64_t> LazyAttractor::constructMinimalOccurrencesOfMinimalSubstrings(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, std::vector<uint64_t> &sa)
 {
     uint64_t textSize = sa.size();
     std::vector<LowestNodeInterval> lowestNodeInfoVec = LowestNodeQuery::constructLowestNodeIntervalVec(intervals, parents);
@@ -42,8 +42,8 @@ std::vector<uint64_t> LazyAttractor::constructMinimalOccurrenceVec(std::vector<u
 
     
 }
-std::stack<MinimalSubstringInfo> LazyAttractor::constructSortedMinimalOccurrenceStack(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents){
-    std::vector<uint64_t> minimalOccurrenceVec =  constructMinimalOccurrenceVec(sa,intervals,parents);
+std::stack<MinimalSubstringInfo> LazyAttractor::constructSortedMinimalOccurrenceStack(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, std::vector<uint64_t> &sa){
+    std::vector<uint64_t> minimalOccurrenceVec =  constructMinimalOccurrencesOfMinimalSubstrings(intervals,parents, sa);
     std::vector<MinimalSubstringInfo> sortedMinimumSubstringVec;
     std::stack<MinimalSubstringInfo> outputSortedMinimumSubstrings;
 
@@ -127,7 +127,7 @@ std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> 
 {
     std::vector<uint64_t> outputAttrs;
     DynamicIntervalTree lufTree(_intervals, _parents, text.size());
-    std::stack<MinimalSubstringInfo> sortedMinimumSubstrings = constructSortedMinimalOccurrenceStack(sa, _intervals, _parents);
+    std::stack<MinimalSubstringInfo> sortedMinimumSubstrings = constructSortedMinimalOccurrenceStack(_intervals, _parents, sa);
     stool::Counter printCounter;
 
     std::cout << "Computing lazy attractors" << std::flush;

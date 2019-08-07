@@ -27,17 +27,17 @@ void UnionFindTree::initialize(vector<uint64_t> &_parentVec)
     this->mergeVec.resize(this->size(), false);
 }
 
-UnionFindTree::CINDEX UnionFindTree::getClusterID(UnionFind::GINDEX node)
+UnionFindTree::CINDEX UnionFindTree::getClusterID(UnionFind::GINDEX nodeID)
 {
-    UnionFind::GINDEX id = uf.find(node);
+    UnionFind::GINDEX id = uf.find(nodeID);
     CINDEX clusterID = clusterRootIDVec[id];
-    assert(uf.find(node) == uf.find(clusterID));
+    assert(uf.find(nodeID) == uf.find(clusterID));
 
     return clusterID;
 }
-UnionFindTree::CINDEX UnionFindTree::getParent(UnionFind::GINDEX i)
+UnionFindTree::CINDEX UnionFindTree::getParentClusterID(UnionFind::GINDEX nodeID)
 {
-    CINDEX clusterID = this->getClusterID(i);
+    CINDEX clusterID = this->getClusterID(nodeID);
     UnionFind::GINDEX parentID = (*this->parentVec)[clusterID];
     if (parentID == UINT64_MAX)
         return UINT64_MAX;
@@ -47,10 +47,10 @@ UnionFindTree::CINDEX UnionFindTree::getParent(UnionFind::GINDEX i)
 
     return clusterParentID;
 }
-UnionFindTree::CINDEX UnionFindTree::unionParent(UnionFind::GINDEX i)
+UnionFindTree::CINDEX UnionFindTree::unionParent(UnionFind::GINDEX nodeID)
 {
-    CINDEX clusterID = this->getClusterID(i);
-    CINDEX parentID = this->getParent(i);
+    CINDEX clusterID = this->getClusterID(nodeID);
+    CINDEX parentID = this->getParentClusterID(nodeID);
     if (parentID == UINT64_MAX)
         return UINT64_MAX;
     //assert(uf.find(parentID) != uf.find(clusterID));
@@ -61,19 +61,19 @@ UnionFindTree::CINDEX UnionFindTree::unionParent(UnionFind::GINDEX i)
     this->mergeVec[parentID] = true;
     this->clusterRootIDVec[newID] = parentID;
     assert(newID == uf.find(parentID));
-    assert(newID == uf.find(i));
+    assert(newID == uf.find(nodeID));
 
     return parentID;
 }
-bool UnionFindTree::isRoot(UnionFind::GINDEX i)
+bool UnionFindTree::isRootCluster(UnionFind::GINDEX nodeID)
 {
-    uint64_t parentID = this->getParent(i);
+    uint64_t parentID = this->getParentClusterID(nodeID);
     return parentID == UINT64_MAX;
 }
 
-bool UnionFindTree::checkMerge(UnionFind::GINDEX i)
+bool UnionFindTree::checkMerge(UnionFind::GINDEX nodeID)
 {
-    uint64_t clusterID = this->getClusterID(i);
+    uint64_t clusterID = this->getClusterID(nodeID);
     return this->mergeVec[clusterID];
 }
 } // namespace lazy
