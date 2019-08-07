@@ -17,7 +17,8 @@ class GDynamicIntervalTree
 private:
     DynamicIntervalTree tree;
     std::vector<uint64_t> distanceVec;
-    std::vector<std::vector<uint64_t>> msVec;
+    // msVec[i] stores positions such that the farthest interval of the position is the i-th interval.
+    //std::vector<std::vector<uint64_t>> msVec;
     std::vector<uint64_t> &sa;
     std::vector<uint64_t> &isa;
     std::vector<LCPInterval<uint64_t>> &intervals;
@@ -101,13 +102,16 @@ public:
         std::cout << "[END]" << std::endl;
 
         //assert(false);
+        /*
         this->msVec.resize(intervals.size());
         for (uint64_t i = 0; i < idVec.size(); i++)
         {
             this->msVec[idVec[i]].push_back(i);
         }
         std::cout << "Constructing GDynamicIntervalTree[END]" << std::endl;
+        */
     }
+    /*
     uint64_t getWorstUpdateCost(uint64_t interval_id){
         uint64_t k=0;
         for (auto &sa_index : this->msVec[interval_id]){
@@ -118,8 +122,6 @@ public:
     }
     void update(uint64_t interval_id)
     {
-        std::cout << "Update Cost: " << this->getWorstUpdateCost(interval_id) << "/" <<  this->msVec[interval_id].size()<< std::endl;
-        std::cout << this->intervals[interval_id].to_string() << std::endl;
 
         for (auto &sa_index : this->msVec[interval_id])
         {
@@ -146,13 +148,14 @@ public:
         this->msVec[interval_id].resize(0);
         this->msVec.shrink_to_fit();
     }
+    */
+
     std::vector<uint64_t> getAndRemoveCapturedLCPIntervals(uint64_t sa_index)
     {
         std::vector<uint64_t> r;
         int64_t distance = this->distanceVec[sa_index];
         for (int64_t i = 0; i < distance; i++)
         {
-            if(i % 10000 == 0)std::cout << i << "/" << distance << "]" << std::flush;
             while (true)
             {
                 uint64_t id = this->tree.getLowestLCPIntervalID(sa_index);
@@ -174,15 +177,12 @@ public:
                 sa_index = isa[sa[sa_index] - 1];
             }
         }
-                    std::cout << "/" << r.size() << "//" << std::endl;
-
+        /*
         for (uint64_t x = 0; x < r.size(); x++)
         {
-
-            std::cout << x << "/" << r.size() << "]" << std::flush;
             this->update(r[x]);
         }
-                    std::cout << "/" << std::flush;
+        */
 
         std::sort(r.begin(), r.end());
         #ifdef DEBUG

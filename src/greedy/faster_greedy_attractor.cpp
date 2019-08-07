@@ -42,9 +42,12 @@ uint64_t FasterGreedyAttractor::getSpeedParameter(uint64_t element_size)
     {
         for (uint64_t i = 0; i < element_size; i++)
         {
-            if(x % 2 == 0){
+            if (x % 2 == 0)
+            {
                 pset.erase(i);
-            }else{
+            }
+            else
+            {
                 pset.insert(i);
             }
         }
@@ -117,7 +120,7 @@ std::pair<uint64_t, uint64_t> FasterGreedyAttractor::decrementFrequencies(LCPInt
     return std::pair<uint64_t, uint64_t>(newZeroPositionsCount, removedFrequencySum);
 }
 
-std::vector<uint64_t> FasterGreedyAttractor::computeHighFrequencyGreedyAttractors(std::unordered_set<uint64_t> &currentIntervals, GDynamicIntervalTree &gtree, std::vector<uint64_t> &freqVec, uint64_t ratio,std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals)
+std::vector<uint64_t> FasterGreedyAttractor::computeHighFrequencyGreedyAttractors(std::unordered_set<uint64_t> &currentIntervals, GDynamicIntervalTree &gtree, std::vector<uint64_t> &freqVec, uint64_t ratio, std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals)
 {
 
     std::vector<uint64_t> outputAttrs;
@@ -140,9 +143,7 @@ std::vector<uint64_t> FasterGreedyAttractor::computeHighFrequencyGreedyAttractor
 
         outputAttrs.push_back(nextAttr);
 
-            std::cout <<  "a" << std::endl;
         std::vector<uint64_t> coveringIntervals = gtree.getAndRemoveCapturedLCPIntervals(isa[nextAttr]);
-            std::cout <<  "b" << std::endl;
 
         currentTotalWeight = getTotalWeight(coveringIntervals, intervals);
         //std::cout << "high : "<< currentTotalWeight  << "/" << sa.size() << std::endl;
@@ -162,8 +163,8 @@ std::vector<uint64_t> FasterGreedyAttractor::computeHighFrequencyGreedyAttractor
 
 std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &intervals)
 {
-    uint64_t ratio = FasterGreedyAttractor::getSpeedParameter(100000 );
-    
+    uint64_t ratio = FasterGreedyAttractor::getSpeedParameter(100000);
+
     //Initialize
     std::cout << "Initializing greedy data structures" << std::endl;
     std::vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructMSIntervalParents(intervals);
@@ -214,24 +215,17 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
     uint64_t removedFrequencySum = 0;
     stool::Counter counter;
     std::cout << "Computing greedy attractors" << std::flush;
-    while (true)
+    while (maxFreq > 0)
     {
 
         if (maxFreqSet.size() == 0)
         {
-            if (maxFreq == 0)
+            --maxFreq;
+            for (auto &maxIndex : freqRankMap[maxFreq])
             {
-                break;
+                maxFreqSet.insert(maxIndex);
             }
-            else
-            {
-                --maxFreq;
-                for (auto &maxIndex : freqRankMap[maxFreq])
-                {
-                    maxFreqSet.insert(maxIndex);
-                }
-                freqRankMap[maxFreq].clear();
-            }
+            freqRankMap[maxFreq].clear();
         }
         else
         {
@@ -244,6 +238,7 @@ std::vector<uint64_t> FasterGreedyAttractor::computeGreedyAttractors(std::vector
             uint64_t totalWeight = getTotalWeight(coveringIntervals, intervals);
             //std::cout << "standard : " << maxFreq << "/" << totalWeight << "/" << sa.size() << std::endl;
             uint64_t k = 0;
+
             for (auto &intervalID : coveringIntervals)
             {
 #ifdef DEBUG_PRINT
