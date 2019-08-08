@@ -7,6 +7,7 @@
 #include "stool/src/io.h"
 #include "stool/src/sa_bwt_lcp.hpp"
 #include "../src/verification_attractor.hpp"
+#include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 //#include "minimal_substrings.hpp"
 //#include "mstree.hpp"
 //#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
@@ -179,12 +180,14 @@ int main(int argc, char *argv[])
     p.add<string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
     p.add<string>("attractor_file_type", 't', "(option) Input attractor file type(binary or text)", false, "binary");
     p.add<string>("output_file", 'o', "(option) Error log file name (the default output name is 'input_file.verify.log')", false, "");
+    p.add<uint64_t>("k-attr", 'k', "(option) the value of k-attractor", false, 0 );
 
     p.parse_check(argc, argv);
     string inputFile = p.get<string>("input_file");
     string mSubstrFile = p.get<string>("msubstr_file");
     string attractorFile = p.get<string>("attractor_file");
     string attractorFileType = p.get<string>("attractor_file_type");
+    uint64_t k_attr = p.get<uint64_t>("k-attr");
 
     string outputFile = p.get<string>("output_file");
 
@@ -216,6 +219,9 @@ int main(int argc, char *argv[])
     std::vector<LCPInterval<INDEX>> minimalSubstrings;
     stool::load_vector(mSubstrFile,minimalSubstrings);
 
+    if(k_attr != 0){
+        stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::getKMinimalSubstrings(minimalSubstrings, k_attr);
+    }
 
     auto start = std::chrono::system_clock::now();
     vector<uint64_t> sa = stool::constructSA(text);
@@ -271,6 +277,7 @@ int main(int argc, char *argv[])
     std::cout << "=============RESULT===============" << std::endl;
     std::cout << "File : " << inputFile << std::endl;
     std::cout << "Attractor File : " << attractorFile << std::endl;
+        std::cout << "Attractor type : " << (k_attr == 0 ? "n" : std::to_string(k_attr) )  << "-attractor" << std::endl;
     std::cout << "The length of the input text (with last special marker) : " << text.size() << std::endl;
     double charperms = (double)text.size() / elapsed;
     std::cout << "The number of minimal substrings : " << minimalSubstrings.size() << std::endl;

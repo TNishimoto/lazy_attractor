@@ -33,6 +33,8 @@ int main(int argc, char *argv[])
     p.add<std::string>("input_file", 'i', "Input text file name", true);
     p.add<std::string>("output_file", 'o', "(option) Output attractor file name(the default output name is 'input_file.greedy.attrs')", false, "");
     p.add<std::string>("output_type", 't', "(option) Output mode(binary or text)", false, "binary");
+    p.add<uint64_t>("k-attr", 'k', "(option) the value of k-attractor", false, 0 );
+
     //p.add<std::string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
     
     p.parse_check(argc, argv);
@@ -40,18 +42,21 @@ int main(int argc, char *argv[])
     //std::string mSubstrFile = p.get<std::string>("msubstr_file");
     std::string outputFile = p.get<std::string>("output_file");
     std::string outputMode = p.get<std::string>("output_type");
-    
+    uint64_t k_attr = p.get<uint64_t>("k-attr");
 
     if (outputFile.size() == 0)
     {
-        if (outputMode == "text")
-        {
-            outputFile = inputFile + ".greedy.attrs.txt";
+        std::string ext = ".greedy";
+        if(k_attr != 0){
+            ext += "." + std::to_string(k_attr);
         }
-        else
-        {
-            outputFile = inputFile + ".greedy.attrs";
+        ext += ".attrs";
+        if (outputMode == "text"){
+            ext += ".txt";
         }
+        outputFile = inputFile + ext;
+        
+        
     }
 
     // Loading Input Text
@@ -81,6 +86,10 @@ int main(int argc, char *argv[])
     std::vector<CHAR> bwt = stool::constructBWT<CHAR, INDEX>(text, sa);
 
     std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructSortedMinimalSubstrings(bwt, sa, lcpArray);
+
+    if(k_attr != 0){
+        stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::getKMinimalSubstrings(minimalSubstrings, k_attr);
+    }
 
 
     lcpArray.resize(0);
@@ -162,11 +171,14 @@ int main(int argc, char *argv[])
         std::cout << "=============RESULT===============" << std::endl;
         std::cout << "File : " << inputFile << std::endl;
         std::cout << "Output : " << outputFile << std::endl;
+        std::cout << "Attractor type : " << (k_attr == 0 ? "n" : std::to_string(k_attr) )  << "-attractor" << std::endl;
+
+
         std::cout << "The length of the input text (with the last special marker): " << text.size() << std::endl;
         double charperms = (double)text.size() / elapsed;
         std::cout << "The number of minimal substrings : " << mSubstrCount << std::endl;
-
         std::cout << "The number of attractors : " << attrs.size() << std::endl;
+        
         std::cout << "Excecution time : " << ((uint64_t)elapsed) << "ms";
         std::cout << "[" << charperms << "chars/ms]" << std::endl;
         std::cout << "==================================" << std::endl;
