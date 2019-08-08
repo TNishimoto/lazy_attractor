@@ -56,5 +56,11 @@ public:
         return outputFreeIntervalIndexes;
     }
 };
+void loadAttractorFile(std::string attractorFile, std::vector<uint64_t> &attractors)
+{
+    stool::load_vector(attractorFile, attractors);
+    sort(attractors.begin(), attractors.end());
+}
+
 } // namespace lazy
 } // namespace stool

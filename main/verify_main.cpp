@@ -80,8 +80,7 @@ void split(const std::string &s, const std::string &delim, List &result)
         pos = p + delim.size();
     }
 }
-
-void loadAttractorFile(string attractorFile, string type, vector<uint64_t> &attractors)
+void loadAttractorFile(std::string attractorFile, std::string type, std::vector<uint64_t> &attractors)
 {
     std::ifstream a_ifs(attractorFile);
     bool attractorFileExist = a_ifs.is_open();
@@ -93,7 +92,7 @@ void loadAttractorFile(string attractorFile, string type, vector<uint64_t> &attr
 
     if (type == "text")
     {
-        string text;
+        std::string text;
         IO::load(attractorFile, text);
         bool b = checkAttractorTextFile(text);
         if (!b)
@@ -118,6 +117,8 @@ void loadAttractorFile(string attractorFile, string type, vector<uint64_t> &attr
     }
     sort(attractors.begin(), attractors.end());
 }
+
+
 /*
 void loadAttractors(string attractorFile, vector<uint64_t> &attractors)
 {

@@ -47,10 +47,12 @@ target_link_libraries(fn sdsl divsufsort divsufsort64)
 add_executable(greedy.out  main/greedy_main.cpp)
 add_executable(verify.out main/verify_main.cpp)
 add_executable(lazy.out main/lazy_main.cpp)
+add_executable(macro.out main/macro_main.cpp)
 
 target_link_libraries(greedy.out fn)
 target_link_libraries(verify.out fn)
 target_link_libraries(lazy.out fn)
+target_link_libraries(macro.out fn)
 
 
 
