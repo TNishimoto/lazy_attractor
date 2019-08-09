@@ -8,6 +8,7 @@
 #include "stool/src/sa_bwt_lcp.hpp"
 #include "../src/verification_attractor.hpp"
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
+#include "../src/common.hpp"
 //#include "minimal_substrings.hpp"
 //#include "mstree.hpp"
 //#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
@@ -198,34 +199,20 @@ int main(int argc, char *argv[])
     }
 
     // Loading Input Text
-    std::ifstream ifs(inputFile);
-    bool inputFileExist = ifs.is_open();
-    if (!inputFileExist)
-    {
-        std::cout << inputFile << " cannot open." << std::endl;
-        return -1;
-    }
-
     vector<CHAR> text = stool::load_text_from_file(inputFile, true);
 
     // Loading Attractor File
     vector<uint64_t> attractors;
     loadAttractorFile(attractorFile, attractorFileType, attractors);
 
-    // Loading minimal Substrings
-    if (mSubstrFile.size() == 0)
-    {
-        mSubstrFile = inputFile + ".msub";
-    }
-    std::vector<LCPInterval<INDEX>> minimalSubstrings;
-    stool::load_vector(mSubstrFile,minimalSubstrings);
 
-    if(k_attr != 0){
-        stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::getKMinimalSubstrings(minimalSubstrings, k_attr);
-    }
+    std::cout << "Constructing Suffix Array" << std::endl;
+    std::vector<INDEX> sa = stool::constructSA<CHAR, INDEX>(text);
+
+    // Loading Minimal Substrings
+    std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text,sa, k_attr);
 
     auto start = std::chrono::system_clock::now();
-    vector<uint64_t> sa = stool::constructSA(text);
     vector<uint64_t> isa = stool::constructISA(text, sa);
      vector<uint64_t> freeIntervalIndexes = lazy::VerificationAttractor::getFreeIntervals(sa, isa, minimalSubstrings, attractors);
     auto end = std::chrono::system_clock::now();

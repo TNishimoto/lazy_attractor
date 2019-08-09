@@ -11,6 +11,7 @@
 #include "../src/lazy/lazy_attractor.hpp"
 #include "stool/src/print.hpp"
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
+#include "../src/common.hpp"
 
 //#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
 
@@ -18,7 +19,6 @@ using namespace std;
 using namespace sdsl;
 using namespace stool;
 using namespace stool::lazy;
-
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     p.add<string>("output_file", 'o', "(option) Output attractor file name(the default output name is 'input_file.lazy.attrs')", false, "");
     p.add<string>("output_type", 't', "(option) Output mode(binary or text)", false, "binary");
     p.add<string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
-    p.add<uint64_t>("k-attr", 'k', "(option) the value of k-attractor", false, 0 );
+    p.add<uint64_t>("k-attr", 'k', "(option) the value of k-attractor", false, 0);
 
     p.parse_check(argc, argv);
     string inputFile = p.get<string>("input_file");
@@ -47,54 +47,29 @@ int main(int argc, char *argv[])
     if (outputFile.size() == 0)
     {
         std::string ext = ".lazy";
-        if(k_attr != 0){
+        if (k_attr != 0)
+        {
             ext += "." + std::to_string(k_attr);
         }
         ext += ".attrs";
-        if (outputMode == "text"){
+        if (outputMode == "text")
+        {
             ext += ".txt";
         }
         outputFile = inputFile + ext;
-        
-        
     }
 
     // Loading Input Text
-    std::ifstream ifs(inputFile);
-    bool inputFileExist = ifs.is_open();
-    if (!inputFileExist)
-    {
-        std::cout << inputFile << " cannot open." << std::endl;
-        return -1;
-    }
     std::vector<uint8_t> text = stool::load_text_from_file(inputFile, true); // input text
-
-    // Loading Minimal Substrings
-    if (mSubstrFile.size() == 0)
-    {
-        mSubstrFile = inputFile + ".msub";
-    }
-
 
     std::cout << "Constructing Suffix Array" << std::endl;
     std::vector<INDEX> sa = stool::constructSA<CHAR, INDEX>(text);
-    std::vector<INDEX> lcpArray = stool::constructLCP<CHAR, INDEX>(text, sa);
-    std::cout << "Constructing BWT" << std::endl;
-    std::vector<CHAR> bwt = stool::constructBWT<CHAR, INDEX>(text, sa);
 
-    vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, vector<uint64_t>>::constructSortedMinimalSubstrings(bwt, sa, lcpArray);
-
-    if(k_attr != 0){
-        stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::getKMinimalSubstrings(minimalSubstrings, k_attr);
-    }
-
-    lcpArray.resize(0);
-    lcpArray.shrink_to_fit();
-    bwt.resize(0);
-    bwt.shrink_to_fit();
+    // Loading Minimal Substrings
+    vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text,sa, k_attr);
 
     vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, vector<uint64_t>>::constructMSIntervalParents(minimalSubstrings);
-    stool::write_vector(mSubstrFile, minimalSubstrings);
+    //stool::write_vector(mSubstrFile, minimalSubstrings);
 
     //Loader
     uint64_t mSubstrCount = minimalSubstrings.size();
@@ -107,18 +82,18 @@ int main(int argc, char *argv[])
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
-    #ifdef DEBUG
+#ifdef DEBUG
     std::cout << "check lazy attractors..." << std::endl;
     vector<uint64_t> correctAttrs = LazyAttractor::naiveComputeLazyAttractors(text, minimalSubstrings);
-    if(attrs.size() != correctAttrs.size()){
+    if (attrs.size() != correctAttrs.size())
+    {
         stool::Printer::print("Lazy        ", attrs);
         stool::Printer::print("Correct Lazy", correctAttrs);
     }
     assert(attrs.size() == correctAttrs.size());
     std::cout << "OK!" << std::endl;
 
-    #endif
-
+#endif
 
     if (outputMode == "text")
     {
@@ -142,7 +117,7 @@ int main(int argc, char *argv[])
     std::cout << "=============RESULT===============" << std::endl;
     std::cout << "File : " << inputFile << std::endl;
     std::cout << "Output : " << outputFile << std::endl;
-        std::cout << "Attractor type : " << (k_attr == 0 ? "n" : std::to_string(k_attr) )  << "-attractor" << std::endl;
+    std::cout << "Attractor type : " << (k_attr == 0 ? "n" : std::to_string(k_attr)) << "-attractor" << std::endl;
     std::cout << "The length of the input text (with last special marker) : " << text.size() << std::endl;
     double charperms = (double)text.size() / elapsed;
     std::cout << "The number of minimal substrings : " << mSubstrCount << std::endl;

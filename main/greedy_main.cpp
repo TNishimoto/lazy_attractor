@@ -13,6 +13,7 @@
 //#include "sa.hpp"
 #include "../src/greedy/greedy_attractor.hpp"
 #include "../src/greedy/position_frequency_set.hpp"
+#include "../src/common.hpp"
 
 //using namespace std;
 //using namespace sdsl;
@@ -35,11 +36,11 @@ int main(int argc, char *argv[])
     p.add<std::string>("output_type", 't', "(option) Output mode(binary or text)", false, "binary");
     p.add<uint64_t>("k-attr", 'k', "(option) the value of k-attractor", false, 0 );
 
-    //p.add<std::string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
+    p.add<std::string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
     
     p.parse_check(argc, argv);
     std::string inputFile = p.get<std::string>("input_file");
-    //std::string mSubstrFile = p.get<std::string>("msubstr_file");
+    std::string mSubstrFile = p.get<std::string>("msubstr_file");
     std::string outputFile = p.get<std::string>("output_file");
     std::string outputMode = p.get<std::string>("output_type");
     uint64_t k_attr = p.get<uint64_t>("k-attr");
@@ -60,45 +61,13 @@ int main(int argc, char *argv[])
     }
 
     // Loading Input Text
-    std::ifstream ifs(inputFile);
-    bool inputFileExist = ifs.is_open();
-    if (!inputFileExist)
-    {
-        std::cout << inputFile << " cannot open." << std::endl;
-        return -1;
-    }
-    //std::string text;
-    //IO::load(inputFile, text);
     std::vector<uint8_t> text = stool::load_text_from_file(inputFile, true); // input text
-
-    // Loading Minimal Substrings
-    /*
-    if (mSubstrFile.size() == 0)
-    {
-        mSubstrFile = inputFile + ".msub";
-    }
-    */
 
     std::cout << "Constructing Suffix Array" << std::endl;
     std::vector<INDEX> sa = stool::constructSA<CHAR, INDEX>(text);
-    std::vector<INDEX> lcpArray = stool::constructLCP<CHAR, INDEX>(text, sa);
-    std::cout << "Constructing BWT" << std::endl;
-    std::vector<CHAR> bwt = stool::constructBWT<CHAR, INDEX>(text, sa);
 
-    std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructSortedMinimalSubstrings(bwt, sa, lcpArray);
-
-    if(k_attr != 0){
-        stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::getKMinimalSubstrings(minimalSubstrings, k_attr);
-    }
-
-
-    lcpArray.resize(0);
-    lcpArray.shrink_to_fit();
-    bwt.resize(0);
-    bwt.shrink_to_fit();
-
-    //stool::esaxx::MinimalSubstringTree<uint8_t, uint64_t> mstree;
-    //mstree.loadOrConstruct(mSubstrFile, &text);
+    // Loading Minimal Substrings
+    std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text,sa, k_attr);
 
     uint64_t mSubstrCount = minimalSubstrings.size();
 
