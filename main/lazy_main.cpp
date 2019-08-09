@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     auto start = std::chrono::system_clock::now();
     //LazyAttractorAlgorithm algo(text, intervals, parents);
 
-    vector<uint64_t> attrs = LazyAttractor::computeLazyAttractors(text, minimalSubstrings, parents);
+    vector<uint64_t> attrs = LazyAttractor::computeLazyAttractors(text, sa, minimalSubstrings, parents);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 

@@ -35,7 +35,7 @@ class LazyAttractor
   /*
     Return the vector storing lazy attractors of the given text.
    */
-  static std::vector<uint64_t>  computeLazyAttractors(std::vector<uint8_t> &text, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents);
+  static std::vector<uint64_t>  computeLazyAttractors(std::vector<uint8_t> &text, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents);
   /*
     Return the vector storing lazy attractors of the given text.
    */

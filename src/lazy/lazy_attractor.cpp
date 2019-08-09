@@ -116,10 +116,13 @@ bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttra
     }
     return false;
 }
-std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> &text, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents)
+std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> &text, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents)
 {
-    std::vector<uint64_t> sa = constructSA(text);
+    //std::vector<uint64_t> sa = constructSA(text);
+    std::cout << "Constructing ISA" << std::flush;
     std::vector<uint64_t> isa = constructISA(text, sa);
+    std::cout << "[END]" << std::endl;
+
     return computeLazyAttractors(text, sa, isa, _intervals, _parents);
 }
 
