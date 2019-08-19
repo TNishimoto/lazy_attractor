@@ -12,7 +12,7 @@ uint64_t UnionFindTree::size()
     return this->parentVec->size();
 }
 
-void UnionFindTree::initialize(vector<uint64_t> &_parentVec)
+void UnionFindTree::initialize(const vector<uint64_t> &_parentVec)
 {
     this->parentVec = &_parentVec;
     //this->parentVec.swap(_parentVec);

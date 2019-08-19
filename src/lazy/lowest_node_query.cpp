@@ -40,7 +40,7 @@ void LowestNodeQuery::checkRangeArray(vector<LCPInterval<uint64_t>> &intervals, 
                       << "checking RangeArray... : [" << i << "/" << (size) << "]" << std::flush;
     }
 }
-std::vector<LowestNodeInterval> LowestNodeQuery::constructLowestNodeIntervalVec(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents)
+std::vector<LowestNodeInterval> LowestNodeQuery::constructLowestNodeIntervalVec(const std::vector<LCPInterval<uint64_t>> &intervals,const std::vector<uint64_t> &parents)
 {
   std::vector<LowestNodeInterval> startingPositionVec;
   vector<vector<uint64_t>> childrens;
@@ -88,7 +88,7 @@ std::vector<LowestNodeInterval> LowestNodeQuery::constructLowestNodeIntervalVec(
   return startingPositionVec;
 }
 
-void LowestNodeQuery::construct(vector<LCPInterval<uint64_t>> &intervals, vector<uint64_t> &parents, uint64_t _textSize)
+void LowestNodeQuery::construct(const vector<LCPInterval<uint64_t>> &intervals,const vector<uint64_t> &parents, uint64_t _textSize)
 {
     this->textSize = _textSize;
     std::vector<LowestNodeInterval> startingPositionVec = constructLowestNodeIntervalVec(intervals,parents);
@@ -113,7 +113,7 @@ void LowestNodeQuery::construct(vector<LCPInterval<uint64_t>> &intervals, vector
 
 }
 
-std::vector<uint64_t> LowestNodeQuery::constructLowestNodeIDVec(std::unordered_set<uint64_t> &currentIntervals,std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize)
+std::vector<uint64_t> LowestNodeQuery::constructLowestNodeIDVec(const std::unordered_set<uint64_t> &currentIntervals,const std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize)
   {
     std::vector<uint64_t> r;
     r.resize(textSize, UINT64_MAX);
@@ -123,8 +123,8 @@ std::vector<uint64_t> LowestNodeQuery::constructLowestNodeIDVec(std::unordered_s
       tmp.push_back(it);
     }
     std::sort(tmp.begin(), tmp.end(), [&](uint64_t xi, uint64_t yi) {
-      LCPInterval<uint64_t> &x = intervals[xi];
-      LCPInterval<uint64_t> &y = intervals[yi];
+      const LCPInterval<uint64_t> &x = intervals[xi];
+      const LCPInterval<uint64_t> &y = intervals[yi];
 
       if (x.i == y.i)
       {
@@ -144,7 +144,7 @@ std::vector<uint64_t> LowestNodeQuery::constructLowestNodeIDVec(std::unordered_s
     });
     for (auto &it : tmp)
     {
-      LCPInterval<uint64_t> &interval = intervals[it];
+      const LCPInterval<uint64_t> &interval = intervals[it];
       for (uint64_t x = interval.i; x <= interval.j; x++)
       {
         r[x] = it;

@@ -50,7 +50,7 @@ public:
     return this->textSize;
   }
 
-  void construct(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, uint64_t _textSize);
+  void construct(const std::vector<LCPInterval<uint64_t>> &intervals,const std::vector<uint64_t> &parents, uint64_t _textSize);
   // Return the lowest node ID containing pos in minimal substring tree.
   uint64_t getLowestNodeID(SINDEX pos)
   {
@@ -58,10 +58,10 @@ public:
   }
   // Construct the vector X of length n such that X[i] stores the longest LCP interval containing the SA position i in the stored interval tree, 
   // where n is the given textSize. 
-  static std::vector<uint64_t> constructLowestNodeIDVec(std::unordered_set<uint64_t> &currentIntervals,std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize);
+  static std::vector<uint64_t> constructLowestNodeIDVec(const std::unordered_set<uint64_t> &currentIntervals,const std::vector<LCPInterval<uint64_t>> &intervals, uint64_t textSize);
   // Compute lowest node intervals in the left-to-right order for the interval tree.
   // See also LowestNodeInterval class.
-  static std::vector<LowestNodeInterval> constructLowestNodeIntervalVec(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents);
+  static std::vector<LowestNodeInterval> constructLowestNodeIntervalVec(const std::vector<LCPInterval<uint64_t>> &intervals,const std::vector<uint64_t> &parents);
 };
 } // namespace lazy
 } // namespace stool

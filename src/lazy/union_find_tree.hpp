@@ -27,14 +27,14 @@ public:
 private:
   std::vector<CINDEX> clusterRootIDVec;
   std::vector<bool> mergeVec;
-  std::vector<uint64_t> *parentVec;
+  const std::vector<uint64_t> *parentVec;
 
   UnionFind uf;
 
 public:
   uint64_t size();
 
-  void initialize(std::vector<uint64_t> &_parentVec);
+  void initialize(const std::vector<uint64_t> &_parentVec);
   /*
    Return the cluster id of the given node id.
    */

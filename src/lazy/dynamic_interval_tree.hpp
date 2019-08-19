@@ -33,8 +33,8 @@ class DynamicIntervalTree
 private:
   UnionFindTree uftree;
   //std::vector<bool> removeVec;
-  std::vector<LCPInterval<uint64_t>> &intervals;
-  std::vector<uint64_t> &parents;
+  const std::vector<LCPInterval<uint64_t>> &intervals;
+  const std::vector<uint64_t> &parents;
   LowestNodeQuery lowestNodeQuery;
 public:
 
