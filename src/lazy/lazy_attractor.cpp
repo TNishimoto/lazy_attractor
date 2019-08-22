@@ -6,7 +6,6 @@ namespace stool
 {
 namespace lazy
 {
-
 std::vector<uint64_t> LazyAttractor::constructMinimalOccurrencesOfMinimalSubstrings(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, std::vector<uint64_t> &sa)
 {
     uint64_t textSize = sa.size();
@@ -77,7 +76,6 @@ std::stack<MinimalSubstringInfo> LazyAttractor::constructSortedMinimalOccurrence
     }
     return outputSortedMinimumSubstrings;
 }
-
 bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttractor, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &isa, DynamicIntervalTree &tree, std::stack<MinimalSubstringInfo> &sortedMinimumSubstrings)
 {
     int64_t currentPos = (int64_t)lastAttractor;
@@ -117,41 +115,61 @@ bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttra
     }
     return false;
 }
-std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> &text, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents)
+template <typename CHAR>
+std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<CHAR> &text, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents)
 {
     //std::vector<uint64_t> sa = constructSA(text);
-    std::cout << "Constructing ISA" << std::flush;
+    if(sa.size() > 1000000)std::cout << "Constructing ISA" << std::flush;
     std::vector<uint64_t> isa = constructISA(text, sa);
-    std::cout << "[END]" << std::endl;
+    if(sa.size() > 1000000)std::cout << "[END]" << std::endl;
 
     return computeLazyAttractors(text, sa, isa, _intervals, _parents);
 }
 
-std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> &text, std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents)
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<char> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<int32_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint32_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<int64_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint64_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+
+
+template <typename CHAR>
+std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<CHAR> &text, std::vector<uint64_t> &sa, std::vector<uint64_t> &isa, std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents)
 {
+    bool isPrint = sa.size() > 100000;
     std::vector<uint64_t> outputAttrs;
     DynamicIntervalTree lufTree(_intervals, _parents, text.size());
     std::stack<MinimalSubstringInfo> sortedMinimumSubstrings = constructSortedMinimalOccurrenceStack(_intervals, _parents, sa);
     stool::Counter printCounter;
 
-    std::cout << "Computing lazy attractors" << std::flush;
+    if(isPrint)std::cout << "Computing lazy attractors" << std::flush;
     while (sortedMinimumSubstrings.size() > 0)
     {
-        printCounter.increment();
+        if(isPrint)printCounter.increment();
         auto top = sortedMinimumSubstrings.top();
         assert(outputAttrs.size() == 0 || outputAttrs[outputAttrs.size() - 1] != top.minOcc);
         assert(lufTree.getLowestLCPIntervalID(isa[top.minOcc]) != UINT64_MAX);
         outputAttrs.push_back(top.minOcc);
         removeMSIntervalsCapturedByTheLastAttractor(top.minOcc, _intervals, isa, lufTree, sortedMinimumSubstrings);
     }
-    std::cout << "[END]" << std::endl;
+    if(isPrint)std::cout << "[END]" << std::endl;
 
     std::sort(outputAttrs.begin(), outputAttrs.end());
     return outputAttrs;
 }
 
-std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<uint8_t> &text, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<char> &, std::vector<uint64_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> &, std::vector<uint64_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<int32_t> &, std::vector<uint64_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint32_t> &, std::vector<uint64_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<int64_t> &, std::vector<uint64_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+template std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint64_t> &, std::vector<uint64_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &, std::vector<uint64_t> &);
+
+template <typename CHAR>
+std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<CHAR> &text, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
 {
+    bool isPrint = sa.size() > 1000000;
     //std::vector<uint64_t> sa = stool::construct_suffix_array(text);
     std::vector<uint64_t> minOccVec;
     minOccVec.resize(intervals.size(), UINT64_MAX);
@@ -177,7 +195,7 @@ std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<uint
     uint64_t counter = 0;
     while (currentIntervals.size() > 0)
     {
-        if (counter++ % 100 == 0)
+        if (isPrint && counter++ % 100 == 0)
         {
             std::cout << "\r"
                       << "Computing Lazy Attractors : [" << currentIntervals.size() << "/" << intervals.size() << "]\r" << std::flush;
@@ -210,10 +228,18 @@ std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<uint
             currentIntervals.erase(it);
         }
     }
-    std::cout << std::endl;
+    if(isPrint)std::cout << std::endl;
     std::sort(outputAttrs.begin(), outputAttrs.end());
     return outputAttrs;
 }
+
+template std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<char> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &);
+template std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<uint8_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &);
+template std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<uint32_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &);
+template std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<int32_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &);
+template std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<uint64_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &);
+template std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<int64_t> &, std::vector<uint64_t> &, std::vector<LCPInterval<uint64_t>> &);
+
 
 } // namespace lazy
 } // namespace stool
