@@ -22,7 +22,7 @@ std::vector<stool::LCPInterval<uint64_t>> loadOrConstructMS(std::string filename
     }
     else
     {
-        stool::load_vector<LCPInterval<uint64_t>>(filename,r);
+        stool::load_vector<LCPInterval<uint64_t>>(filename,r, true);
     }
 
     if (k_attr != 0)

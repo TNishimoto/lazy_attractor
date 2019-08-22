@@ -9,6 +9,7 @@
 #include "../src/verification_attractor.hpp"
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 #include "../src/common.hpp"
+#include "libdivsufsort/sa.hpp"
 //#include "minimal_substrings.hpp"
 //#include "mstree.hpp"
 //#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
@@ -114,7 +115,7 @@ void loadAttractorFile(std::string attractorFile, std::string type, std::vector<
     }
     else
     {
-        stool::load_vector(attractorFile, attractors);
+        stool::load_vector(attractorFile, attractors, true);
     }
     sort(attractors.begin(), attractors.end());
 }
@@ -207,7 +208,7 @@ int main(int argc, char *argv[])
 
 
     std::cout << "Constructing Suffix Array" << std::endl;
-    std::vector<INDEX> sa = stool::constructSA<CHAR, INDEX>(text);
+    std::vector<INDEX> sa = stool::construct_suffix_array(text);
 
     // Loading Minimal Substrings
     std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text,sa, k_attr);

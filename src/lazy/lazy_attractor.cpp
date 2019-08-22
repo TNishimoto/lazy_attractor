@@ -1,5 +1,6 @@
 #include "lazy_attractor.hpp"
 #include "stool/src/print.hpp"
+//#include "libdivsufsort/sa.hpp"
 
 namespace stool
 {
@@ -149,9 +150,9 @@ std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<uint8_t> 
     return outputAttrs;
 }
 
-std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<uint8_t> &text, std::vector<LCPInterval<uint64_t>> &intervals)
+std::vector<uint64_t> LazyAttractor::naiveComputeLazyAttractors(std::vector<uint8_t> &text, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
 {
-    std::vector<uint64_t> sa = constructSA(text);
+    //std::vector<uint64_t> sa = stool::construct_suffix_array(text);
     std::vector<uint64_t> minOccVec;
     minOccVec.resize(intervals.size(), UINT64_MAX);
 

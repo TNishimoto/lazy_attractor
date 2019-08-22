@@ -58,7 +58,7 @@ public:
 };
 void loadAttractorFile(std::string attractorFile, std::vector<uint64_t> &attractors)
 {
-    stool::load_vector(attractorFile, attractors);
+    stool::load_vector(attractorFile, attractors, true);
     sort(attractors.begin(), attractors.end());
 }
 

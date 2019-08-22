@@ -12,6 +12,7 @@
 #include "stool/src/print.hpp"
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 #include "../src/common.hpp"
+#include "libdivsufsort/sa.hpp"
 
 //#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
 
@@ -63,7 +64,7 @@ int main(int argc, char *argv[])
     std::vector<uint8_t> text = stool::load_text_from_file(inputFile, true); // input text
 
     std::cout << "Constructing Suffix Array" << std::endl;
-    std::vector<INDEX> sa = stool::constructSA<CHAR, INDEX>(text);
+    std::vector<INDEX> sa = stool::construct_suffix_array(text);
 
     // Loading Minimal Substrings
     vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text,sa, k_attr);
@@ -84,7 +85,7 @@ int main(int argc, char *argv[])
 
 #ifdef DEBUG
     std::cout << "check lazy attractors..." << std::endl;
-    vector<uint64_t> correctAttrs = LazyAttractor::naiveComputeLazyAttractors(text, minimalSubstrings);
+    vector<uint64_t> correctAttrs = LazyAttractor::naiveComputeLazyAttractors(text, sa, minimalSubstrings);
     if (attrs.size() != correctAttrs.size())
     {
         stool::Printer::print("Lazy        ", attrs);

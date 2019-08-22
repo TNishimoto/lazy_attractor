@@ -14,6 +14,7 @@
 #include "../src/greedy/greedy_attractor.hpp"
 #include "../src/greedy/position_frequency_set.hpp"
 #include "../src/common.hpp"
+#include "libdivsufsort/sa.hpp"
 
 //using namespace std;
 //using namespace sdsl;
@@ -64,7 +65,7 @@ int main(int argc, char *argv[])
     std::vector<uint8_t> text = stool::load_text_from_file(inputFile, true); // input text
 
     std::cout << "Constructing Suffix Array" << std::endl;
-    std::vector<INDEX> sa = stool::constructSA<CHAR, INDEX>(text);
+    std::vector<INDEX> sa = stool::construct_suffix_array(text);
 
     // Loading Minimal Substrings
     std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text,sa, k_attr);
