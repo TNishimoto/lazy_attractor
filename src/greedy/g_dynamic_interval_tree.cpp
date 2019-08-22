@@ -7,7 +7,7 @@ namespace stool{
     }
     void GDynamicIntervalTree::construct()
     {
-        bool isPrint = sa.size() > 1000;
+        bool isPrint = sa.size() > 10000;
         if(isPrint)std::cout << "Constructing GDynamicIntervalTree..." << std::endl;
         std::vector<uint64_t> posVec;
         posVec.resize(this->sa.size());

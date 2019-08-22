@@ -161,7 +161,7 @@ namespace lazy
 
     std::vector<uint64_t> PositionFrequencySet::computeFrequencyVector(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
 {
-    bool isPrint = sa.size() > 1000;
+    bool isPrint = sa.size() > 10000;
     std::vector<uint64_t> r;
     r.resize(sa.size(), 0);
 
