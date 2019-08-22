@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        stool::write_vector(outputFile, attrs);
+        stool::write_vector(outputFile, attrs, true);
 
         //IO::write(outputFile, attrs, UINT64_MAX - 1);
     }
