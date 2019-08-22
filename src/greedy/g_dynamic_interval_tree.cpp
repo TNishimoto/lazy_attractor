@@ -7,14 +7,15 @@ namespace stool{
     }
     void GDynamicIntervalTree::construct()
     {
-        std::cout << "Constructing GDynamicIntervalTree..." << std::endl;
+        bool isPrint = sa.size() > 1000;
+        if(isPrint)std::cout << "Constructing GDynamicIntervalTree..." << std::endl;
         std::vector<uint64_t> posVec;
         posVec.resize(this->sa.size());
         for (uint64_t i = 0; i < sa.size(); i++)
         {
             posVec[i] = i;
         }
-        std::cout << "Sorting positions on the text..." << std::flush;
+        if(isPrint)std::cout << "Sorting positions on the text..." << std::flush;
         std::sort(posVec.begin(), posVec.end(), [&](const uint64_t &x, const uint64_t &y) {
             uint64_t x_lcp = intervals[this->tree.getLowestLCPIntervalID(x)].lcp;
             uint64_t y_lcp = intervals[this->tree.getLowestLCPIntervalID(y)].lcp;
@@ -27,10 +28,10 @@ namespace stool{
                 return x < y;
             }
         });
-        std::cout << "[END]" << std::endl;
+        if(isPrint)std::cout << "[END]" << std::endl;
 
 
-        std::cout << "Computing the distance vector..." << std::flush;
+        if(isPrint)std::cout << "Computing the distance vector..." << std::flush;
         this->distanceVec.resize(sa.size(), 0);
         std::vector<uint64_t> idVec;
         idVec.resize(sa.size(), UINT64_MAX);
@@ -38,7 +39,7 @@ namespace stool{
 
         for (uint64_t i = 0; i < posVec.size(); i++)
         {
-            counter.increment();
+            if(isPrint)counter.increment();
             uint64_t x = posVec[i];
             uint64_t id = this->tree.getLowestLCPIntervalID(x);
             uint64_t x_lcp = intervals[id].lcp;
@@ -77,7 +78,7 @@ namespace stool{
                 }
             }
         }
-        std::cout << "[END]" << std::endl;
+        if(isPrint)std::cout << "[END]" << std::endl;
 
         //assert(false);
         /*

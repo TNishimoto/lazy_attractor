@@ -41,18 +41,22 @@ INCLUDE_DIRECTORIES(module)
 
 # Main programs
 FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp src/greedy/*.cpp)
-add_library(fn STATIC ${SOURCES} ${ESAXX_SOURCES} ${STOOL_SOURCES})
+add_library(fn STATIC ${SOURCES} ${ESAXX_SOURCES} ${STOOL_SOURCES} module/libdivsufsort/sa.cpp)
 target_link_libraries(fn sdsl divsufsort divsufsort64)
 
-add_executable(greedy.out  main/greedy_main.cpp)
-add_executable(verify.out main/verify_main.cpp)
-add_executable(lazy.out main/lazy_main.cpp)
-add_executable(macro.out main/macro_main.cpp)
+add_executable(greedy.out  src/main/greedy_main.cpp)
+add_executable(verify.out src/main/verify_main.cpp)
+add_executable(lazy.out src/main/lazy_main.cpp)
+#add_executable(macro.out src/main/macro_main.cpp)
+add_executable(test.out src/test/test_main.cpp)
+
 
 target_link_libraries(greedy.out fn)
 target_link_libraries(verify.out fn)
 target_link_libraries(lazy.out fn)
-target_link_libraries(macro.out fn)
+target_link_libraries(test.out fn)
+
+#target_link_libraries(macro.out fn)
 
 
 

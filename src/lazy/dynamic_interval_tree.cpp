@@ -9,14 +9,14 @@ namespace lazy
 DynamicIntervalTree::DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize) : intervals(_intervals), parents(_parents)
 {
 
-    std::cout << "Constructing the data structure for lowest node queries..." << std::endl;
+    if(textSize > 100000)std::cout << "Constructing the data structure for lowest node queries..." << std::endl;
     lowestNodeQuery.construct(intervals, parents, textSize);
 
     //this->removeVec.resize(_intervals.size(), false);
 
-    std::cout << "Initializing Union-find tree" << std::flush;
+    if(textSize > 100000)std::cout << "Initializing Union-find tree" << std::flush;
     this->uftree.initialize(parents);
-    std::cout << "[END]" << std::endl;
+    if(textSize > 100000)std::cout << "[END]" << std::endl;
 }
 uint64_t DynamicIntervalTree::getLowestLCPIntervalID(SINDEX sa_index)
 {

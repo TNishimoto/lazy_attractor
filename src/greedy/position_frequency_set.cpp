@@ -10,9 +10,9 @@ namespace lazy
     }
     void PositionFrequencySet::construct(std::vector<uint64_t> &positionWeights)
     {
-
+        bool isPrint = positionWeights.size() > 1000;
         maxFreq = *std::max_element(positionWeights.begin(), positionWeights.end());
-        std::cout << "Constructing frequency rank map..." << std::flush;
+        if(isPrint)std::cout << "Constructing frequency rank map..." << std::flush;
         stool::Counter counter1;
         for (uint64_t i = 0; i <= maxFreq; i++)
         {
@@ -21,7 +21,7 @@ namespace lazy
 
         for (uint64_t i = 0; i < positionWeights.size(); i++)
         {
-            counter1.increment();
+            if(isPrint)counter1.increment();
             if (maxFreq == positionWeights[i])
             {
                 maxFreqSet.insert(i);
@@ -31,7 +31,7 @@ namespace lazy
                 freqRankMap[positionWeights[i]].insert(i);
             }
         }
-        std::cout << "[END]" << std::endl;
+        if(isPrint)std::cout << "[END]" << std::endl;
     }
     uint64_t PositionFrequencySet::getMostFrequentPosition()
     {
@@ -161,11 +161,12 @@ namespace lazy
 
     std::vector<uint64_t> PositionFrequencySet::computeFrequencyVector(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
 {
+    bool isPrint = sa.size() > 1000;
     std::vector<uint64_t> r;
     r.resize(sa.size(), 0);
 
     stool::Counter counter;
-    std::cout << "Computing frequencies on positions..." << std::flush;
+    if(isPrint)std::cout << "Computing frequencies on positions..." << std::flush;
     for (LCPInterval<uint64_t> &interval : intervals)
     {
         if (interval.lcp == 0)
@@ -193,12 +194,12 @@ namespace lazy
         {
             for (uint64_t x = it.first; x <= it.second; x++)
             {
-                counter.increment();
+                if(isPrint)counter.increment();
                 ++r[x];
             }
         }
     }
-    std::cout << "[END]" << std::endl;
+    if(isPrint)std::cout << "[END]" << std::endl;
     return r;
 }
 std::vector<uint64_t> PositionFrequencySet::computeFrequencyVector(std::unordered_set<uint64_t> &currentIntervals, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals)
