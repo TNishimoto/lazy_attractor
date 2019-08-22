@@ -14,6 +14,7 @@
 #include "stool/src/print.hpp"
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 #include "../src/common.hpp"
+#include "list_order_maintenance/src/online_suffix_sort.hpp"
 #include "libdivsufsort/sa.hpp"
 
 //#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
@@ -29,7 +30,7 @@ using INDEX = uint64_t;
 
 template <typename CHAR>
 vector<uint64_t> compute_suffix_array(std::vector<CHAR> &text){
-    return stool::construct_naive_SA(text);
+    return stool::LO::construct_suffix_array(text);
     //return stool::construct_suffix_array(text);
 }
 template<> vector<uint64_t> compute_suffix_array(std::vector<uint8_t> &text){

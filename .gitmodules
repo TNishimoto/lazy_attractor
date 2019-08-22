@@ -7,3 +7,6 @@
 [submodule "module/stool"]
 	path = module/stool
 	url = https://github.com/TNishimoto/stool
+[submodule "module/list_order_maintenance"]
+	path = module/list_order_maintenance
+	url = https://github.com/TNishimoto/list_order_maintenance

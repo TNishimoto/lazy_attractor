@@ -39,9 +39,14 @@ endif()
 FILE(GLOB STOOL_SOURCES module/stool/src/*.cpp)
 INCLUDE_DIRECTORIES(module)
 
+# ListOrderMaintenance submodule
+FILE(GLOB LOM_SOURCES module/list_order_maintenance/src/*.cpp)
+INCLUDE_DIRECTORIES(module)
+
+
 # Main programs
 FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp src/greedy/*.cpp)
-add_library(fn STATIC ${SOURCES} ${ESAXX_SOURCES} ${STOOL_SOURCES} module/libdivsufsort/sa.cpp)
+add_library(fn STATIC ${SOURCES} ${ESAXX_SOURCES} ${STOOL_SOURCES} ${LOM_SOURCES} module/libdivsufsort/sa.cpp)
 target_link_libraries(fn sdsl divsufsort divsufsort64)
 
 add_executable(greedy.out  src/main/greedy_main.cpp)
