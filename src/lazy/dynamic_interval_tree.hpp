@@ -38,7 +38,7 @@ private:
   LowestNodeQuery lowestNodeQuery;
 public:
 
-  DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize);
+  DynamicIntervalTree(const std::vector<LCPInterval<uint64_t>> &_intervals,const  std::vector<uint64_t> &_parents, uint64_t textSize);
 
   /*
   Return the longest LCP interval containing the given sa-index in the interval tree. 

@@ -6,7 +6,7 @@ namespace stool
 {
 namespace lazy
 {
-std::vector<uint64_t> LazyAttractor::constructMinimalOccurrencesOfMinimalSubstrings(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, std::vector<uint64_t> &sa)
+std::vector<uint64_t> LazyAttractor::constructMinimalOccurrencesOfMinimalSubstrings(const std::vector<LCPInterval<uint64_t>> &intervals,const  std::vector<uint64_t> &parents,const  std::vector<uint64_t> &sa)
 {
     uint64_t textSize = sa.size();
     std::vector<LowestNodeInterval> lowestNodeInfoVec = LowestNodeQuery::constructLowestNodeIntervalVec(intervals, parents);
@@ -42,7 +42,7 @@ std::vector<uint64_t> LazyAttractor::constructMinimalOccurrencesOfMinimalSubstri
 
     
 }
-std::stack<MinimalSubstringInfo> LazyAttractor::constructSortedMinimalOccurrenceStack(std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &parents, std::vector<uint64_t> &sa){
+std::stack<MinimalSubstringInfo> LazyAttractor::constructSortedMinimalOccurrenceStack(const std::vector<LCPInterval<uint64_t>> &intervals,const  std::vector<uint64_t> &parents,const  std::vector<uint64_t> &sa){
     std::vector<uint64_t> minimalOccurrenceVec =  constructMinimalOccurrencesOfMinimalSubstrings(intervals,parents, sa);
     std::vector<MinimalSubstringInfo> sortedMinimumSubstringVec;
     std::stack<MinimalSubstringInfo> outputSortedMinimumSubstrings;
@@ -76,7 +76,7 @@ std::stack<MinimalSubstringInfo> LazyAttractor::constructSortedMinimalOccurrence
     }
     return outputSortedMinimumSubstrings;
 }
-bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttractor, std::vector<LCPInterval<uint64_t>> &intervals, std::vector<uint64_t> &isa, DynamicIntervalTree &tree, std::stack<MinimalSubstringInfo> &sortedMinimumSubstrings)
+bool LazyAttractor::removeMSIntervalsCapturedByTheLastAttractor(TINDEX lastAttractor,const  std::vector<LCPInterval<uint64_t>> &intervals,const  std::vector<uint64_t> &isa, DynamicIntervalTree &tree, std::stack<MinimalSubstringInfo> &sortedMinimumSubstrings)
 {
     int64_t currentPos = (int64_t)lastAttractor;
     //uint64_t removedIntervalCount = 0;

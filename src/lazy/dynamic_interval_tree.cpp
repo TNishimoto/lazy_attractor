@@ -6,7 +6,7 @@ namespace stool
 {
 namespace lazy
 {
-DynamicIntervalTree::DynamicIntervalTree(std::vector<LCPInterval<uint64_t>> &_intervals, std::vector<uint64_t> &_parents, uint64_t textSize) : intervals(_intervals), parents(_parents)
+DynamicIntervalTree::DynamicIntervalTree(const std::vector<LCPInterval<uint64_t>> &_intervals,const  std::vector<uint64_t> &_parents, uint64_t textSize) : intervals(_intervals), parents(_parents)
 {
 
     if(textSize > 100000)std::cout << "Constructing the data structure for lowest node queries..." << std::endl;
