@@ -35,10 +35,10 @@ int main(int argc, char *argv[])
     p.add<std::string>("input_file", 'i', "Input text file name", true);
     p.add<std::string>("output_file", 'o', "(option) Output attractor file name(the default output name is 'input_file.greedy.attrs')", false, "");
     p.add<std::string>("output_type", 't', "(option) Output mode(binary or text)", false, "binary");
-    p.add<uint64_t>("k-attr", 'k', "(option) the value of k-attractor", false, 0 );
+    p.add<uint64_t>("k-attr", 'k', "(option) the value of k-attractor", false, 0);
 
-    p.add<std::string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
-    
+    p.add<std::string>("msubstr_file", 'm', "(option) The file name of minimal substrings for the input text file(the default minimal substrings filename is 'input_file.msub')", false, "");
+
     p.parse_check(argc, argv);
     std::string inputFile = p.get<std::string>("input_file");
     std::string mSubstrFile = p.get<std::string>("msubstr_file");
@@ -49,16 +49,16 @@ int main(int argc, char *argv[])
     if (outputFile.size() == 0)
     {
         std::string ext = ".greedy";
-        if(k_attr != 0){
+        if (k_attr != 0)
+        {
             ext += "." + std::to_string(k_attr);
         }
         ext += ".attrs";
-        if (outputMode == "text"){
+        if (outputMode == "text")
+        {
             ext += ".txt";
         }
         outputFile = inputFile + ext;
-        
-        
     }
 
     // Loading Input Text
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     std::vector<INDEX> sa = stool::construct_suffix_array(text);
 
     // Loading Minimal Substrings
-    std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text,sa, k_attr);
+    std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text, sa, k_attr);
 
     uint64_t mSubstrCount = minimalSubstrings.size();
 
@@ -101,19 +101,18 @@ int main(int argc, char *argv[])
         std::vector<INDEX> isa = stool::constructISA<CHAR, INDEX>(text, sa);
         std::vector<uint64_t> greedyAttrs = GreedyAttractorAlgorithm::computeFasterGreedyAttractors(sa, isa, minimalSubstrings);
 
-        #ifdef DEBUG
+#ifdef DEBUG
         std::vector<uint64_t> correctAttrs = GreedyAttractorAlgorithm::computeGreedyAttractors(sa, minimalSubstrings);
-        if(correctAttrs.size() != greedyAttrs.size()){
+        if (correctAttrs.size() != greedyAttrs.size())
+        {
             stool::Printer::print("Correct Greedy Attractors", correctAttrs);
             stool::Printer::print("Greedy Attractors        ", greedyAttrs);
-
         }
         assert(correctAttrs.size() == greedyAttrs.size());
 
         std::cout << "CORRECT!" << std::endl;
 
-        #endif
-
+#endif
 
         attrs.swap(greedyAttrs);
 
@@ -136,19 +135,41 @@ int main(int argc, char *argv[])
             stool::write_vector(outputFile, attrs, true);
             //IO::write(outputFile, attrs, UINT64_MAX - 1);
         }
-
         std::cout << "\033[36m";
-        std::cout << "=============RESULT===============" << std::endl;
+        std::cout << "============= INFO ===============" << std::endl;
         std::cout << "File : " << inputFile << std::endl;
+        std::cout << "The input file content: ";
+        if (text.size() <= 100)
+        {
+            std::vector<char> s;
+            stool::load_vector(inputFile, s, false, false);
+            for (auto &c : s)
+                std::cout << c;
+            std::cout << std::endl;
+        }
+        else
+        {
+            std::cout << "(we omit to print it on the console if its size is larger than 100)" << std::endl;
+        }
         std::cout << "Output : " << outputFile << std::endl;
-        std::cout << "Attractor type : " << (k_attr == 0 ? "n" : std::to_string(k_attr) )  << "-attractor" << std::endl;
+        std::cout << "Attractor type : " << (k_attr == 0 ? "n" : std::to_string(k_attr)) << "-attractor" << std::endl;
 
-
+        std::cout << "\033[33m";
+        std::cout << "=============RESULT===============" << std::endl;
         std::cout << "The length of the input text (with the last special marker): " << text.size() << std::endl;
         double charperms = (double)text.size() / elapsed;
         std::cout << "The number of minimal substrings : " << mSubstrCount << std::endl;
         std::cout << "The number of attractors : " << attrs.size() << std::endl;
-        
+        std::cout << "The obtained attractors: ";
+        if (attrs.size() <= 100)
+        {
+            stool::Printer::print(attrs);
+        }
+        else
+        {
+            std::cout << "(we omit to print it on the console if its size is larger than 100)" << std::endl;
+        }
+
         std::cout << "Excecution time : " << ((uint64_t)elapsed) << "ms";
         std::cout << "[" << charperms << "chars/ms]" << std::endl;
         std::cout << "==================================" << std::endl;

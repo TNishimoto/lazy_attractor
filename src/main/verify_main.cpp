@@ -45,14 +45,17 @@ bool checkAttractorTextFile(string &text)
     }
     return true;
 }
-std::string substr(std::vector<uint8_t> &text, uint64_t i, uint64_t len){
+std::string substr(std::vector<uint8_t> &text, uint64_t i, uint64_t len)
+{
     std::string str;
     str.resize(len);
-    for(uint64_t x=0;x<len;x++){
-        if(x+i >= text.size()){
-            throw -1;
+    for (uint64_t x = 0; x < len; x++)
+    {
+        if (x + i >= text.size())
+        {
+            throw - 1;
         }
-        str[x] = (char)text[x+i];
+        str[x] = (char)text[x + i];
     }
     return str;
 }
@@ -120,7 +123,6 @@ void loadAttractorFile(std::string attractorFile, std::string type, std::vector<
     sort(attractors.begin(), attractors.end());
 }
 
-
 /*
 void loadAttractors(string attractorFile, vector<uint64_t> &attractors)
 {
@@ -183,7 +185,7 @@ int main(int argc, char *argv[])
     p.add<string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
     p.add<string>("attractor_file_type", 't', "(option) Input attractor file type(binary or text)", false, "binary");
     p.add<string>("output_file", 'o', "(option) Error log file name (the default output name is 'input_file.verify.log')", false, "");
-    p.add<uint64_t>("k-attr", 'k', "(option) the value of k-attractor", false, 0 );
+    p.add<uint64_t>("k-attr", 'k', "(option) the value of k-attractor", false, 0);
 
     p.parse_check(argc, argv);
     string inputFile = p.get<string>("input_file");
@@ -206,16 +208,15 @@ int main(int argc, char *argv[])
     vector<uint64_t> attractors;
     loadAttractorFile(attractorFile, attractorFileType, attractors);
 
-
     std::cout << "Constructing Suffix Array" << std::endl;
     std::vector<INDEX> sa = stool::construct_suffix_array(text);
 
     // Loading Minimal Substrings
-    std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text,sa, k_attr);
+    std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text, sa, k_attr);
 
     auto start = std::chrono::system_clock::now();
     vector<uint64_t> isa = stool::constructISA(text, sa);
-     vector<uint64_t> freeIntervalIndexes = lazy::VerificationAttractor::getFreeIntervals(sa, isa, minimalSubstrings, attractors);
+    vector<uint64_t> freeIntervalIndexes = lazy::VerificationAttractor::getFreeIntervals(sa, isa, minimalSubstrings, attractors);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
@@ -235,7 +236,6 @@ int main(int argc, char *argv[])
             log.append(mstr);
             log.append("\" occs: ");
 
-            
             for (uint64_t x = interval.i; x <= interval.j; x++)
             {
                 uint64_t pos = sa[x];
@@ -256,23 +256,36 @@ int main(int argc, char *argv[])
                 log.append(", and so on");
                 break;
             }
-            
         }
         IO::write(outputFile, log);
-        
     }
 
     std::cout << "\033[36m";
-    std::cout << "=============RESULT===============" << std::endl;
+    std::cout << "============= INFO ===============" << std::endl;
     std::cout << "File : " << inputFile << std::endl;
+    std::cout << "The input file content: ";
+    if (text.size() <= 100)
+    {
+        std::vector<char> s;
+        stool::load_vector(inputFile, s, false, false);
+        for (auto &c : s)
+            std::cout << c;
+        std::cout << std::endl;
+    }
+    else
+    {
+        std::cout << "(we omit to print it on the console if its size is larger than 100)" << std::endl;
+    }
+
     std::cout << "Attractor File : " << attractorFile << std::endl;
-        std::cout << "Attractor type : " << (k_attr == 0 ? "n" : std::to_string(k_attr) )  << "-attractor" << std::endl;
+    std::cout << "Attractor type : " << (k_attr == 0 ? "n" : std::to_string(k_attr)) << "-attractor" << std::endl;
     std::cout << "The length of the input text (with last special marker) : " << text.size() << std::endl;
     double charperms = (double)text.size() / elapsed;
     std::cout << "The number of minimal substrings : " << minimalSubstrings.size() << std::endl;
     std::cout << "The number of attractors : " << attractors.size() << std::endl;
-    std::cout << "Excecution time : " << ((uint64_t)elapsed) << "ms";
-    std::cout << "[" << charperms << "chars/ms]" << std::endl;
+
+    std::cout << "\033[33m";
+    std::cout << "=============RESULT===============" << std::endl;
     std::cout << "Attractor? : ";
     if (freeIntervalIndexes.size() == 0)
     {
@@ -284,6 +297,8 @@ int main(int argc, char *argv[])
         std::cout << "Output minimal substrings not containing the input positions." << std::endl;
         std::cout << "See also " << outputFile << std::endl;
     }
+    std::cout << "Excecution time : " << ((uint64_t)elapsed) << "ms";
+    std::cout << "[" << charperms << "chars/ms]" << std::endl;
     std::cout << "==================================" << std::endl;
     std::cout << "\033[39m" << std::endl;
 

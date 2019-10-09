@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     p.add<string>("input_file", 'i', "Input text file name", true);
     p.add<string>("output_file", 'o', "(option) Output attractor file name(the default output name is 'input_file.lazy.attrs')", false, "");
     p.add<string>("output_type", 't', "(option) Output mode(binary or text)", false, "binary");
-    p.add<string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
+    p.add<string>("msubstr_file", 'm', "(option) The file name of minimal substrings for the input text file(the default minimal substrings filename is 'input_file.msub')", false, "");
     p.add<string>("character_type", 'c', "(option) character type", false, "uint8_t");
 
     p.add<uint64_t>("k-attr", 'k', "(option) the value of k-attractor", false, 0);
@@ -163,17 +163,35 @@ int main(int argc, char *argv[])
     }
 
     std::cout << "\033[36m";
-    std::cout << "=============RESULT===============" << std::endl;
-    std::cout << "File : " << inputFile << std::endl;
-    std::cout << "Output : " << outputFile << std::endl;
-    std::cout << "Attractor type : " << (k_attr == 0 ? "n" : std::to_string(k_attr)) << "-attractor" << std::endl;    
-    std::cout << "The length of the input text (with last special marker) : " << textSize << std::endl;
-    std::cout << "Character type : " << characterType << std::endl;
-    
+    std::cout << "============= INFO ===============" << std::endl;
+    std::cout << "File: " << inputFile << std::endl;
+    std::cout << "The input file content: ";
+    if(characterType == "uint8_t" && textSize <= 100){
+        std::vector<char> s;
+        stool::load_vector(inputFile, s, false, false); 
+        for(auto& c: s) std::cout << c;
+        std::cout << std::endl;
+    }else{
+        std::cout << "(we omit to print it on the console if its size is larger than 100)" << std::endl;
+    }
+    std::cout << "Output: " << outputFile << std::endl;
+    std::cout << "Attractor type: " << (k_attr == 0 ? "n" : std::to_string(k_attr)) << "-attractor" << std::endl;    
+    std::cout << "The length of the input text (with additional last special marker): " << textSize << std::endl;
+    std::cout << "Character type: " << characterType << std::endl;
+ 
+    std::cout << "\033[33m";
+    std::cout << "=============RESULT===============" << std::endl;   
     double charperms = (double)textSize / elapsed;
-    std::cout << "The number of minimal substrings : " << mSubstrCount << std::endl;
-    std::cout << "The number of attractors : " << attrs.size() << std::endl;
-    std::cout << "Excecution time : " << ((uint64_t)elapsed) << "ms";
+    std::cout << "The number of minimal substrings: " << mSubstrCount << std::endl;
+    std::cout << "The number of attractors: " << attrs.size() << std::endl;
+    std::cout << "The obtained attractors: ";
+    if(attrs.size() <= 100){
+        stool::Printer::print(attrs);
+    }else{
+        std::cout << "(we omit to print it on the console if its size is larger than 100)" << std::endl;
+    }
+    
+    std::cout << "Excecution time: " << ((uint64_t)elapsed) << "ms";
     std::cout << "[" << charperms << "chars/ms]" << std::endl;
     std::cout << "==================================" << std::endl;
     std::cout << "\033[39m" << std::endl;
