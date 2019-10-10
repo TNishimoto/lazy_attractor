@@ -13,7 +13,7 @@ namespace stool
 namespace lazy
 {
 
-template<typename CHAR>
+template <typename CHAR>
 std::vector<stool::LCPInterval<uint64_t>> loadOrConstructMS(std::string filename, std::vector<CHAR> &text, std::vector<uint64_t> &sa, uint64_t k_attr)
 {
     std::vector<stool::LCPInterval<uint64_t>> r;
@@ -27,7 +27,7 @@ std::vector<stool::LCPInterval<uint64_t>> loadOrConstructMS(std::string filename
     }
     else
     {
-        stool::load_vector<LCPInterval<uint64_t>>(filename,r, true);
+        stool::load_vector<LCPInterval<uint64_t>>(filename, r, true);
     }
 
     if (k_attr != 0)
@@ -148,7 +148,8 @@ std::vector<stool::LCPInterval<INDEX>> filter(std::vector<stool::LCPInterval<IND
     for (uint64_t i = 0; i < intervals.size(); i++)
     {
         stool::LCPInterval<INDEX> &interval = intervals[i];
-        if(interval.lcp == 0) continue;
+        if (interval.lcp == 0)
+            continue;
 
         bool b = false;
 
@@ -198,9 +199,9 @@ template <typename INDEX>
 void printTateLines(std::vector<INDEX> &integers, uint64_t colorPos, std::string lineName)
 {
     std::vector<std::string> lines = toTateLines(integers);
-    for (uint64_t x=0;x<lines.size();x++)
+    for (uint64_t x = 0; x < lines.size(); x++)
     {
-        std::string& line = lines[x];
+        std::string &line = lines[x];
         for (uint64_t i = 0; i < line.size(); i++)
         {
             if (i == colorPos)
@@ -214,17 +215,18 @@ void printTateLines(std::vector<INDEX> &integers, uint64_t colorPos, std::string
                 std::cout << line[i];
             }
         }
-        
-        if(x == lines.size() - 1) std::cout << " " << lineName << "(Vertical writing)";
+
+        if (x == lines.size() - 1)
+            std::cout << " " << lineName << "(Vertical writing)";
         std::cout << std::endl;
         //std::cout << it << std::endl;
     }
-
 }
 
 template <typename INDEX>
 uint64_t printFrequencyVector(std::vector<INDEX> &sa, std::vector<stool::LCPInterval<INDEX>> &intervals)
 {
+    if(intervals.size() == 0) return UINT64_MAX;
     std::vector<uint64_t> frequencyVector = stool::lazy::PositionFrequencySet::computeFrequencyVector(sa, intervals);
     auto it = std::max_element(frequencyVector.begin(), frequencyVector.end());
     uint64_t itPos = std::distance(frequencyVector.begin(), it);
@@ -236,14 +238,20 @@ uint64_t printFrequencyVector(std::vector<INDEX> &sa, std::vector<stool::LCPInte
 template <typename CHAR, typename INDEX>
 uint64_t print_info(std::vector<CHAR> &text, std::vector<INDEX> &sa, std::vector<stool::LCPInterval<INDEX>> &intervals, std::vector<INDEX> &attrs, std::string algorithm_type = "lazy")
 {
-
+    uint64_t nextAttractor = UINT64_MAX;
     //std::vector<stool::LCPInterval<INDEX>> newMS = filter(intervals, text, sa, attrs);
     uint64_t nextLazyAttr = stool::lazy::LazyAttractor::naiveComputeNextLazyAttractor(sa, intervals);
     std::vector<uint64_t> posVec;
-    for(uint64_t i=0;i<text.size();i++)posVec.push_back(i);
-    printTateLines(posVec, nextLazyAttr, "Positions");
+    for (uint64_t i = 0; i < text.size(); i++)
+        posVec.push_back(i);
 
-    stool::esaxx::printText<uint8_t>(text);
+    if(algorithm_type == "lazy" || algorithm_type == "none"){
+        printTateLines(posVec, nextLazyAttr, "Positions");
+        nextAttractor = nextLazyAttr;
+    }else{
+        printTateLines(posVec, UINT64_MAX, "Positions");
+    }
+
 
     std::string attrLine;
     attrLine.resize(text.size(), ' ');
@@ -251,19 +259,17 @@ uint64_t print_info(std::vector<CHAR> &text, std::vector<INDEX> &sa, std::vector
     {
         attrLine[it] = '*';
     }
-    std::cout << attrLine  << " Attractors" << std::endl;
+    std::cout << attrLine << " Attractors" << std::endl;
+    stool::esaxx::printText<uint8_t>(text);
 
-    stool::esaxx::printColor<uint8_t, uint64_t>(intervals, text, sa, true);
-    uint64_t fr = printFrequencyVector(sa, intervals);
+    stool::esaxx::printColor<uint8_t, uint64_t>(intervals, text, sa, (algorithm_type != "greedy") );
 
-    if(algorithm_type == "greedy"){
-        return fr;
-    }else if(algorithm_type == "lazy"){
-        return nextLazyAttr;
-    }else{
-        return 0;
+    if (algorithm_type == "greedy" || algorithm_type == "none")
+    {
+        uint64_t fr = printFrequencyVector(sa, intervals);
+        nextAttractor = fr;
     }
-
+    return nextAttractor;
 }
 
 } // namespace lazy

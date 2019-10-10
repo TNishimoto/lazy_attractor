@@ -43,13 +43,20 @@ int main(int argc, char *argv[])
 
     std::vector<uint64_t> attrs;
     uint64_t round = 0;
-    while (minimalSubstrings.size() > 0)
+    while (true)
     {
         std::cout << "============ ROUND " << round++ << " =============" << std::endl;
         uint64_t nextLazyAttractor = stool::lazy::print_info(T, sa, minimalSubstrings, attrs, algorithm);
-        attrs.push_back(nextLazyAttractor);
-        minimalSubstrings = stool::lazy::filter(minimalSubstrings, sa, attrs);
-        std::cout << std::endl;
+        if(nextLazyAttractor == UINT64_MAX){
+            std::cout << std::endl;
+            break;
+        }else{
+            attrs.push_back(nextLazyAttractor);
+            minimalSubstrings = stool::lazy::filter(minimalSubstrings, sa, attrs);
+            std::cout << std::endl;
+        }
+
+
     }
 
     std::sort(attrs.begin(), attrs.end());
