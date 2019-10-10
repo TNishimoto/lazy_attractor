@@ -19,109 +19,7 @@ using namespace sdsl;
 using namespace stool;
 //using namespace stool::lazy;
 
-bool checkAttractorTextFile(string &text)
-{
-    std::unordered_set<char> okSet;
-    okSet.insert('0');
-    okSet.insert('1');
-    okSet.insert('2');
-    okSet.insert('3');
-    okSet.insert('4');
-    okSet.insert('5');
-    okSet.insert('6');
-    okSet.insert('7');
-    okSet.insert('8');
-    okSet.insert('9');
-    okSet.insert(' ');
-    okSet.insert(',');
-    okSet.insert('\n');
-    okSet.insert('\r');
-    for (auto &it : text)
-    {
-        if (okSet.find(it) == okSet.end())
-        {
-            return false;
-        }
-    }
-    return true;
-}
-std::string substr(std::vector<uint8_t> &text, uint64_t i, uint64_t len)
-{
-    std::string str;
-    str.resize(len);
-    for (uint64_t x = 0; x < len; x++)
-    {
-        if (x + i >= text.size())
-        {
-            throw - 1;
-        }
-        str[x] = (char)text[x + i];
-    }
-    return str;
-}
 
-template <typename List>
-void split(const std::string &s, const std::string &delim, List &result)
-{
-    result.clear();
-
-    using string = std::string;
-    string::size_type pos = 0;
-
-    while (pos != string::npos)
-    {
-        string::size_type p = s.find(delim, pos);
-
-        if (p == string::npos)
-        {
-            result.push_back(s.substr(pos));
-            break;
-        }
-        else
-        {
-            result.push_back(s.substr(pos, p - pos));
-        }
-
-        pos = p + delim.size();
-    }
-}
-void loadAttractorFile(std::string attractorFile, std::string type, std::vector<uint64_t> &attractors)
-{
-    std::ifstream a_ifs(attractorFile);
-    bool attractorFileExist = a_ifs.is_open();
-    if (!attractorFileExist)
-    {
-        std::cout << attractorFile << " cannot open." << std::endl;
-        throw - 1;
-    }
-
-    if (type == "text")
-    {
-        std::string text;
-        IO::load(attractorFile, text);
-        bool b = checkAttractorTextFile(text);
-        if (!b)
-        {
-            std::cout << "\033[31m";
-            std::cout << "Error: the text file for attractors allow to contain 0-9 characters, spaces, and commas.";
-            std::cout << "\033[39m" << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-
-        vector<string> strs;
-        split(text, ",", strs);
-        for (auto &character : strs)
-        {
-            uint64_t c = atoi(character.c_str());
-            attractors.push_back(c);
-        }
-    }
-    else
-    {
-        stool::load_vector(attractorFile, attractors, true);
-    }
-    sort(attractors.begin(), attractors.end());
-}
 
 /*
 void loadAttractors(string attractorFile, vector<uint64_t> &attractors)
@@ -181,9 +79,9 @@ int main(int argc, char *argv[])
     cmdline::parser p;
 
     p.add<string>("input_file", 'i', "Input text file name", true);
-    p.add<string>("attractor_file", 'a', "Attractors file name", true);
     p.add<string>("msubstr_file", 'm', "(option) Minimal substrings file name(the default minimal substrings filename is 'input_file.msub')", false, "");
-    p.add<string>("attractor_file_type", 't', "(option) Input attractor file type(binary or text)", false, "binary");
+    p.add<string>("attractor_file", 'a', "Attractors file name", true);
+    p.add<string>("attractor_file_type", 't', "(option) Input attractor file type(binary or text)", true);
     p.add<string>("output_file", 'o', "(option) Error log file name (the default output name is 'input_file.verify.log')", false, "");
     p.add<uint64_t>("k-attr", 'k', "(option) the value of k-attractor", false, 0);
 
@@ -206,7 +104,7 @@ int main(int argc, char *argv[])
 
     // Loading Attractor File
     vector<uint64_t> attractors;
-    loadAttractorFile(attractorFile, attractorFileType, attractors);
+    stool::lazy::loadAttractorFile(attractorFile, attractorFileType, attractors);
 
     std::cout << "Constructing Suffix Array" << std::endl;
     std::vector<INDEX> sa = stool::construct_suffix_array(text);
@@ -231,7 +129,7 @@ int main(int argc, char *argv[])
             LCPInterval<INDEX> interval = minimalSubstrings[freeIntervalIndexes[j]];
             //uint64_t spos = *(sa.begin()+interval.i);
             //string mstr(text.begin() + spos, text.begin()+ spos + interval.lcp -1);
-            string mstr = substr(text, sa[interval.i], interval.lcp);
+            string mstr = stool::lazy::substr(text, sa[interval.i], interval.lcp);
             //string mstr = text.substr(sa[interval.i], interval.lcp);
             log.append(mstr);
             log.append("\" occs: ");
