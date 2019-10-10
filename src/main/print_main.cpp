@@ -13,6 +13,7 @@
 #include "libdivsufsort/sa.hpp"
 #include "esaxx/src/main/common.hpp"
 #include "../src/common.hpp"
+#include "../greedy/position_frequency_set.hpp"
 
 //#include "../minimal_substrings/naive_minimal_substrings.hpp"
 
@@ -49,6 +50,82 @@ std::vector<stool::LCPInterval<INDEX>> filter(std::vector<stool::LCPInterval<IND
     }
     return new_intervals;
 }
+template <typename INDEX>
+std::vector<std::string> toTateLines(std::vector<INDEX> &integers)
+{
+    std::vector<uint64_t> tmp;
+    for (auto &it : integers)
+        tmp.push_back(std::to_string(it).size());
+
+    uint64_t max = *std::max_element(tmp.begin(), tmp.end());
+
+    std::vector<std::string> r;
+    r.resize(max);
+    for (uint64_t i = 0; i < max; i++)
+    {
+        uint64_t rank = (max - i) - 1;
+        r[i].resize(integers.size(), ' ');
+        for (uint64_t x = 0; x < integers.size(); x++)
+        {
+            std::string s = std::to_string(integers[x]);
+            if (rank < s.size())
+                r[i][x] = s[i - (max - s.size())];
+        }
+    }
+    return r;
+}
+template <typename INDEX>
+uint64_t printFrequencyVector(std::vector<INDEX> &sa, std::vector<stool::LCPInterval<INDEX>> &intervals)
+{
+    std::vector<uint64_t> frequencyVector = stool::lazy::PositionFrequencySet::computeFrequencyVector(sa, intervals);
+    std::vector<std::string> frequencyVecLines = toTateLines(frequencyVector);
+    auto it = std::max_element(frequencyVector.begin(), frequencyVector.end());
+    uint64_t itPos = std::distance(frequencyVector.begin(), it);
+
+    for (auto &line : frequencyVecLines)
+    {
+        for (uint64_t i = 0; i < line.size(); i++)
+        {
+            if (i == itPos)
+            {
+                std::cout << "\033[31m";
+                std::cout << line[i];
+                std::cout << "\033[39m";
+            }
+            else
+            {
+                std::cout << line[i];
+            }
+        }
+        std::cout << std::endl;
+        //std::cout << it << std::endl;
+    }
+
+    return itPos;
+}
+
+template <typename CHAR, typename INDEX>
+void print_info(std::vector<CHAR> &text, std::vector<INDEX> &sa, std::vector<stool::LCPInterval<INDEX>> &intervals, std::vector<INDEX> &attrs)
+{
+
+    std::vector<stool::LCPInterval<INDEX>> newMS = filter(intervals, text, sa, attrs);
+    std::string attrLine;
+    attrLine.resize(text.size(), ' ');
+    for (auto &it : attrs)
+    {
+        attrLine[it] = '*';
+    }
+    std::cout << attrLine << std::endl;
+
+    uint64_t fr = printFrequencyVector(sa, intervals);
+    //std::vector<uint64_t> frequencyVec = stool::lazy::PositionFrequencySet::computeFrequencyVector(sa, newMS);
+    //std::vector<std::string> frequencyVecLines = toTateLines(frequencyVec);
+    //for(auto& it : frequencyVecLines) std::cout << it << std::endl;
+    //stool::Printer::print(frequencyVec);
+
+    stool::esaxx::printText<uint8_t>(text);
+    stool::esaxx::printColor<uint8_t, uint64_t>(newMS, text, sa);
+}
 
 int main(int argc, char *argv[])
 {
@@ -77,19 +154,8 @@ int main(int argc, char *argv[])
     // Loading Minimal Substrings
     std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, T, sa, k_attr);
 
-    std::string attrLine;
-    attrLine.resize(T.size(), ' ');
-    for (auto &it : attractors)
-    {
-        attrLine[it] = '*';
-    }
-    std::cout << attrLine << std::endl;
-
-    auto newMS = filter(minimalSubstrings, T, sa, attractors);
-
-    //stool::esaxx::print<uint8_t, uint64_t>(minimalSubstrings , T, sa);
-    //stool::esaxx::printColor<uint8_t, uint64_t>(minimalSubstrings, T, sa);
-    stool::esaxx::printColor<uint8_t, uint64_t>(newMS, T, sa);
+    print_info(T, sa, minimalSubstrings, attractors);
+    //auto newMS = filter(minimalSubstrings, T, sa, attractors);
 
     return 0;
 }
