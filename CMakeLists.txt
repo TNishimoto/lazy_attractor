@@ -55,6 +55,7 @@ add_executable(lazy.out src/main/lazy_main.cpp)
 #add_executable(macro.out src/main/macro_main.cpp)
 add_executable(test.out src/test/test_main.cpp)
 add_executable(print.out src/main/print_main.cpp)
+add_executable(demo.out src/main/demo_main.cpp)
 
 
 target_link_libraries(greedy.out fn)
@@ -63,6 +64,8 @@ target_link_libraries(lazy.out fn)
 target_link_libraries(test.out fn)
 
 target_link_libraries(print.out fn)
+target_link_libraries(demo.out fn)
+
 
 #target_link_libraries(macro.out fn)
 

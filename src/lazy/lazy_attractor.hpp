@@ -47,6 +47,28 @@ template<typename CHAR>
    */
 template<typename CHAR>
   static std::vector<uint64_t> naiveComputeLazyAttractors(std::vector<CHAR> &text, std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals);
+
+  static uint64_t naiveComputeNextLazyAttractor(std::vector<uint64_t> &sa, std::vector<LCPInterval<uint64_t>> &intervals){
+
+    int64_t wholeFstOcc = -1;
+    for (uint64_t i = 0; i < intervals.size(); i++)
+    {
+        stool::LCPInterval<uint64_t> &interval = intervals[i];
+        if (interval.lcp == 0)
+            continue;
+
+        int64_t fstOcc = sa.size();
+        for (uint64_t x = interval.i; x <= interval.j; x++)
+        {
+            int64_t pos = sa[x];
+            if (pos < fstOcc)
+                fstOcc = pos;
+        }
+        if(wholeFstOcc < fstOcc) wholeFstOcc = fstOcc;
+    }
+    return wholeFstOcc == -1 ? UINT64_MAX : wholeFstOcc;
+  }
+
 };
 
 } // namespace lazy
