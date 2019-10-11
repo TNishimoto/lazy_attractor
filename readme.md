@@ -2,7 +2,24 @@
 
 This program provides two approximation algoirthms for string attractors (lazy.out and greedy.out), and verification algorithm whether the given positions are string attractors for the given text (verify.out).
 
-## Download
+## String attractors
+
+String attractors Γ of a string $T$ is a set of positions caputring all distinct substrings of the string. 
+
+## Minimum substrings
+
+hogehoge.
+
+## Greedy algorithm
+
+hogehoge.
+
+## Lazy algorithm
+
+hogehoge.
+
+
+# Download
 The source codes in 'module' directory are maintained in different repositories. 
 So, to download all the necessary source codes, do the following:
 
@@ -11,7 +28,7 @@ So, to download all the necessary source codes, do the following:
 > git submodule init  
 > git submodule update 
 
-# compile
+# Compile
 > mkdir build  
 > cd build  
 > cmake -DCMAKE_BUILD_TYPE=Release ..  
@@ -19,10 +36,6 @@ So, to download all the necessary source codes, do the following:
 
 You need sdsl-lite(https://github.com/simongog/sdsl-lite) to excecute this program. 
 Please edit CMakeLists.txt to set SDSL library and include directory paths.
-
-# preliminaries
-
-hoghoge. $O(n)$ time.
 
 # executions
 
