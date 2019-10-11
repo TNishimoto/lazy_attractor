@@ -255,20 +255,21 @@ uint64_t print_info(std::vector<CHAR> &text, std::vector<INDEX> &sa, std::vector
 
     std::string attrLine;
     attrLine.resize(text.size(), ' ');
+
     for (auto &it : attrs)
     {
         attrLine[it] = '*';
     }
     std::cout << attrLine << " Attractors" << std::endl;
     stool::esaxx::printText<uint8_t>(text);
-
-    stool::esaxx::printColor<uint8_t, uint64_t>(intervals, text, sa, (algorithm_type != "greedy") );
-
     if (algorithm_type == "greedy" || algorithm_type == "none")
     {
         uint64_t fr = printFrequencyVector(sa, intervals);
         nextAttractor = fr;
     }
+
+    stool::esaxx::printColor<uint8_t, uint64_t>(intervals, text, sa, (algorithm_type != "greedy"), (algorithm_type != "greedy" ? -1 : nextAttractor), "Minimal substrings" );
+
     return nextAttractor;
 }
 

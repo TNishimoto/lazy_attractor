@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     uint64_t mSubstrCount = minimalSubstrings.size();
 
     std::vector<uint64_t> attrs;
-    uint64_t round = 0;
+    uint64_t round = 1;
     while (true)
     {
         std::cout << "============ ROUND " << round++ << " =============" << std::endl;
