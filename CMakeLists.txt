@@ -49,24 +49,27 @@ FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp src/greedy/*.cpp)
 add_library(fn STATIC ${SOURCES} ${ESAXX_SOURCES} ${STOOL_SOURCES} ${LOM_SOURCES} module/libdivsufsort/sa.cpp)
 target_link_libraries(fn sdsl divsufsort divsufsort64)
 
-add_executable(greedy.out  src/main/greedy_main.cpp)
-add_executable(verify.out src/main/verify_main.cpp)
-add_executable(lazy.out src/main/lazy_main.cpp)
+#add_executable(greedy.out  src/main/greedy_main.cpp)
+#add_executable(verify.out src/main/verify_main.cpp)
+#add_executable(lazy.out src/main/lazy_main.cpp)
+#add_executable(test.out src/test/test_main.cpp)
+#add_executable(print.out src/main/print_main.cpp)
+#add_executable(demo.out src/main/demo_main.cpp)
+add_executable(exact_2_attrs.out src/main/exact_2_attrs_main.cpp)
+add_executable(appro_2_attrs.out src/main/appro_2_attrs_main.cpp)
+
+
+#target_link_libraries(greedy.out fn)
+#target_link_libraries(verify.out fn)
+#target_link_libraries(lazy.out fn)
+#target_link_libraries(test.out fn)
+#target_link_libraries(print.out fn)
+#target_link_libraries(demo.out fn)
+target_link_libraries(exact_2_attrs.out fn)
+target_link_libraries(appro_2_attrs.out fn)
+
+
 #add_executable(macro.out src/main/macro_main.cpp)
-add_executable(test.out src/test/test_main.cpp)
-add_executable(print.out src/main/print_main.cpp)
-add_executable(demo.out src/main/demo_main.cpp)
-
-
-target_link_libraries(greedy.out fn)
-target_link_libraries(verify.out fn)
-target_link_libraries(lazy.out fn)
-target_link_libraries(test.out fn)
-
-target_link_libraries(print.out fn)
-target_link_libraries(demo.out fn)
-
-
 #target_link_libraries(macro.out fn)
 
 

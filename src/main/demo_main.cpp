@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     if (T.size() <= 100)
     {
         std::vector<char> s;
-        stool::load_vector(inputFile, s, false, false);
+        stool::lazy::load_vector(inputFile, s, false, false);
         for (auto &c : s)
             std::cout << c;
         std::cout << std::endl;

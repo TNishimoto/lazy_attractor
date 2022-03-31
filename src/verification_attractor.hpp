@@ -7,6 +7,7 @@
 #include "stool/src/io.hpp"
 #include "stool/src/sa_bwt_lcp.hpp"
 #include <sdsl/rmq_support.hpp> // include header for range minimum queries
+#include "./common.hpp"
 //using namespace std;
 
 using namespace sdsl;
@@ -32,11 +33,13 @@ public:
             {
                 m++;
             }
-            if (i % 100000 == 0)
+            if (i % 100000 == 0 && n > 100000)
                 std::cout << "\r"
                           << "Constructing RMQ data structures... : [" << i << "/" << n << "]" << std::flush;
         }
+        if(n > 100000){
         std::cout << std::endl;
+        }
         rmq_succinct_sada<> rmq(&v);
 
         for (uint64_t i = 0; i < intervals.size(); i++)
@@ -51,14 +54,16 @@ public:
                 std::cout << "\r"
                           << "Checking attractors... : [" << i << "/" << intervals.size() << "]" << std::flush;
         }
+        if(n > 100000){
         std::cout << std::endl;
+        }
 
         return outputFreeIntervalIndexes;
     }
 };
 void loadAttractorFile(std::string attractorFile, std::vector<uint64_t> &attractors)
 {
-    stool::load_vector(attractorFile, attractors, true);
+    stool::lazy::load_vector(attractorFile, attractors, true);
     sort(attractors.begin(), attractors.end());
 }
 

@@ -234,6 +234,94 @@ uint64_t printFrequencyVector(std::vector<INDEX> &sa, std::vector<stool::LCPInte
 
     return itPos;
 }
+template <typename CHAR, typename INDEX>
+void printColor(std::vector<stool::LCPInterval<INDEX>> &intervals, std::vector<CHAR> &text, std::vector<INDEX> &sa, bool printFirstOccurrenceFlag = false, int64_t printVerticalLinePosition = -1, std::string intervalName = "")
+{
+    //uint64_t wholeFstOcc = text.size();
+    if(intervalName != ""){
+        for(uint64_t i=0;i<=text.size();i++) std::cout << " ";
+        std::cout << intervalName << std::endl;
+    }
+    for (uint64_t i = 0; i < intervals.size(); i++)
+    {
+        stool::LCPInterval<INDEX> &interval = intervals[i];
+        if (interval.lcp == 0)
+            continue;
+
+        std::string s;
+        std::string ministr;
+        s.resize(text.size(), ' ');
+        ministr.resize(interval.lcp, ' ');
+        uint64_t fstOcc = text.size();
+        for (uint64_t x = interval.i; x <= interval.j; x++)
+        {
+            uint64_t pos = sa[x];
+            if (pos < fstOcc)
+                fstOcc = pos;
+            for (uint64_t l = 0; l < interval.lcp; l++)
+            {
+                char c = text[pos + l] == 0 ? '$' : text[pos + l];
+                s[pos + l] = c;
+                ministr[l] = c;
+            }
+        }
+        if (printFirstOccurrenceFlag)
+        {
+            for (uint64_t x = 0; x < fstOcc; x++)
+            {
+                if (s[x] == ' ')
+                    s[x] = '-';
+            }
+        }
+        if(printVerticalLinePosition != -1 && printVerticalLinePosition < (int64_t)s.size() && s[printVerticalLinePosition] == ' '){
+                s[printVerticalLinePosition] = '|';
+        }
+        s += '(' + ministr + ')';
+
+        std::cout << "\033[36m";
+        std::cout << s;
+        std::cout << "\033[39m" << std::endl;
+        //if(fstOcc < wholeFstOcc) wholeFstOcc = fstOcc;
+    }
+    //return wholeFstOcc;
+}
+
+template <typename T>
+bool load_vector(std::string &filename, std::vector<T> &text, bool has_size_info, bool print_loading_message = true)
+{
+
+	if(print_loading_message)std::cout << "Loading: " << filename << std::endl;
+	std::ifstream file;
+	file.open(filename, std::ios::binary);
+
+	if (!file)
+	{
+		std::cerr << "error reading file " << std::endl;
+		return false;
+	}
+
+	if (has_size_info)
+	{
+		uint64_t size = UINT64_MAX;
+		file.read((char *)&(size), sizeof(uint64_t));
+		text.resize(size);
+		file.read((char *)&(text)[0], size * sizeof(T));
+		file.close();
+		file.clear();
+	}
+	else
+	{
+		uint64_t len;
+		file.seekg(0, std::ios::end);
+		uint64_t n = (unsigned long)file.tellg();
+		file.seekg(0, std::ios::beg);
+		len = n / sizeof(T);
+
+		text.resize(len);
+		file.read((char *)&(text)[0], len * sizeof(T));
+	}
+	return true;
+}
 
 template <typename CHAR, typename INDEX>
 uint64_t print_info(std::vector<CHAR> &text, std::vector<INDEX> &sa, std::vector<stool::LCPInterval<INDEX>> &intervals, std::vector<INDEX> &attrs, std::string algorithm_type = "lazy")
@@ -261,14 +349,15 @@ uint64_t print_info(std::vector<CHAR> &text, std::vector<INDEX> &sa, std::vector
         attrLine[it] = '*';
     }
     std::cout << attrLine << " Attractors" << std::endl;
-    stool::esaxx::printText<uint8_t>(text);
+    stool::Printer::print(text);
+    //stool::esaxx::printText<uint8_t>(text);
     if (algorithm_type == "greedy" || algorithm_type == "none")
     {
         uint64_t fr = printFrequencyVector(sa, intervals);
         nextAttractor = fr;
     }
 
-    stool::esaxx::printColor<uint8_t, uint64_t>(intervals, text, sa, (algorithm_type != "greedy"), (algorithm_type != "greedy" ? -1 : nextAttractor), "Minimal substrings" );
+    printColor<uint8_t, uint64_t>(intervals, text, sa, (algorithm_type != "greedy"), (algorithm_type != "greedy" ? -1 : nextAttractor), "Minimal substrings" );
 
     return nextAttractor;
 }

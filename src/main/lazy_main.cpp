@@ -43,7 +43,7 @@ void compute_lazy_attractors_from_file(std::string filename, string mSubstrFile,
 {
     // Loading Input Text
     std::vector<CHAR> text;
-    stool::load_vector(filename, text, false); // input text
+    stool::lazy::load_vector(filename, text, false); // input text
     text.push_back(std::numeric_limits<CHAR>::min());
     textSize = text.size();
 
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     std::cout << "The input file content: ";
     if(characterType == "uint8_t" && textSize <= 100){
         std::vector<char> s;
-        stool::load_vector(inputFile, s, false, false); 
+        stool::lazy::load_vector(inputFile, s, false, false); 
         for(auto& c: s) std::cout << c;
         std::cout << std::endl;
     }else{
