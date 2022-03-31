@@ -4,8 +4,8 @@
 #include <memory>
 #include <map>
 #include <unordered_set>
-#include "stool/src/io.hpp"
-#include "stool/src/sa_bwt_lcp.hpp"
+#include "stool/include/io.hpp"
+#include "stool/include/sa_bwt_lcp.hpp"
 #include "g_dynamic_interval_tree.hpp"
 #include <set>
 #include <chrono>

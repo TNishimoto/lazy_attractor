@@ -7,7 +7,7 @@
 #include <set>
 #include <chrono>
 #include <unordered_map>
-#include "stool/src/sa_bwt_lcp.hpp"
+#include "stool/include/sa_bwt_lcp.hpp"
 
 namespace stool
 {

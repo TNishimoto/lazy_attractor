@@ -1,5 +1,5 @@
 #include "lazy_attractor.hpp"
-#include "stool/src/print.hpp"
+#include "stool/include/print.hpp"
 //#include "libdivsufsort/sa.hpp"
 
 namespace stool

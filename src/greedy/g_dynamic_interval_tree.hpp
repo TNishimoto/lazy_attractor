@@ -7,7 +7,7 @@
 #include <set>
 #include <chrono>
 #include "../lazy/dynamic_interval_tree.hpp"
-#include "stool/src/print.hpp"
+#include "stool/include/print.hpp"
 namespace stool
 {
 namespace lazy

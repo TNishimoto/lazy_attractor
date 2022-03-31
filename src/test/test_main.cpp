@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string>
 #include <memory>
-#include "stool/src/print.hpp"
-#include "stool/src/cmdline.h"
-#include "stool/src/io.hpp"
-#include "stool/src/debug.hpp"
+#include "stool/include/print.hpp"
+#include "stool/include/cmdline.h"
+#include "stool/include/io.hpp"
+#include "stool/include/debug.hpp"
 
 #include "../src/greedy/greedy_attractor.hpp"
 #include "../src/greedy/position_frequency_set.hpp"

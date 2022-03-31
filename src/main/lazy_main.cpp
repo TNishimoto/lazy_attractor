@@ -3,15 +3,15 @@
 #include <random>
 #include <algorithm>
 #include <set>
-#include "stool/src/cmdline.h"
-#include "stool/src/io.hpp"
-#include "stool/src/io.h"
-#include "stool/src/sa_bwt_lcp.hpp"
-#include "stool/src/print.hpp"
-#include "stool/src/debug.hpp"
+#include "stool/include/cmdline.h"
+#include "stool/include/io.hpp"
+#include "stool/include/io.hpp"
+#include "stool/include/sa_bwt_lcp.hpp"
+#include "stool/include/print.hpp"
+#include "stool/include/debug.hpp"
 
 #include "../src/lazy/lazy_attractor.hpp"
-#include "stool/src/print.hpp"
+#include "stool/include/print.hpp"
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 #include "../src/common.hpp"
 #include "list_order_maintenance/src/online_suffix_sort.hpp"

@@ -1,5 +1,5 @@
 #include <stack>
-#include "stool/src/sa_bwt_lcp.hpp"
+#include "stool/include/sa_bwt_lcp.hpp"
 #include "dynamic_interval_tree.hpp"
 
 namespace stool

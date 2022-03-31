@@ -3,11 +3,11 @@
 #include <random>
 #include <algorithm>
 #include <set>
-#include "stool/src/io.h"
-#include "stool/src/io.hpp"
-#include "stool/src/print.hpp"
+#include "stool/include/io.hpp"
+#include "stool/include/io.hpp"
+#include "stool/include/print.hpp"
 
-#include "stool/src/cmdline.h"
+#include "stool/include/cmdline.h"
 
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 //#include "sa.hpp"

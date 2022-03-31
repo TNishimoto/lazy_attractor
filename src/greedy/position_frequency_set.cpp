@@ -1,5 +1,5 @@
 #include "position_frequency_set.hpp"
-#include "stool/src/print.hpp"
+#include "stool/include/print.hpp"
 namespace stool
 {
 namespace lazy

@@ -3,9 +3,9 @@
 #include <random>
 #include <algorithm>
 #include <set>
-#include "stool/src/cmdline.h"
-#include "stool/src/io.h"
-#include "stool/src/sa_bwt_lcp.hpp"
+#include "stool/include/cmdline.h"
+#include "stool/include/io.hpp"
+#include "stool/include/sa_bwt_lcp.hpp"
 #include "../src/verification_attractor.hpp"
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 

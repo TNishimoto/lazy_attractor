@@ -5,7 +5,7 @@
 #include <limits>
 #include <algorithm>
 #include <queue>
-#include "stool/src/print.hpp"
+#include "stool/include/print.hpp"
 
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 #include "position_frequency_set.hpp"
@@ -175,7 +175,10 @@ std::vector<uint64_t> GreedyAttractorAlgorithm::computeFasterGreedyAttractors(st
 
     //Initialize
     if(isPrint)std::cout << "Initializing greedy data structures" << std::endl;
-    std::vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructMSIntervalParents(intervals);
+    //std::vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, std::vector<uint64_t>>::constructMSIntervalParents(intervals);
+    std::vector<uint64_t> parents = stool::esaxx::MinimalSubstringIntervals<uint8_t, uint64_t, std::vector<uint64_t>>::iterator<>::constructMSIntervalParents(intervals);
+
+
     GDynamicIntervalTree g(sa, isa, intervals, parents, sa.size());
     g.construct();
 

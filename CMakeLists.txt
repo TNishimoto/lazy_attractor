@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
+project(lazy_attractor CXX)
 
 if(CPP_STATIC)
 set(CMAKE_CXX_FLAGS "-std=c++14 -m64 -Wall -Wextra -static")
@@ -10,6 +11,14 @@ endif(CPP_STATIC)
 set(CMAKE_CXX_FLAGS_DEBUG  "-g -O0 -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE  "-O3 -DNDEBUG")
 
+
+set(ROOT_PROJECT  "lazy_attractor")
+if (NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
+    message("Release Mode")
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+endif()
+
+
 INCLUDE_DIRECTORIES(src)
 INCLUDE_DIRECTORIES(src/lazy)
 
@@ -17,6 +26,8 @@ INCLUDE_DIRECTORIES(src/lazy)
 #Please modify it appropriately.
 LINK_DIRECTORIES(~/lib)
 include_directories(~/include)
+
+
 
 
 #### Modules

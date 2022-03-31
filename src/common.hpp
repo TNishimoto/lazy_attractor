@@ -2,7 +2,7 @@
 #include <stack>
 #include <vector>
 #include <unordered_set>
-#include "stool/src/io.h"
+#include "stool/include/io.hpp"
 #include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
 #include "greedy/position_frequency_set.hpp"
 #include "lazy/lazy_attractor.hpp"
@@ -22,17 +22,17 @@ std::vector<stool::LCPInterval<uint64_t>> loadOrConstructMS(std::string filename
         std::vector<uint64_t> lcpArray = stool::constructLCP<CHAR, uint64_t>(text, sa);
         std::vector<CHAR> bwt = stool::constructBWT<CHAR, uint64_t>(text, sa);
 
-        std::vector<stool::LCPInterval<uint64_t>> tmp = stool::esaxx::MinimalSubstringIterator<CHAR, uint64_t, std::vector<uint64_t>>::constructSortedMinimalSubstrings(bwt, sa, lcpArray);
+        std::vector<stool::LCPInterval<uint64_t>> tmp = stool::esaxx::MinimalSubstringIntervals<CHAR, uint64_t, std::vector<uint64_t>>::iterator<>::constructSortedMinimalSubstrings(bwt, sa, lcpArray);
         r.swap(tmp);
     }
     else
     {
-        stool::load_vector<LCPInterval<uint64_t>>(filename, r, true);
+        stool::IO::load<LCPInterval<uint64_t>>(filename, r);
     }
 
     if (k_attr != 0)
     {
-        stool::esaxx::MinimalSubstringIterator<CHAR, uint64_t, std::vector<uint64_t>>::getKMinimalSubstrings(r, k_attr);
+        stool::esaxx::MinimalSubstringIntervals<CHAR, uint64_t, std::vector<uint64_t>>::iterator<>::getKMinimalSubstrings(r, k_attr);
     }
     return r;
 }
@@ -116,7 +116,7 @@ void loadAttractorFile(std::string attractorFile, std::string type, std::vector<
     if (type == "text")
     {
         std::string text;
-        IO::load(attractorFile, text);
+        stool::IO::load(attractorFile, text);
         bool b = checkAttractorTextFile(text);
         if (!b)
         {
@@ -136,7 +136,8 @@ void loadAttractorFile(std::string attractorFile, std::string type, std::vector<
     }
     else
     {
-        stool::load_vector(attractorFile, attractors, true);
+        stool::IO::load(attractorFile, attractors);
+        
     }
     sort(attractors.begin(), attractors.end());
 }

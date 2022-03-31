@@ -1,8 +1,8 @@
 #pragma once
-//#include "stool/src/io.h"
+//#include "stool/include/io.hpp"
 #include <stack>
 #include "union_find_tree.hpp"
-#include "stool/src/sa_bwt_lcp.hpp"
+#include "stool/include/sa_bwt_lcp.hpp"
 #include "lowest_node_query.hpp"
 using namespace sdsl;
 
