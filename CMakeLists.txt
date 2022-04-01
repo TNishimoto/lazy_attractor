@@ -74,7 +74,9 @@ endif()
 FILE(GLOB LOM_SOURCES module/list_order_maintenance/lib/*.cpp)
 
 INCLUDE_DIRECTORIES(module)
-INCLUDE_DIRECTORIES(module/esaxx/module/)
+INCLUDE_DIRECTORIES(module/esaxx/module)
+INCLUDE_DIRECTORIES(module/esaxx/module/rlbwt_iterator/module)
+INCLUDE_DIRECTORIES(module/esaxx/module/rlbwt_iterator/module/OnlineRlbwt/module)
 
 
 # Main programs
@@ -87,7 +89,7 @@ FILE(GLOB SOURCES lib/*.cpp lib/lazy/*.cpp lib/greedy/*.cpp)
 
 if (PROJECT_IS_TOP_LEVEL)
 
-add_library(fn STATIC ${SOURCES} ${LOM_SOURCES} module/libdivsufsort/sa.cpp)
+add_library(fn STATIC ${SOURCES} ${LOM_SOURCES} module/esaxx/module/libdivsufsort/sa.cpp)
 target_link_libraries(fn sdsl divsufsort divsufsort64 stool)
 
 add_executable(lazy.out main/lazy_main.cpp)
@@ -97,8 +99,8 @@ add_executable(demo.out main/demo_main.cpp)
 #add_executable(greedy.out  main/greedy_main.cpp)
 
 #add_executable(test.out main/test/test_main.cpp)
-add_executable(exact_2_attrs.out main/exact_2_attrs_main.cpp)
-add_executable(appro_2_attrs.out main/appro_2_attrs_main.cpp)
+#add_executable(exact_2_attrs.out main/exact_2_attrs_main.cpp)
+#add_executable(appro_2_attrs.out main/appro_2_attrs_main.cpp)
 
 target_link_libraries(lazy.out fn)
 target_link_libraries(verify.out fn)
@@ -107,8 +109,8 @@ target_link_libraries(demo.out fn)
 #target_link_libraries(greedy.out fn)
 
 #target_link_libraries(test.out fn)
-target_link_libraries(exact_2_attrs.out fn)
-target_link_libraries(appro_2_attrs.out fn)
+#target_link_libraries(exact_2_attrs.out fn)
+#target_link_libraries(appro_2_attrs.out fn)
 
 else()
 add_library(lazy_attractor STATIC ${SOURCES} ${LOM_SOURCES} module/libdivsufsort/sa.cpp)
