@@ -40,9 +40,9 @@ INCLUDE_DIRECTORIES(include)
 LINK_DIRECTORIES(~/lib)
 include_directories(~/include)
 
-if(NOT TARGET stool)
-add_subdirectory(module/stool)
-endif()
+#if(NOT TARGET stool)
+#add_subdirectory(module/stool)
+#endif()
 
 if(NOT TARGET esaxx)
 add_subdirectory(module/esaxx)
@@ -72,7 +72,9 @@ endif()
 
 # ListOrderMaintenance submodule
 FILE(GLOB LOM_SOURCES module/list_order_maintenance/lib/*.cpp)
+
 INCLUDE_DIRECTORIES(module)
+INCLUDE_DIRECTORIES(module/esaxx/module/)
 
 
 # Main programs
