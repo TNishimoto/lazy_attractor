@@ -1,5 +1,5 @@
 #include <cassert>
-#include "union_find_tree.hpp"
+#include "../include/lazy/union_find_tree.hpp"
 
 using namespace std;
 

@@ -1,5 +1,5 @@
 #include <stack>
-#include "lowest_node_query.hpp"
+#include "../include/lazy/lowest_node_query.hpp"
 using namespace std;
 using namespace sdsl;
 

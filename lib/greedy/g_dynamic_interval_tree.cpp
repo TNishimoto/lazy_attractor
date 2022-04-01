@@ -1,4 +1,4 @@
-#include "g_dynamic_interval_tree.hpp"
+#include "../include/greedy/g_dynamic_interval_tree.hpp"
 
 namespace stool{
     namespace lazy{

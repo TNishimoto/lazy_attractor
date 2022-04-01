@@ -1,4 +1,4 @@
-#include "union_find.hpp"
+#include "../include/lazy/union_find.hpp"
 #include "stool/include/print.hpp"
 #include <cassert>
 //const uint64_t UnionFind::ROOT = UINT64_MAX;

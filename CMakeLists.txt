@@ -32,8 +32,8 @@ if (CMAKE_VERSION VERSION_LESS 3.21)
 endif ()
 
 
-INCLUDE_DIRECTORIES(src)
-INCLUDE_DIRECTORIES(src/lazy)
+INCLUDE_DIRECTORIES(include)
+#INCLUDE_DIRECTORIES(src/lazy)
 
 #SDSL lib and include directory are here
 #Please modify it appropriately.
@@ -76,7 +76,7 @@ INCLUDE_DIRECTORIES(module)
 
 
 # Main programs
-FILE(GLOB SOURCES src/*.cpp src/lazy/*.cpp src/greedy/*.cpp)
+FILE(GLOB SOURCES lib/*.cpp lib/lazy/*.cpp lib/greedy/*.cpp)
 
 
 
@@ -89,22 +89,23 @@ message("TOP LEVEL IS ${PROJECT_NAME}")
 add_library(fn STATIC ${SOURCES} ${LOM_SOURCES} module/libdivsufsort/sa.cpp)
 target_link_libraries(fn sdsl divsufsort divsufsort64 stool)
 
-#add_executable(greedy.out  src/main/greedy_main.cpp)
-#add_executable(verify.out src/main/verify_main.cpp)
-#add_executable(lazy.out src/main/lazy_main.cpp)
-#add_executable(test.out src/test/test_main.cpp)
-#add_executable(print.out src/main/print_main.cpp)
-#add_executable(demo.out src/main/demo_main.cpp)
-add_executable(exact_2_attrs.out src/main/exact_2_attrs_main.cpp)
-add_executable(appro_2_attrs.out src/main/appro_2_attrs_main.cpp)
+add_executable(lazy.out main/lazy_main.cpp)
+add_executable(verify.out main/verify_main.cpp)
+add_executable(print.out main/print_main.cpp)
+add_executable(demo.out main/demo_main.cpp)
+#add_executable(greedy.out  main/greedy_main.cpp)
 
+#add_executable(test.out main/test/test_main.cpp)
+add_executable(exact_2_attrs.out main/exact_2_attrs_main.cpp)
+add_executable(appro_2_attrs.out main/appro_2_attrs_main.cpp)
 
+target_link_libraries(lazy.out fn)
+target_link_libraries(verify.out fn)
+target_link_libraries(print.out fn)
+target_link_libraries(demo.out fn)
 #target_link_libraries(greedy.out fn)
-#target_link_libraries(verify.out fn)
-#target_link_libraries(lazy.out fn)
+
 #target_link_libraries(test.out fn)
-#target_link_libraries(print.out fn)
-#target_link_libraries(demo.out fn)
 target_link_libraries(exact_2_attrs.out fn)
 target_link_libraries(appro_2_attrs.out fn)
 

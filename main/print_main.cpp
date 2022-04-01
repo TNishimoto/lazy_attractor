@@ -11,7 +11,7 @@
 #include "stool/include/io.hpp"
 #include "stool/include/sa_bwt_lcp.hpp"
 #include "libdivsufsort/sa.hpp"
-#include "../src/common.hpp"
+#include "../include/common.hpp"
 
 //#include "../minimal_substrings/naive_minimal_substrings.hpp"
 
@@ -43,7 +43,9 @@ int main(int argc, char *argv[])
     string attractorFile = p.get<string>("attractor_file");
     string attractorFileType = p.get<string>("attractor_file_type");
 
-    std::vector<uint8_t> T = stool::load_text_from_file(inputFile, true); // input text
+    std::vector<uint8_t> T; 
+    stool::IO::load(inputFile, T); // input text
+    T.push_back(0);
     std::vector<uint64_t> sa = stool::construct_suffix_array(T);
 
     // Loading Attractor File

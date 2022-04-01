@@ -1,6 +1,6 @@
 #include <stack>
 #include "stool/include/sa_bwt_lcp.hpp"
-#include "dynamic_interval_tree.hpp"
+#include "../include/lazy/dynamic_interval_tree.hpp"
 
 namespace stool
 {

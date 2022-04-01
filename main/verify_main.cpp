@@ -6,9 +6,9 @@
 #include "stool/include/cmdline.h"
 #include "stool/include/io.hpp"
 #include "stool/include/sa_bwt_lcp.hpp"
-#include "../src/verification_attractor.hpp"
+#include "../include/verification_attractor.hpp"
 #include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
-#include "../src/common.hpp"
+#include "../include/common.hpp"
 #include "libdivsufsort/sa.hpp"
 //#include "minimal_substrings.hpp"
 //#include "mstree.hpp"
@@ -101,7 +101,9 @@ int main(int argc, char *argv[])
     }
 
     // Loading Input Text
-    vector<CHAR> text = stool::load_text_from_file(inputFile, true);
+    vector<CHAR> text; 
+    stool::IO::load(inputFile, text);
+    text.push_back(0);
 
     // Loading Attractor File
     vector<uint64_t> attractors;

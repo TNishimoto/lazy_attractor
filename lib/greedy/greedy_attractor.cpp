@@ -8,10 +8,10 @@
 #include "stool/include/print.hpp"
 
 #include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
-#include "position_frequency_set.hpp"
+#include "../include/greedy/position_frequency_set.hpp"
 
 //#include <unordered_set>
-#include "greedy_attractor.hpp"
+#include "../include/greedy/greedy_attractor.hpp"
 using namespace std;
 
 namespace stool

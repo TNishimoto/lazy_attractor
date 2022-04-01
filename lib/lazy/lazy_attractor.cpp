@@ -1,4 +1,4 @@
-#include "lazy_attractor.hpp"
+#include "../include/lazy/lazy_attractor.hpp"
 #include "stool/include/print.hpp"
 //#include "libdivsufsort/sa.hpp"
 

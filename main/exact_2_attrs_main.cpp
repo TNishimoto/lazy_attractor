@@ -6,11 +6,11 @@
 #include "stool/include/cmdline.h"
 #include "stool/include/io.hpp"
 #include "stool/include/sa_bwt_lcp.hpp"
-#include "../src/verification_attractor.hpp"
+#include "../include/verification_attractor.hpp"
 #include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
-#include "../src/common.hpp"
+#include "../include/common.hpp"
 #include "libdivsufsort/sa.hpp"
-#include "../binary.hpp"
+#include "../include/binary.hpp"
 //#include "minimal_substrings.hpp"
 //#include "mstree.hpp"
 //#include "esaxx/include/minimal_substrings/minimal_substring_tree.hpp"
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     uint len = p.get<uint>("len");
     std::cout << len << std::endl;
 
-    std::string enum_log_filename = "LOG_appro_2_attractors" + std::to_string(len) + ".txt";
+    std::string enum_log_filename = "LOG_2_attractors" + std::to_string(len) + ".txt";
     std::ifstream test_ifs(enum_log_filename);
     if (test_ifs.is_open())
     {
@@ -47,7 +47,16 @@ int main(int argc, char *argv[])
         std::cout << "ファイルを削除しました。: " << enum_log_filename << std::endl;
     }
 
+    std::string rooted_binary_strings_filename = "LOG_rooted_binary_strings_" + std::to_string(len) + ".txt";
+    std::ifstream test_ifs2(rooted_binary_strings_filename);
+    if (test_ifs2.is_open())
+    {
+        remove(rooted_binary_strings_filename);
+        std::cout << "ファイルを削除しました。: " << rooted_binary_strings_filename << std::endl;
+    }
+
     std::cout << "Log file 1: " << enum_log_filename << std::endl;
+    std::cout << "Log file 2: " << rooted_binary_strings_filename << std::endl;
 
     std::unordered_set<std::string> prev_sbinary_set;
     std::unordered_set<std::string> current_sbinary_set;
@@ -55,23 +64,16 @@ int main(int argc, char *argv[])
     std::ofstream file_out;
     file_out.open(enum_log_filename, std::ios_base::app);
 
+    std::ofstream rooted_binary_strings_out;
+    rooted_binary_strings_out.open(rooted_binary_strings_filename, std::ios_base::app);
+
+    rooted_binary_strings_out << "右を削っても左を削っても2-attractorsにならない2-attractorsのバイナリ文字列" << std::endl;
 
     for (uint64_t i = 1; i < len; i++)
     {
         current_sbinary_set.clear();
-        std::cout << "Computing all " << i << "-binary strings with 2-attractors" << std::endl;
-        std::vector<std::string> binary_strings;
-        if(i <= 2){
-            auto tmp = stool::binary::enumerate(i);
-            binary_strings.swap(tmp);
-        }else{
-            std::vector<std::string> tmp_vec;
-            for(auto &it : prev_sbinary_set){
-                tmp_vec.push_back(it);
-            }
-            auto new_vec = stool::binary::append_character_left_or_right(tmp_vec);
-            binary_strings.swap(new_vec);
-        }
+        std::cout << "Computing Len: " << i << std::endl;
+        std::vector<std::string> binary_strings = stool::binary::enumerate(i);
 
         std::vector<std::string> normalized_strings = stool::binary::normalize(binary_strings);
         std::vector<bool> checker_vec;
@@ -113,18 +115,17 @@ int main(int argc, char *argv[])
             }
         }
 
-        uint64_t total_count = std::pow(2, i);
         file_out << i << "-binary strings" << std::endl;
-        file_out << "The number of " << i << "-binary strings: \t " << total_count << std::endl;
-        file_out << "The number of tested binary strings: " << normalized_strings.size() << std::endl;
-        file_out << "The number of 2-smallest attoractors (approximated count): \t" << current_sbinary_set.size() << std::endl;
+        file_out << "The number of " << i << "-binary strings: \t " << binary_strings.size() << std::endl;
+        file_out << "The number of 2-smallest attoractors: \t" << current_sbinary_set.size() << std::endl;
         file_out << std::endl;
         file_out << "文字列 | 逆文字列 | 反転文字列 | 逆文字列の反転文字列" << std::endl;
 
         std::cout << i << "-binary strings" << std::endl;
-        std::cout << "The number of " << i << "-binary strings: \t " << total_count << std::endl;
-        std::cout << "The number of tested binary strings: " << normalized_strings.size() << std::endl;
-        std::cout << "The number of 2-smallest attoractors (approximated count): \t" << current_sbinary_set.size() << std::endl;
+        std::cout << "The number of " << i << "-binary strings: \t " << binary_strings.size() << std::endl;
+        std::cout << "The number of 2-smallest attoractors: \t" << current_sbinary_set.size() << std::endl;
+
+        rooted_binary_strings_out << "---------- " << i << "-binary strings -------------" << std::endl;
 
         uint64_t ith = 0;
 
@@ -136,6 +137,21 @@ int main(int argc, char *argv[])
                 auto dp = stool::binary::get_four_types_without_duplication(binary_str);
                 string message = std::to_string(ith) + ": " + dp[0] + " | " + dp[1] + " | " + dp[2] + " | " + dp[3];
                 file_out << message << std::endl;
+
+                auto prev = binary_str.substr(0, binary_str.size() - 1);
+                auto f1 = prev_sbinary_set.find(prev);
+                bool b1 = !(f1 == prev_sbinary_set.end());
+
+                auto suf = binary_str.substr(1, binary_str.size() - 1);
+                auto f2 = prev_sbinary_set.find(suf);
+                bool b2 = !(f2 == prev_sbinary_set.end());
+
+                if (!(b1 || b2))
+                {
+                    std::cout << "Rooted binary string: " << message << std::endl;
+                    rooted_binary_strings_out << message << std::endl;
+                }
+
 
 
                 ith += dp[0][0] != '_' ? 1 : 0;

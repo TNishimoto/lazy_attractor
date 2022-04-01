@@ -4,17 +4,14 @@
 #include <algorithm>
 #include <set>
 #include "stool/include/io.hpp"
-#include "stool/include/io.hpp"
 #include "stool/include/print.hpp"
-
 #include "stool/include/cmdline.h"
-
 #include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
-//#include "sa.hpp"
-#include "../src/greedy/greedy_attractor.hpp"
-#include "../src/greedy/position_frequency_set.hpp"
-#include "../src/common.hpp"
 #include "libdivsufsort/sa.hpp"
+//#include "sa.hpp"
+#include "../include/greedy/greedy_attractor.hpp"
+#include "../include/greedy/position_frequency_set.hpp"
+#include "../include/common.hpp"
 
 //using namespace std;
 //using namespace sdsl;
@@ -62,7 +59,9 @@ int main(int argc, char *argv[])
     }
 
     // Loading Input Text
-    std::vector<uint8_t> text = stool::load_text_from_file(inputFile, true); // input text
+    std::vector<uint8_t> text;
+    stool::IO::load(inputFile, text); // input text
+    text.push_back(0);
 
     std::cout << "Constructing Suffix Array" << std::endl;
     std::vector<INDEX> sa = stool::construct_suffix_array(text);
@@ -132,7 +131,9 @@ int main(int argc, char *argv[])
         }
         else
         {
-            stool::write_vector(outputFile, attrs, true);
+            //stool::write_vector(outputFile, attrs, true);
+            stool::IO::write(outputFile, attrs);
+
             //IO::write(outputFile, attrs, UINT64_MAX - 1);
         }
         std::cout << "\033[36m";

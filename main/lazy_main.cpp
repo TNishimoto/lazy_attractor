@@ -10,11 +10,11 @@
 #include "stool/include/print.hpp"
 #include "stool/include/debug.hpp"
 
-#include "../src/lazy/lazy_attractor.hpp"
+#include "../include/lazy/lazy_attractor.hpp"
 #include "stool/include/print.hpp"
 #include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
-#include "../src/common.hpp"
-#include "list_order_maintenance/src/online_suffix_sort.hpp"
+#include "../include/common.hpp"
+#include "list_order_maintenance/include/online_suffix_sort.hpp"
 #include "libdivsufsort/sa.hpp"
 
 //#include "esaxx/include/minimal_substrings/minimal_substring_tree.hpp"
@@ -30,7 +30,7 @@ using INDEX = uint64_t;
 
 template <typename CHAR>
 vector<uint64_t> compute_suffix_array(std::vector<CHAR> &text){
-    return stool::LO::construct_suffix_array(text);
+    return stool::lom::construct_suffix_array(text);
     //return stool::construct_suffix_array(text);
 }
 template<> vector<uint64_t> compute_suffix_array(std::vector<uint8_t> &text){
@@ -53,7 +53,7 @@ void compute_lazy_attractors_from_file(std::string filename, string mSubstrFile,
     // Loading Minimal Substrings
     vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text, sa, k_attr);
 
-    vector<uint64_t> parents = stool::esaxx::MinimalSubstringIterator<uint8_t, uint64_t, vector<uint64_t>>::constructMSIntervalParents(minimalSubstrings);
+    vector<uint64_t> parents = stool::esaxx::MinimalSubstringIntervals<uint8_t, uint64_t, vector<uint64_t>>::iterator<>::constructMSIntervalParents(minimalSubstrings);
     //stool::write_vector(mSubstrFile, minimalSubstrings);
 
     //Loader
@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        stool::write_vector(outputFile, attrs, true);
+        stool::IO::write(outputFile, attrs);
 
         //IO::write(outputFile, attrs, UINT64_MAX - 1);
     }

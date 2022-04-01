@@ -1,4 +1,4 @@
-#include "position_frequency_set.hpp"
+#include "../include/greedy/position_frequency_set.hpp"
 #include "stool/include/print.hpp"
 namespace stool
 {

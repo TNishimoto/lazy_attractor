@@ -11,10 +11,10 @@
 #include "stool/include/io.hpp"
 #include "stool/include/sa_bwt_lcp.hpp"
 #include "libdivsufsort/sa.hpp"
-#include "esaxx/include/main/common.hpp"
-#include "../src/common.hpp"
-#include "../greedy/position_frequency_set.hpp"
-#include "../lazy/lazy_attractor.hpp"
+#include "esaxx/include/common.hpp"
+#include "../include/common.hpp"
+#include "../include/greedy/position_frequency_set.hpp"
+#include "../include/lazy/lazy_attractor.hpp"
 
 using namespace std;
 using namespace stool;
@@ -34,7 +34,9 @@ int main(int argc, char *argv[])
     uint64_t k_attr = p.get<uint64_t>("k-attr");
     string algorithm = p.get<string>("attractor algorithm");
 
-    std::vector<uint8_t> T = stool::load_text_from_file(inputFile, true); // input text
+    std::vector<uint8_t> T; 
+    stool::IO::load(inputFile, T); // input text
+    T.push_back(0);
     std::vector<uint64_t> sa = stool::construct_suffix_array(T);
 
     // Loading Minimal Substrings
