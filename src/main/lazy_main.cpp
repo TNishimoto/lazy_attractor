@@ -12,12 +12,12 @@
 
 #include "../src/lazy/lazy_attractor.hpp"
 #include "stool/include/print.hpp"
-#include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
+#include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
 #include "../src/common.hpp"
 #include "list_order_maintenance/src/online_suffix_sort.hpp"
 #include "libdivsufsort/sa.hpp"
 
-//#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
+//#include "esaxx/include/minimal_substrings/minimal_substring_tree.hpp"
 
 using namespace std;
 using namespace sdsl;

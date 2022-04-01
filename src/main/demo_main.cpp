@@ -11,7 +11,7 @@
 #include "stool/include/io.hpp"
 #include "stool/include/sa_bwt_lcp.hpp"
 #include "libdivsufsort/sa.hpp"
-#include "esaxx/src/main/common.hpp"
+#include "esaxx/include/main/common.hpp"
 #include "../src/common.hpp"
 #include "../greedy/position_frequency_set.hpp"
 #include "../lazy/lazy_attractor.hpp"

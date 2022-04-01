@@ -3,10 +3,10 @@
 #include <vector>
 #include <unordered_set>
 #include "stool/include/io.hpp"
-#include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
+#include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
 #include "greedy/position_frequency_set.hpp"
 #include "lazy/lazy_attractor.hpp"
-#include "esaxx/src/main/common.hpp"
+#include "esaxx/include/common.hpp"
 
 namespace stool
 {
@@ -22,7 +22,7 @@ std::vector<stool::LCPInterval<uint64_t>> loadOrConstructMS(std::string filename
         std::vector<uint64_t> lcpArray = stool::constructLCP<CHAR, uint64_t>(text, sa);
         std::vector<CHAR> bwt = stool::constructBWT<CHAR, uint64_t>(text, sa);
 
-        std::vector<stool::LCPInterval<uint64_t>> tmp = stool::esaxx::MinimalSubstringIntervals<CHAR, uint64_t, std::vector<uint64_t>>::iterator<>::constructSortedMinimalSubstrings(bwt, sa, lcpArray);
+        std::vector<stool::LCPInterval<uint64_t>> tmp = stool::esaxx::constructSortedMinimalSubstrings(bwt, sa, lcpArray);
         r.swap(tmp);
     }
     else
@@ -32,7 +32,7 @@ std::vector<stool::LCPInterval<uint64_t>> loadOrConstructMS(std::string filename
 
     if (k_attr != 0)
     {
-        stool::esaxx::MinimalSubstringIntervals<CHAR, uint64_t, std::vector<uint64_t>>::iterator<>::getKMinimalSubstrings(r, k_attr);
+        stool::esaxx::getKMinimalSubstrings(r, k_attr);
     }
     return r;
 }
@@ -115,8 +115,13 @@ void loadAttractorFile(std::string attractorFile, std::string type, std::vector<
 
     if (type == "text")
     {
+        std::vector<char> _text;
+        stool::IO::load(attractorFile, _text);
         std::string text;
-        stool::IO::load(attractorFile, text);
+        for(auto &c :_text){
+            text.push_back(c);
+        }
+        
         bool b = checkAttractorTextFile(text);
         if (!b)
         {

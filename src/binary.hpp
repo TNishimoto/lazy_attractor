@@ -9,7 +9,7 @@
 #include "stool/include/io.hpp"
 #include "stool/include/sa_bwt_lcp.hpp"
 #include "./verification_attractor.hpp"
-#include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
+#include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
 #include "libdivsufsort/sa.hpp"
 
 namespace stool

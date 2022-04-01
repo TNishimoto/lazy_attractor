@@ -7,7 +7,7 @@
 #include <queue>
 #include "stool/include/print.hpp"
 
-#include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
+#include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
 #include "position_frequency_set.hpp"
 
 //#include <unordered_set>

@@ -7,13 +7,13 @@
 #include "stool/include/io.hpp"
 #include "stool/include/sa_bwt_lcp.hpp"
 #include "../src/verification_attractor.hpp"
-#include "esaxx/src/minimal_substrings/minimal_substring_iterator.hpp"
+#include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
 #include "../src/common.hpp"
 #include "libdivsufsort/sa.hpp"
 #include "../binary.hpp"
 //#include "minimal_substrings.hpp"
 //#include "mstree.hpp"
-//#include "esaxx/src/minimal_substrings/minimal_substring_tree.hpp"
+//#include "esaxx/include/minimal_substrings/minimal_substring_tree.hpp"
 
 using namespace std;
 using namespace sdsl;
