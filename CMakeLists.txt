@@ -84,7 +84,6 @@ FILE(GLOB SOURCES lib/*.cpp lib/lazy/*.cpp lib/greedy/*.cpp)
 #target_link_libraries(macro.out fn)
 
 if (PROJECT_IS_TOP_LEVEL)
-message("TOP LEVEL IS ${PROJECT_NAME}")
 
 add_library(fn STATIC ${SOURCES} ${LOM_SOURCES} module/libdivsufsort/sa.cpp)
 target_link_libraries(fn sdsl divsufsort divsufsort64 stool)
@@ -110,6 +109,8 @@ target_link_libraries(exact_2_attrs.out fn)
 target_link_libraries(appro_2_attrs.out fn)
 
 else()
+add_library(lazy_attractor STATIC ${SOURCES} ${LOM_SOURCES} module/libdivsufsort/sa.cpp)
+target_link_libraries(lazy_attractor sdsl divsufsort divsufsort64 stool)
 endif()
 
 
