@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.8)
 project(lazy_attractor CXX)
 
 if(CPP_STATIC)
-set(CMAKE_CXX_FLAGS "-std=c++14 -m64 -Wall -Wextra -static")
+set(CMAKE_CXX_FLAGS "-std=c++17 -m64 -Wall -Wextra -static")
 else(CPP_STATIC)
-set(CMAKE_CXX_FLAGS "-std=c++14 -m64 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-std=c++17 -m64 -Wall -Wextra")
 endif(CPP_STATIC)
 
 #set(CMAKE_CXX_FLAGS_DEBUG  "-g -O0 -DDEBUG")
@@ -44,10 +44,14 @@ include_directories(~/include)
 #add_subdirectory(module/stool)
 #endif()
 
-if(NOT TARGET esaxx)
-add_subdirectory(module/esaxx)
-endif()
+#if(NOT TARGET esaxx)
+#add_subdirectory(module/esaxx)
+#endif()
 
+if(NOT TARGET libdivsufsort)
+include_directories(${CMAKE_BINARY_DIR}/module/libdivsufsort/include)
+add_subdirectory(module/libdivsufsort)
+endif()
 
 
 #### Modules
@@ -74,9 +78,9 @@ endif()
 FILE(GLOB LOM_SOURCES module/list_order_maintenance/lib/*.cpp)
 
 INCLUDE_DIRECTORIES(module)
-INCLUDE_DIRECTORIES(module/esaxx/module)
-INCLUDE_DIRECTORIES(module/esaxx/module/rlbwt_iterator/module)
-INCLUDE_DIRECTORIES(module/esaxx/module/rlbwt_iterator/module/OnlineRlbwt/module)
+#INCLUDE_DIRECTORIES(module/esaxx/module)
+#INCLUDE_DIRECTORIES(module/esaxx/module/rlbwt_iterator/module)
+#INCLUDE_DIRECTORIES(module/esaxx/module/rlbwt_iterator/module/OnlineRlbwt/module)
 
 
 # Main programs
@@ -89,32 +93,32 @@ FILE(GLOB SOURCES lib/*.cpp lib/lazy/*.cpp lib/greedy/*.cpp)
 
 if (PROJECT_IS_TOP_LEVEL)
 
-add_library(fn STATIC ${SOURCES} ${LOM_SOURCES} module/esaxx/module/libdivsufsort/sa.cpp)
-target_link_libraries(fn sdsl divsufsort divsufsort64 stool)
+#add_library(fn STATIC ${SOURCES} ${LOM_SOURCES})
+#target_link_libraries(fn sdsl divsufsort divsufsort64)
 
-add_executable(lazy.out main/lazy_main.cpp)
-add_executable(verify.out main/verify_main.cpp)
-add_executable(print.out main/print_main.cpp)
-add_executable(demo.out main/demo_main.cpp)
-#add_executable(greedy.out  main/greedy_main.cpp)
+add_executable(lazy.out main/lazy_main.cpp ${SOURCES} ${LOM_SOURCES})
+add_executable(verify.out main/verify_main.cpp ${SOURCES} ${LOM_SOURCES})
+add_executable(print.out main/print_main.cpp ${SOURCES} ${LOM_SOURCES})
+add_executable(demo.out main/demo_main.cpp ${SOURCES} ${LOM_SOURCES})
+add_executable(greedy.out  main/greedy_main.cpp ${SOURCES} ${LOM_SOURCES})
 
 #add_executable(test.out main/test/test_main.cpp)
 #add_executable(exact_2_attrs.out main/exact_2_attrs_main.cpp)
 #add_executable(appro_2_attrs.out main/appro_2_attrs_main.cpp)
 
-target_link_libraries(lazy.out fn)
-target_link_libraries(verify.out fn)
-target_link_libraries(print.out fn)
-target_link_libraries(demo.out fn)
-#target_link_libraries(greedy.out fn)
+target_link_libraries(lazy.out sdsl divsufsort divsufsort64)
+target_link_libraries(verify.out sdsl divsufsort divsufsort64)
+target_link_libraries(print.out sdsl divsufsort divsufsort64)
+target_link_libraries(demo.out sdsl divsufsort divsufsort64)
+target_link_libraries(greedy.out sdsl divsufsort divsufsort64)
 
 #target_link_libraries(test.out fn)
 #target_link_libraries(exact_2_attrs.out fn)
 #target_link_libraries(appro_2_attrs.out fn)
 
 else()
-add_library(lazy_attractor STATIC ${SOURCES} ${LOM_SOURCES} module/libdivsufsort/sa.cpp)
-target_link_libraries(lazy_attractor sdsl divsufsort divsufsort64 stool)
+#add_library(lazy_attractor STATIC ${SOURCES} ${LOM_SOURCES} module/libdivsufsort/sa.cpp)
+#target_link_libraries(lazy_attractor sdsl divsufsort divsufsort64 stool)
 endif()
 
 

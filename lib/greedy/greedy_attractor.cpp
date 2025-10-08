@@ -5,7 +5,8 @@
 #include <limits>
 #include <algorithm>
 #include <queue>
-#include "stool/include/print.hpp"
+#include "stool/include/light_stool.hpp"
+
 
 #include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
 #include "../include/greedy/position_frequency_set.hpp"

@@ -2,7 +2,8 @@
 //#include "io.h"
 #include <stack>
 //#include "uftree.hpp"
-#include "stool/include/sa_bwt_lcp.hpp"
+#include "stool/include/light_stool.hpp"
+
 #include <sdsl/bit_vectors.hpp>
 #include <sdsl/int_vector.hpp>
 using namespace sdsl;

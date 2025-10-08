@@ -2,7 +2,7 @@
 #include <stack>
 #include <vector>
 #include <unordered_set>
-#include "stool/include/io.hpp"
+#include "stool/include/light_stool.hpp"
 #include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
 #include "greedy/position_frequency_set.hpp"
 #include "lazy/lazy_attractor.hpp"
@@ -19,8 +19,8 @@ std::vector<stool::LCPInterval<uint64_t>> loadOrConstructMS(std::string filename
     std::vector<stool::LCPInterval<uint64_t>> r;
     if (filename.size() == 0)
     {
-        std::vector<uint64_t> lcpArray = stool::constructLCP<CHAR, uint64_t>(text, sa);
-        std::vector<CHAR> bwt = stool::constructBWT<CHAR, uint64_t>(text, sa);
+        std::vector<uint64_t> lcpArray = stool::ArrayConstructor::construct_LCP_array(text, sa);
+        std::vector<CHAR> bwt = stool::ArrayConstructor::construct_BWT(text, sa);
 
         std::vector<stool::LCPInterval<uint64_t>> tmp = stool::esaxx::constructSortedMinimalSubstrings(bwt, sa, lcpArray);
         r.swap(tmp);

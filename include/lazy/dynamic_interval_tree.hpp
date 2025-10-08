@@ -2,8 +2,9 @@
 //#include "stool/include/io.hpp"
 #include <stack>
 #include "union_find_tree.hpp"
-#include "stool/include/sa_bwt_lcp.hpp"
 #include "lowest_node_query.hpp"
+#include "stool/include/light_stool.hpp"
+
 using namespace sdsl;
 
 namespace stool

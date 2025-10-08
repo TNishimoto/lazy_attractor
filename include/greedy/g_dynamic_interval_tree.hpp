@@ -7,7 +7,9 @@
 #include <set>
 #include <chrono>
 #include "../lazy/dynamic_interval_tree.hpp"
-#include "stool/include/print.hpp"
+#include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
+
+#include "stool/include/light_stool.hpp"
 namespace stool
 {
 namespace lazy

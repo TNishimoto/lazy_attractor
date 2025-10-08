@@ -3,9 +3,8 @@
 #include <random>
 #include <algorithm>
 #include <set>
-#include "stool/include/io.hpp"
-#include "stool/include/print.hpp"
-#include "stool/include/cmdline.h"
+#include "stool/include/light_stool.hpp"
+
 #include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
 #include "libdivsufsort/sa.hpp"
 //#include "sa.hpp"
@@ -64,7 +63,7 @@ int main(int argc, char *argv[])
     text.push_back(0);
 
     std::cout << "Constructing Suffix Array" << std::endl;
-    std::vector<INDEX> sa = stool::construct_suffix_array(text);
+    std::vector<INDEX> sa = libdivsufsort::construct_suffix_array(text);
 
     // Loading Minimal Substrings
     std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text, sa, k_attr);
@@ -97,7 +96,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        std::vector<INDEX> isa = stool::constructISA<CHAR, INDEX>(text, sa);
+        std::vector<INDEX> isa = stool::ArrayConstructor::construct_ISA<CHAR, INDEX>(text, sa);
         std::vector<uint64_t> greedyAttrs = GreedyAttractorAlgorithm::computeFasterGreedyAttractors(sa, isa, minimalSubstrings);
 
 #ifdef DEBUG

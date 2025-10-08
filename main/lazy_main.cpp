@@ -3,18 +3,15 @@
 #include <random>
 #include <algorithm>
 #include <set>
-#include "stool/include/cmdline.h"
-#include "stool/include/io.hpp"
-#include "stool/include/io.hpp"
-#include "stool/include/sa_bwt_lcp.hpp"
-#include "stool/include/print.hpp"
-#include "stool/include/debug.hpp"
+#include "stool/include/light_stool.hpp"
+
 
 #include "../include/lazy/lazy_attractor.hpp"
-#include "stool/include/print.hpp"
 #include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
 #include "../include/common.hpp"
 #include "list_order_maintenance/include/online_suffix_sort.hpp"
+#include "list_order_maintenance/include/constructor.hpp"
+
 #include "libdivsufsort/sa.hpp"
 
 //#include "esaxx/include/minimal_substrings/minimal_substring_tree.hpp"
@@ -34,7 +31,7 @@ vector<uint64_t> compute_suffix_array(std::vector<CHAR> &text){
     //return stool::construct_suffix_array(text);
 }
 template<> vector<uint64_t> compute_suffix_array(std::vector<uint8_t> &text){
-    return stool::construct_suffix_array(text);
+    return libdivsufsort::construct_suffix_array(text);
 }
 
 

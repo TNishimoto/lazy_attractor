@@ -3,9 +3,7 @@
 #include <random>
 #include <algorithm>
 #include <set>
-#include "stool/include/cmdline.h"
-#include "stool/include/io.hpp"
-#include "stool/include/sa_bwt_lcp.hpp"
+#include "stool/include/light_stool.hpp"
 #include "../include/verification_attractor.hpp"
 #include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
 #include "../include/common.hpp"
@@ -110,13 +108,13 @@ int main(int argc, char *argv[])
     stool::lazy::loadAttractorFile(attractorFile, attractorFileType, attractors);
 
     std::cout << "Constructing Suffix Array" << std::endl;
-    std::vector<INDEX> sa = stool::construct_suffix_array(text);
+    std::vector<INDEX> sa = libdivsufsort::construct_suffix_array(text);
 
     // Loading Minimal Substrings
     std::vector<stool::LCPInterval<uint64_t>> minimalSubstrings = stool::lazy::loadOrConstructMS(mSubstrFile, text, sa, k_attr);
 
     auto start = std::chrono::system_clock::now();
-    vector<uint64_t> isa = stool::constructISA(text, sa);
+    vector<uint64_t> isa = stool::ArrayConstructor::construct_ISA(text, sa);
     vector<uint64_t> freeIntervalIndexes = lazy::VerificationAttractor::getFreeIntervals(sa, isa, minimalSubstrings, attractors);
     auto end = std::chrono::system_clock::now();
     double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();

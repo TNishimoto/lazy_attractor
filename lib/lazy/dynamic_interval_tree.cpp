@@ -1,5 +1,6 @@
 #include <stack>
-#include "stool/include/sa_bwt_lcp.hpp"
+#include "stool/include/light_stool.hpp"
+
 #include "../include/lazy/dynamic_interval_tree.hpp"
 
 namespace stool

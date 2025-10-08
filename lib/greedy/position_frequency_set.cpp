@@ -1,5 +1,7 @@
 #include "../include/greedy/position_frequency_set.hpp"
-#include "stool/include/print.hpp"
+#include "stool/include/light_stool.hpp"
+#include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
+
 namespace stool
 {
 namespace lazy

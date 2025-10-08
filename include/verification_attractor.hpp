@@ -4,8 +4,7 @@
 #include <memory>
 #include <map>
 #include <unordered_set>
-#include "stool/include/io.hpp"
-#include "stool/include/sa_bwt_lcp.hpp"
+#include "stool/include/light_stool.hpp"
 #include <sdsl/rmq_support.hpp> // include header for range minimum queries
 #include "./common.hpp"
 //using namespace std;

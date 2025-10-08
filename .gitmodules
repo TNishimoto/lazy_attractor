@@ -4,3 +4,9 @@
 [submodule "module/list_order_maintenance"]
 	path = module/list_order_maintenance
 	url = https://github.com/TNishimoto/list_order_maintenance
+[submodule "module/stool"]
+	path = module/stool
+	url = https://github.com/TNishimoto/stool.git
+[submodule "module/libdivsufsort"]
+	path = module/libdivsufsort
+	url = https://github.com/TNishimoto/libdivsufsort.git

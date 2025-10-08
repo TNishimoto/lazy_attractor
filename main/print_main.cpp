@@ -5,11 +5,9 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "stool/include/cmdline.h"
 #include "divsufsort.h"
 #include "divsufsort64.h"
-#include "stool/include/io.hpp"
-#include "stool/include/sa_bwt_lcp.hpp"
+#include "stool/include/light_stool.hpp"
 #include "libdivsufsort/sa.hpp"
 #include "../include/common.hpp"
 
@@ -46,7 +44,7 @@ int main(int argc, char *argv[])
     std::vector<uint8_t> T; 
     stool::IO::load(inputFile, T); // input text
     T.push_back(0);
-    std::vector<uint64_t> sa = stool::construct_suffix_array(T);
+    std::vector<uint64_t> sa = libdivsufsort::construct_suffix_array(T);
 
     // Loading Attractor File
     vector<uint64_t> attractors;

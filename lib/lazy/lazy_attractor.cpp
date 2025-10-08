@@ -1,5 +1,6 @@
 #include "../include/lazy/lazy_attractor.hpp"
-#include "stool/include/print.hpp"
+#include "stool/include/light_stool.hpp"
+#include "esaxx/include/minimal_substrings/minimal_substring_iterator.hpp"
 //#include "libdivsufsort/sa.hpp"
 
 namespace stool
@@ -120,7 +121,7 @@ std::vector<uint64_t> LazyAttractor::computeLazyAttractors(std::vector<CHAR> &te
 {
     //std::vector<uint64_t> sa = constructSA(text);
     if(sa.size() > 1000000)std::cout << "Constructing ISA" << std::flush;
-    std::vector<uint64_t> isa = constructISA(text, sa);
+    std::vector<uint64_t> isa = stool::ArrayConstructor::construct_ISA(text, sa);
     if(sa.size() > 1000000)std::cout << "[END]" << std::endl;
 
     return computeLazyAttractors(text, sa, isa, _intervals, _parents);
